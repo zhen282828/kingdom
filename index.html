@@ -728,6 +728,51 @@ button:focus-visible,[role="button"]:focus-visible{outline:3px solid var(--ui-fo
  #collectAllBtn{align-self:center!important;overflow:hidden!important}
 }
 @media(max-width:365px){.topbar .ab-crest .logo,.topbar .crest .logo{font-size:9px!important;letter-spacing:.035em!important}.cameraControls{bottom:130px!important}}
+</style><style id="iphone-title-font-fix">
+@media (max-width:520px){
+  .topbar .ab-crest .logo,.topbar .crest .logo{
+    font-family:"Avenir Next",Avenir,-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif!important;
+    font-size:11px!important;
+    font-weight:700!important;
+    line-height:1.12!important;
+    letter-spacing:.015em!important;
+    text-transform:none!important;
+    font-synthesis:none!important;
+    -webkit-font-smoothing:antialiased!important;
+    text-rendering:optimizeLegibility!important;
+    color:#f4d477!important;
+    text-shadow:0 1px 1px #000!important;
+    white-space:normal!important;
+    word-break:keep-all!important;
+  }
+}
+@media(max-width:365px){
+  .topbar .ab-crest .logo,.topbar .crest .logo{font-size:10px!important;letter-spacing:0!important}
+}
+</style><style id="medieval-serif-title-fix">
+@media (max-width:520px){
+  .topbar .ab-crest .logo,.topbar .crest .logo{
+    font-family:"Palatino Linotype",Palatino,"Book Antiqua","Iowan Old Style",Baskerville,Georgia,serif!important;
+    font-size:11px!important;
+    font-weight:700!important;
+    line-height:1.06!important;
+    letter-spacing:.018em!important;
+    text-transform:uppercase!important;
+    font-synthesis:none!important;
+    -webkit-font-smoothing:antialiased!important;
+    text-rendering:optimizeLegibility!important;
+    color:#f3d47a!important;
+    text-shadow:0 1px 0 #281405,0 2px 2px #000a!important;
+    white-space:normal!important;
+    word-break:keep-all!important;
+  }
+}
+@media(max-width:365px){
+  .topbar .ab-crest .logo,.topbar .crest .logo{
+    font-size:9.5px!important;
+    letter-spacing:.01em!important;
+  }
+}
 </style></head><body><div class="game"><header class="topbar"><div class="ab-crest"><div class="crestIcon" id="factionCrest">⚔️</div><div class="logo">THREE KINGDOMS<br>WARLORD DOMINION</div></div><div class="level">🏯 <span id="cityLevel">1</span></div><div class="resources"><span class="res">🌾 <b id="food">0</b><small id="foodCap"></small></span><span class="res">🪵 <b id="wood">0</b><small id="woodCap"></small></span><span class="res">⛓️ <b id="iron">0</b><small id="ironCap"></small></span><span class="res">🪙 <b id="coins">0</b><small id="coinsCap"></small></span></div><button class="iconBtn" id="settingsBtn" aria-label="Settings">⚙️</button></header>
 <main class="main"><section class="screen cityScreen active" id="city"><div class="cityViewport" id="cityViewport"><div class="skyGlow"></div><div class="mountains"></div><div class="river"><span class="riverSpark r1"></span><span class="riverSpark r2"></span><span class="riverSpark r3"></span></div><div class="riverBankDecor"></div><div class="bridge"></div><div class="ambient" id="ambient"><span class="bird b1">⌁</span><span class="bird b2">⌁</span></div><div class="tip" id="cityTip">Choose a building below, then tap an empty plot.</div><div class="productionStatus" id="productionStatus"></div><div class="cityFocusLabel">Palace District</div><div class="cameraControls" aria-label="City camera controls"><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomReset">Reset</button><button id="zoomIn" aria-label="Zoom in">+</button></div><button class="activityToggle" id="activityToggle">Active Orders <b id="activityCount">0</b></button><div class="activityPanel hidden" id="activityPanel"></div><div class="cityBoard" id="cityBoard"></div><div class="buildDock"><div class="buildInfo hidden" id="buildInfo"></div><div class="buildArea"><div class="buildFilters" id="buildFilters"><button class="filter active" data-filter="All">All</button><button class="filter" data-filter="Economy">Economy</button><button class="filter" data-filter="Military">Military</button><button class="filter" data-filter="Defense">Defense</button><span class="filterSpacer"></span><button class="primary hidden" id="collectAllBtn"><span>Collect</span><b id="collectionReadyCount">0</b></button></div><div class="buildList" id="buildList"></div></div></div></div></section><section class="screen" id="army"><div class="heading">⚔️ Army Command</div><div class="panel row spread"><div><b id="armyPower">0 Power</b><div>Train troops for your field army.</div></div><button class="primary" id="balancedBtn">Balanced Reinforcement</button></div><div class="queuePanel hidden" id="trainingQueue"></div><div class="grid" id="unitGrid"></div></section><section class="screen" id="generals"><div class="heading">🎖️ General Roster</div><div class="panel row spread"><div><b>Recruit historical commanders</b><div>Each commander specializes in one troop type.</div></div><button class="primary" id="recruitBtn">Recruit · 300 🪙</button></div><div class="grid" id="generalGrid"></div></section><section class="screen" id="campaign"><div class="heading">🗺️ Campaign Map</div><div class="map" id="campaignMap"></div></section><section class="screen" id="quests"><div class="heading">📜 Quests & Reports</div><div id="questList"></div><div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
 <nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
