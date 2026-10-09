@@ -559,6 +559,71 @@ button,.primary,.secondary{min-height:var(--tap);font-size:14px;line-height:1.15
 @media (max-width:370px){:root{--tap:46px}.logo{font-size:9px}.crestIcon{width:34px;height:34px}.res{font-size:11px!important}.res b{font-size:10px}.navBtn{font-size:9px}.navBtn span{font-size:19px}.buildItem{min-width:72px!important;width:72px}.cameraControls{bottom:180px}.activityToggle{bottom:180px}}
 @media (orientation:landscape) and (max-height:500px){.topbar{min-height:58px;padding-top:max(4px,var(--safe-top));grid-template-columns:auto auto 1fr auto;grid-template-areas:"brand level res settings"}.logo{display:none}.crestIcon{width:34px;height:34px}.resources{grid-template-columns:repeat(4,1fr)}.bottomNav{grid-template-columns:repeat(5,1fr);padding-top:3px}.navBtn{min-height:46px;font-size:9px}.navBtn span{display:inline;font-size:16px;margin-right:3px}.cameraControls{bottom:154px}.activityToggle{bottom:154px}.buildList{height:57px}.buildItem{height:50px!important}.buildDock>#collectAllBtn{height:93px}.screen{padding-bottom:65px}.tutorial{bottom:148px!important}}
 @media (prefers-reduced-motion:reduce){button:active,.navBtn:active,.buildItem:active{transform:none}}
+</style><style id="collection-feedback-refine">
+#collectAllBtn.collectAck{background:linear-gradient(#4e8c64,#2d6345)!important;border-color:#b8efb7!important;color:#fff!important;box-shadow:0 0 0 2px #b8efb733!important}
+.collectPop{pointer-events:none!important}
+</style><style id="world-class-interface-pass">
+/* World-class interface pass. Presentation-only: no game logic or event handlers replaced. */
+:root{
+ --ui-navy:#0c192b;--ui-navy-2:#142946;--ui-blue:#315b88;--ui-gold:#f1c75b;
+ --ui-paper:#fff3cf;--ui-paper-2:#e8c983;--ui-ink:#261b13;--ui-muted:#b9c8da;
+ --ui-good:#58b77a;--ui-danger:#d6574f;--ui-focus:#fff1a3;--ui-radius:16px;
+}
+body{color:#f8fbff;background:#0b1728;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+/* Crisp hierarchy and compact premium chrome */
+.topbar{background:linear-gradient(180deg,#1b3557 0%,#10243e 72%,#0a1728 100%);border-bottom:1px solid #6d89ad;box-shadow:0 5px 22px #020710a8, inset 0 -1px #08111e}
+.crestIcon{background:linear-gradient(145deg,#c15242,#7e1f25);border-color:#f5da79;box-shadow:inset 0 1px #fff5bf88,0 4px 10px #0007}
+.logo{letter-spacing:.055em;text-shadow:0 2px 2px #0008}.level{background:linear-gradient(#8a5527,#563014);border-color:#f1cc65;box-shadow:inset 0 1px #ffe49b55}
+.res{background:linear-gradient(180deg,#27466d,#172f4f)!important;border:1px solid #55779f!important;box-shadow:inset 0 1px #ffffff16,0 2px 5px #0004}.res b{font-variant-numeric:tabular-nums;color:#fff}.res small{color:#aebfd2}
+.iconBtn{background:linear-gradient(#355d88,#1e3d63);border:1px solid #7592b4;color:#fff;box-shadow:inset 0 1px #fff2,0 3px 8px #0005}
+/* Readable content screens */
+.screen:not(.cityScreen){background:radial-gradient(circle at 50% -8%,#3c668f 0,#213e62 28%,#122641 70%,#0d1d33 100%)}
+.heading{font-family:Georgia,serif;letter-spacing:.015em;color:#ffde78;text-shadow:0 2px 3px #000b;display:flex;align-items:center;gap:8px}
+.heading:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#dcb54e99,transparent)}
+.panel,.card{border-color:#85561f;box-shadow:inset 0 1px #fff6d899,0 7px 18px #06102055}.panel{background:linear-gradient(155deg,#fff2c9,#e8c77f)}
+.card{background:linear-gradient(155deg,#243e62,#172c49);color:#f5f8fc;border:1px solid #5e7b9d}.card h3{color:#ffdf7a}.card .small{color:#d1dbea}
+/* Buttons: one consistent visual language */
+button{font-family:inherit;letter-spacing:.01em;transition:transform .12s ease,filter .12s ease,box-shadow .12s ease}
+.primary{background:linear-gradient(180deg,#f1b449,#bc6922)!important;border:1px solid #ffdc7b!important;color:#241609!important;text-shadow:0 1px #fff3a755;font-weight:900;box-shadow:inset 0 1px #fff3b099,0 4px 9px #0006}
+.primary:hover{filter:brightness(1.06)}.primary:disabled{filter:saturate(.3);opacity:.55;box-shadow:none}
+.secondary{background:linear-gradient(180deg,#416b99,#274a72)!important;border:1px solid #83a1c2!important;color:#fff!important;font-weight:800;box-shadow:inset 0 1px #ffffff26,0 3px 7px #0005}
+button:focus-visible,[role="button"]:focus-visible{outline:3px solid var(--ui-focus)!important;outline-offset:3px!important}
+/* Bottom navigation: high clarity, thumb-friendly, no crowding */
+.bottomNav{background:linear-gradient(180deg,#142a47f7,#0a182bf9);border-top:1px solid #7891ad;box-shadow:0 -8px 24px #030812b3,inset 0 1px #ffffff12}
+.navBtn{position:relative;border:0;background:transparent;color:#aebed1;box-shadow:none;font-weight:800;opacity:.92}
+.navBtn span{filter:grayscale(.45);opacity:.9}.navBtn.active{background:linear-gradient(#3f658d,#204263);color:#fff5cf;border:1px solid #d8bd69;box-shadow:inset 0 1px #fff5b72e,0 3px 9px #0005}.navBtn.active:before{content:"";position:absolute;left:24%;right:24%;top:-5px;height:3px;border-radius:3px;background:#ffd96a;box-shadow:0 0 9px #ffd96aaa}.navBtn.active span{filter:none;opacity:1}
+/* City readability without obscuring the world */
+.cityViewport:after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 60px #10223f42;z-index:1}.cityBoard{filter:saturate(1.04) contrast(1.015)}
+.tip,.productionStatus,.activityToggle{backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);background:#102640dc!important;border:1px solid #86a0bd!important;box-shadow:0 5px 14px #0007!important;color:#f6f9fd!important}
+.tip{line-height:1.35}.productionStatus{color:#edf5ff!important}.activityToggle b{color:#ffe071}
+.cameraControls button{background:#102640e8!important;border:1px solid #91a9c3!important;color:#fff!important;box-shadow:0 4px 10px #0008!important}.cameraControls button:active{background:#d18b32!important;color:#1f160c!important}
+.buildDock{background:linear-gradient(180deg,#142a46f5,#091728f8)!important;border-top:1px solid #7890ab!important;box-shadow:0 -8px 24px #020710ad!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.buildFilters{mask-image:linear-gradient(90deg,#000 92%,transparent)}.filter{background:#1d3a5e!important;border:1px solid #55779c!important;color:#d9e4ef!important}.filter.active{background:linear-gradient(#d89438,#92511e)!important;border-color:#ffda70!important;color:#fff!important}
+.buildList{background:#0a1728b8!important;border:1px solid #3e5f84!important}.buildItem{background:linear-gradient(#355b84,#203e63)!important;border:1px solid #6686aa!important;box-shadow:inset 0 1px #ffffff1f}.buildItem.active{background:linear-gradient(#e8a43b,#9a531c)!important;border-color:#ffdc70!important;outline:2px solid #fff0a3!important;outline-offset:1px}.buildItem.locked{opacity:.52;filter:grayscale(.35)}
+.buildInfo{background:linear-gradient(155deg,#fff1c9,#e3c17b)!important;color:#2e2117!important;border-color:#865a25!important;box-shadow:0 6px 15px #0006}
+/* Building state and collection feedback */
+.collectBubble{border-color:#fff2a0!important;box-shadow:0 3px 10px #0008,0 0 12px #ffe77366!important}.collectPop{background:#163653e8!important;color:#fff7cf!important;border:1px solid #f2cf66!important;border-radius:999px!important;padding:5px 9px!important;font-weight:900!important;box-shadow:0 4px 12px #0008!important}
+.plot.available:not(.locked) .ground{outline-offset:3px}.plot.occupied:focus-visible{outline:3px solid #fff3a3;outline-offset:6px;border-radius:12px}
+/* Dialogs: clear hierarchy and reachable actions */
+.modal{background:#04101dc9;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.dialog,.modal>div,[role="dialog"]{background:linear-gradient(160deg,#fff5d8,#e5c277)!important;color:#271c14!important;border:2px solid #9c6729!important;box-shadow:0 22px 70px #000d,inset 0 1px #fff9e8!important}
+.dialog h2,[role="dialog"] h2{font-family:Georgia,serif;color:#6c271e;margin-top:0}.dialog p,[role="dialog"] p{line-height:1.5}.modal .panel{box-shadow:none}
+/* Lists and statuses */
+.queuePanel{background:#0d1f36;border:1px solid #59789c;color:#eaf1fa;border-radius:14px;padding:10px}.forecast{background:#f5e7bc;color:#342417;border:1px solid #ae7936;border-radius:12px;padding:11px}.difficulty.easy{color:#21683b}.difficulty.moderate{color:#8a5516}.difficulty.hard{color:#a62d2b}
+.unitChip{background:#27466c!important;border:1px solid #6888ac!important;color:#fff!important;border-radius:999px!important}.report,.quest{border-radius:14px!important}
+/* Refined transient feedback. Never blocks play. */
+.toast{top:auto!important;bottom:calc(82px + var(--safe-bottom))!important;max-width:min(320px,calc(100vw - 28px))!important;padding:8px 12px!important;border-radius:999px!important;border:1px solid #efd071!important;background:#102640ed!important;font-size:12px!important;font-weight:800!important;box-shadow:0 6px 20px #0009!important;white-space:normal!important}
+.completionBanner{pointer-events:none;max-width:min(340px,calc(100vw - 24px))!important;border-radius:14px!important;padding:10px 12px!important;font-size:13px!important}
+/* iPhone 18 Pro base: 402 x 874 CSS px */
+@media (max-width:430px){
+ .topbar{min-height:calc(94px + var(--safe-top));gap:6px}.logo{font-size:10px}.level{font-size:11px}.res{min-height:35px!important}.res b{font-size:12px!important}
+ .heading{font-size:19px}.screen:not(.cityScreen){padding-top:11px}.card,.panel{padding:11px}.card h3{font-size:16px}.small{font-size:12px}
+ .navBtn{min-height:60px}.navBtn span{font-size:20px}.buildDock{padding-top:6px!important}.buildList{height:68px}.buildItem{height:59px!important}
+ .cameraControls{bottom:181px}.activityToggle{bottom:181px}.tutorial{bottom:177px!important}
+}
+@media (max-width:365px){.logo{display:none}.resources{gap:3px}.res{padding-inline:2px!important}.navBtn{font-size:8.5px}.navBtn span{font-size:18px}.buildItem{min-width:70px!important;width:70px!important}}
+@media (orientation:landscape) and (max-height:500px){.toast{bottom:calc(57px + var(--safe-bottom))!important}.heading{font-size:17px}.dialog,.modal>div,[role="dialog"]{border-radius:13px!important}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 </style></head><body><div class="game"><header class="topbar"><div class="ab-crest"><div class="crestIcon" id="factionCrest">⚔️</div><div class="logo">THREE KINGDOMS<br>WARLORD DOMINION</div></div><div class="level">🏯 <span id="cityLevel">1</span></div><div class="resources"><span class="res">🌾 <b id="food">0</b><small id="foodCap"></small></span><span class="res">🪵 <b id="wood">0</b><small id="woodCap"></small></span><span class="res">⛓️ <b id="iron">0</b><small id="ironCap"></small></span><span class="res">🪙 <b id="coins">0</b><small id="coinsCap"></small></span></div><button class="iconBtn" id="settingsBtn" aria-label="Settings">⚙️</button></header>
 <main class="main"><section class="screen cityScreen active" id="city"><div class="cityViewport" id="cityViewport"><div class="skyGlow"></div><div class="mountains"></div><div class="river"><span class="riverSpark r1"></span><span class="riverSpark r2"></span><span class="riverSpark r3"></span></div><div class="riverBankDecor"></div><div class="bridge"></div><div class="ambient" id="ambient"><span class="bird b1">⌁</span><span class="bird b2">⌁</span></div><div class="tip" id="cityTip">Choose a building below, then tap an empty plot.</div><div class="productionStatus" id="productionStatus"></div><div class="cityFocusLabel">Palace District</div><div class="cameraControls" aria-label="City camera controls"><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomReset">Reset</button><button id="zoomIn" aria-label="Zoom in">+</button></div><button class="activityToggle" id="activityToggle">Active Orders <b id="activityCount">0</b></button><div class="activityPanel hidden" id="activityPanel"></div><div class="cityBoard" id="cityBoard"></div><div class="buildDock"><div class="buildInfo hidden" id="buildInfo"></div><div class="buildArea"><div class="buildFilters" id="buildFilters"><button class="filter active" data-filter="All">All</button><button class="filter" data-filter="Economy">Economy</button><button class="filter" data-filter="Military">Military</button><button class="filter" data-filter="Defense">Defense</button></div><div class="buildList" id="buildList"></div></div><button class="primary" id="collectAllBtn">Collect All</button></div></div></section><section class="screen" id="army"><div class="heading">⚔️ Army Command</div><div class="panel row spread"><div><b id="armyPower">0 Power</b><div>Train troops for your field army.</div></div><button class="primary" id="balancedBtn">Balanced Reinforcement</button></div><div class="queuePanel hidden" id="trainingQueue"></div><div class="grid" id="unitGrid"></div></section><section class="screen" id="generals"><div class="heading">🎖️ General Roster</div><div class="panel row spread"><div><b>Recruit historical commanders</b><div>Each commander specializes in one troop type.</div></div><button class="primary" id="recruitBtn">Recruit · 300 🪙</button></div><div class="grid" id="generalGrid"></div></section><section class="screen" id="campaign"><div class="heading">🗺️ Campaign Map</div><div class="map" id="campaignMap"></div></section><section class="screen" id="quests"><div class="heading">📜 Quests & Reports</div><div id="questList"></div><div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
 <nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
@@ -650,7 +715,7 @@ function collectPending(b){
  if(amount<1){toast(room<1?'Storage is full':'Resources are still producing');return;}
  S.r[r]+=amount;b.pending-=amount;
  if(r==='food'){S.quests.collect=true;advanceTutorial(1)}
- showCollectPop(`${costsEmoji[r]} +${amount}`,document.querySelector(`[data-collect-slot="${b.slot}"]`),r);save();renderAll();toast(`+${amount} ${r}`);
+ showCollectPop(`${costsEmoji[r]} +${amount}`,document.querySelector(`[data-collect-slot="${b.slot}"]`),r);save();renderAll();
 }
 function productionSummary(){
  const cap=storageCap();
@@ -738,7 +803,7 @@ function collectAll(){
   const amount=Math.min(Math.floor(b.pending||0),room);
   if(amount>0){S.r[r]+=amount;b.pending-=amount;total+=amount;if(r==='food'){S.quests.collect=true;advanceTutorial(1)}}
  });
- save();renderAll();toast(total?`Collected ${total} resources`:'Nothing ready or storage is full');
+ save();renderAll();const btn=$('#collectAllBtn');if(btn){const original='Collect All';btn.textContent=total?`+${total} Collected`:'Nothing Ready';btn.classList.add('collectAck');clearTimeout(btn._ackTimer);btn._ackTimer=setTimeout(()=>{btn.textContent=original;btn.classList.remove('collectAck')},900)}
 }
 function openBuilding(b){if(b.constructing)return toast(`${b.type} is still under construction`);if(b.upgrading)return toast(`${b.type} upgrade has ${fmtTime(b.finishAt-Date.now())} remaining`);
  const next=b.level+1,c=b.type==='Palace'?{wood:100*b.level,iron:60*b.level,coins:80*b.level}:{wood:70*b.level,iron:30*b.level,coins:25*b.level};
@@ -894,4 +959,17 @@ const mo=new MutationObserver(()=>requestAnimationFrame(mobileAudit));mo.observe
 document.addEventListener('click',e=>{const b=e.target.closest('.navBtn');if(b)document.querySelectorAll('.navBtn').forEach(x=>x.setAttribute('aria-current',x===b?'page':'false'))});
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role="button"]')){e.preventDefault();e.target.click()}});
 window.addEventListener('orientationchange',()=>setTimeout(()=>window.dispatchEvent(new Event('resize')),180));
+})();</script><script id="world-class-interface-runtime">(()=>{
+ const $all=(q,r=document)=>[...r.querySelectorAll(q)];
+ function polish(){
+  $all('button').forEach((b,i)=>{b.type='button';const label=(b.getAttribute('aria-label')||b.textContent||'').trim().replace(/\s+/g,' ');if(!b.getAttribute('aria-label')&&label)b.setAttribute('aria-label',label.slice(0,100));if(label&&!b.title)b.title=label.slice(0,100);if(b.disabled)b.setAttribute('aria-disabled','true');else b.removeAttribute('aria-disabled')});
+  $all('.navBtn').forEach(b=>b.setAttribute('aria-current',b.classList.contains('active')?'page':'false'));
+  $all('.buildItem,.plot,.building,.node').forEach(el=>{if(el.tagName!=='BUTTON'){el.setAttribute('role','button');if(!el.hasAttribute('tabindex'))el.tabIndex=0}const text=(el.getAttribute('aria-label')||el.textContent||'').trim().replace(/\s+/g,' ');if(text&&!el.getAttribute('aria-label'))el.setAttribute('aria-label',text.slice(0,120))});
+  const dock=document.querySelector('.buildDock');if(dock)dock.setAttribute('aria-label','Building menu');
+  const nav=document.querySelector('.bottomNav');if(nav)nav.setAttribute('aria-label','Primary game navigation');
+ }
+ let queued=false;new MutationObserver(()=>{if(!queued){queued=true;requestAnimationFrame(()=>{queued=false;polish()})}}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','disabled']});
+ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[role="button"]:not(button)')){e.preventDefault();e.target.click()}});
+ document.addEventListener('click',e=>{const b=e.target.closest('.navBtn');if(b)requestAnimationFrame(polish)});
+ const setVH=()=>document.documentElement.style.setProperty('--app-height',`${window.innerHeight}px`);addEventListener('resize',setVH,{passive:true});setVH();polish();
 })();</script></body></html>
