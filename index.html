@@ -2109,8 +2109,41 @@ window.WDBattleControl={command(stance){
  const field=$('#battlefield');if(field&&!S.reducedMotion){const fx=document.createElement('span');fx.className='tacticBurst '+stance;fx.textContent=data[0];field.appendChild(fx);setTimeout(()=>fx.remove(),900);}
  renderBattleTactics(now);tone(stance==='charge'?660:stance==='wall'?420:780,.16);return true;
 },refresh(now){renderBattleTactics(now||performance.now())},state(){return battle?{active:battle.tactic||'balanced',until:battle.tacticUntil||0,readyAt:battle.tacticReadyAt||0,over:!!battle.over}:null}};
-const bubbleState=new Map();const completedPlots=new Map();const pendingCompletions=[];function buildReadyTotal(){return S.buildings.filter(isProducerOperational).reduce((a,b)=>a+Math.floor(b.pending||0),0)}function updateBuildModeActions(){const bar=$('#buildModeActions'),name=$('#buildModeName'),cost=$('#buildModeCost'),collect=$('#buildModeCollect');if(!bar)return;bar.classList.toggle('hidden',!selected);if(!selected)return;name.textContent=selected;cost.textContent=costText(DB[selected].cost);const ready=buildReadyTotal();collect.classList.toggle('hidden',ready<1);collect.textContent=ready?`Collect ${ready.toLocaleString()}`:'Collect'}function cancelBuildSelection(message='Building placement cancelled'){if(!selected)return;selected=null;const tip=$('#cityTip');tip.textContent='Choose a building below, then tap an empty plot.';tip.classList.add('idle');updateBuildModeActions();renderCity();toast(message)}
-const costsEmoji={food:'🌾',wood:'🪵',iron:'⛓️',coins:'🪙'};function save(){updateProduction();S.lastSeen=Date.now();Store.write(JSON.stringify(S))}function costText(c,m=1){return Object.entries(c).map(([k,v])=>costsEmoji[k]+' '+v*m).join(' ')}function canPay(c,m=1){return Object.entries(c).every(([k,v])=>S.r[k]>=v*m)}function pay(c,m=1){if(!canPay(c,m)){toast('Not enough resources');return false}Object.entries(c).forEach(([k,v])=>S.r[k]-=v*m);return true}function tone(f=520,d=.06){if(!S.sound)return;try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();const o=audio.createOscillator(),g=audio.createGain();o.frequency.value=f;g.gain.value=.025;o.connect(g).connect(audio.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.stop(audio.currentTime+d)}catch(e){}}function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1500);tone()}function production(b){const r=DB[b.type].prod;const boost=(S.faction==='Shu'&&r==='food')||(S.faction==='Wei'&&r==='iron')?1.15:1;return Math.floor(20*b.level*boost)}function stackPower(n,q){const u=unitUpgrade(n),spec=n==='Infantry'?researchLevel('infantry')*.05:n==='Archers'?researchLevel('archers')*.05:n==='Cavalry'?researchLevel('cavalry')*.05:0;return q>0?UNITS[n].power*Math.pow(q,.7)*(1+researchEffect('unitDamage'))*(1+u.weapon*.04)*(1+u.armor*.025)*(1+u.doctrine*.025)*(1+spec)*((S.assigned!==null&&GENERALS[S.assigned].type===n)?1.2:1):0}function armyPower(){return Math.floor(Object.entries(S.units).reduce((sum,[n,q])=>sum+stackPower(n,q),0))}
+const bubbleState=new Map();const completedPlots=new Map();const pendingCompletions=[];function buildReadyTotal(){return buildCollectionPlan().total}function updateBuildModeActions(){const bar=$('#buildModeActions'),name=$('#buildModeName'),cost=$('#buildModeCost'),collect=$('#buildModeCollect');if(!bar)return;bar.classList.toggle('hidden',!selected);if(!selected)return;name.textContent=selected;cost.textContent=costText(DB[selected].cost);const ready=buildReadyTotal();collect.classList.toggle('hidden',ready<1);collect.textContent='Collect All';collect.disabled=ready<1;collect.setAttribute('aria-label',ready?`Collect all ${ready} resources that fit in storage`:'No resources can currently fit in storage')}function cancelBuildSelection(message='Building placement cancelled'){if(!selected)return;selected=null;const tip=$('#cityTip');tip.textContent='Choose a building below, then tap an empty plot.';tip.classList.add('idle');updateBuildModeActions();renderCity();toast(message)}
+const costsEmoji={food:'🌾',wood:'🪵',iron:'⛓️',coins:'🪙'};
+function buildCollectionPlan(){
+ const cap=Math.max(0,Math.floor(Number(storageCap())||0));
+ const resourceOrder=Object.keys(costsEmoji);
+ const pendingByResource={},collectibleByResource={},blockedByResource={},allocations=[];
+ for(const r of resourceOrder){
+  const sources=S.buildings.filter(b=>isProducerOperational(b)&&DB[b.type].prod===r);
+  const pending=sources.reduce((sum,b)=>sum+Math.max(0,Math.floor(Number(b.pending)||0)),0);
+  const current=Math.max(0,Number(S.r[r])||0);
+  const room=Math.max(0,Math.floor(cap-current));
+  const collectible=Math.min(pending,room);
+  pendingByResource[r]=pending;
+  collectibleByResource[r]=collectible;
+  blockedByResource[r]=Math.max(0,pending-collectible);
+  let remaining=collectible;
+  for(const b of sources){
+   if(remaining<=0)break;
+   const available=Math.max(0,Math.floor(Number(b.pending)||0));
+   const amount=Math.min(available,remaining);
+   if(amount>0){allocations.push({building:b,resource:r,amount});remaining-=amount;}
+  }
+ }
+ const total=resourceOrder.reduce((sum,r)=>sum+collectibleByResource[r],0);
+ const pendingTotal=resourceOrder.reduce((sum,r)=>sum+pendingByResource[r],0);
+ const sourceCount=new Set(allocations.map(a=>a.building)).size;
+ return {cap,resourceOrder,pendingByResource,collectibleByResource,blockedByResource,allocations,total,pendingTotal,sourceCount,hasPending:pendingTotal>0};
+}
+function collectionPlanText(plan){
+ const names={food:'Food',wood:'Wood',iron:'Iron',coins:'Coins'};
+ const ready=plan.resourceOrder.filter(r=>plan.collectibleByResource[r]>0).map(r=>`${names[r]} ${plan.collectibleByResource[r]}`).join('; ')||'none';
+ const blocked=plan.resourceOrder.filter(r=>plan.blockedByResource[r]>0).map(r=>`${names[r]} ${plan.blockedByResource[r]}`).join('; ')||'none';
+ return `Collectible now: ${ready}. Pending but blocked by storage: ${blocked}. Storage cap per resource: ${plan.cap}.`;
+}
+function save(){updateProduction();S.lastSeen=Date.now();Store.write(JSON.stringify(S))}function costText(c,m=1){return Object.entries(c).map(([k,v])=>costsEmoji[k]+' '+v*m).join(' ')}function canPay(c,m=1){return Object.entries(c).every(([k,v])=>S.r[k]>=v*m)}function pay(c,m=1){if(!canPay(c,m)){toast('Not enough resources');return false}Object.entries(c).forEach(([k,v])=>S.r[k]-=v*m);return true}function tone(f=520,d=.06){if(!S.sound)return;try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();const o=audio.createOscillator(),g=audio.createGain();o.frequency.value=f;g.gain.value=.025;o.connect(g).connect(audio.destination);o.start();g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+d);o.stop(audio.currentTime+d)}catch(e){}}function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('show');setTimeout(()=>e.classList.remove('show'),1500);tone()}function production(b){const r=DB[b.type].prod;const boost=(S.faction==='Shu'&&r==='food')||(S.faction==='Wei'&&r==='iron')?1.15:1;return Math.floor(20*b.level*boost)}function stackPower(n,q){const u=unitUpgrade(n),spec=n==='Infantry'?researchLevel('infantry')*.05:n==='Archers'?researchLevel('archers')*.05:n==='Cavalry'?researchLevel('cavalry')*.05:0;return q>0?UNITS[n].power*Math.pow(q,.7)*(1+researchEffect('unitDamage'))*(1+u.weapon*.04)*(1+u.armor*.025)*(1+u.doctrine*.025)*(1+spec)*((S.assigned!==null&&GENERALS[S.assigned].type===n)?1.2:1):0}function armyPower(){return Math.floor(Object.entries(S.units).reduce((sum,[n,q])=>sum+stackPower(n,q),0))}
 function storageCap(){
  const palace=S.buildings.find(b=>b.type==='Palace');
  const palaceLevel=palace?palace.level:1;
@@ -2143,7 +2176,7 @@ function collectPending(b){
  updateProduction();
  const r=DB[b.type].prod;
  if(!r||!isProducerOperational(b))return;
- const room=Math.max(0,storageCap()-S.r[r]);
+ const room=Math.max(0,Math.floor(storageCap()-(Number(S.r[r])||0)));
  const amount=Math.min(Math.floor(b.pending||0),room);
  if(amount<1){toast(room<1?'Storage is full':'Resources are still producing');return;}
  S.r[r]+=amount;b.pending-=amount;
@@ -2166,7 +2199,13 @@ function renderTop(){
  S.buildings.forEach(b=>{const r=DB[b.type].prod;if(r&&!b.constructing)rates[r]+=ratePerSecond(b)*60});
  const used=Object.values(S.r).reduce((a,v)=>a+Math.floor(v||0),0),totalCap=cap*Object.keys(S.r).length;
  const status=$('#productionStatus');
- if(status){status.innerHTML=`<button class="economyToggle" type="button" aria-label="Minimize resource production details" title="Minimize resource production details">◫</button><div class="economyHeadline"><span>STORAGE</span><b>${used.toLocaleString()} / ${totalCap.toLocaleString()}</b><small>${cap.toLocaleString()} per resource</small></div><div class="economyMeta"><span>🏯 Lv${palaceLevel()} · ${unlockedPlotCount()}/25 plots</span><span>📦 ${S.buildings.filter(isProducerOperational).reduce((a,b)=>a+Math.floor(b.pending||0),0)} ready</span></div><div class="economyRates"><span title="Food production per minute">🌾 +${rates.food.toFixed(1)}/m</span><span title="Wood production per minute">🪵 +${rates.wood.toFixed(1)}/m</span><span title="Iron production per minute">⛓️ +${rates.iron.toFixed(1)}/m</span><span title="Coin production per minute">🪙 +${rates.coins.toFixed(1)}/m</span></div>`;status.setAttribute('aria-label',`Storage ${used} of ${totalCap}. Food production ${rates.food.toFixed(1)} per minute, wood ${rates.wood.toFixed(1)}, iron ${rates.iron.toFixed(1)}, coins ${rates.coins.toFixed(1)}`)}
+ const plan=buildCollectionPlan();
+ const readyParts=plan.resourceOrder.filter(r=>plan.collectibleByResource[r]>0).map(r=>`${costsEmoji[r]}${plan.collectibleByResource[r]}`);
+ const blockedParts=plan.resourceOrder.filter(r=>plan.blockedByResource[r]>0).map(r=>`${costsEmoji[r]}${plan.blockedByResource[r]}`);
+ const readyText=plan.total>0?`📥 ${readyParts.join(' · ')}`:(plan.hasPending?'🔒 No storage room':'📦 Nothing ready');
+ const blockedText=blockedParts.length?`Storage-limited: ${blockedParts.join(' · ')}`:'';
+ const readyDetail=collectionPlanText(plan);
+ if(status){status.innerHTML=`<button class="economyToggle" type="button" aria-label="Minimize resource production details" title="Minimize resource production details">◫</button><div class="economyHeadline"><span>STORAGE</span><b>${used.toLocaleString()} / ${totalCap.toLocaleString()}</b><small>${cap.toLocaleString()} per resource</small></div><div class="economyMeta"><span>🏯 Lv${palaceLevel()} · ${unlockedPlotCount()}/25 plots</span><span class="economyReadySummary"><span class="economyReadyNow">${readyText}</span>${blockedText?`<small class="economyBlockedSummary">${blockedText}</small>`:''}</span></div><div class="economyRates"><span title="Food production per minute">🌾 +${rates.food.toFixed(1)}/m</span><span title="Wood production per minute">🪵 +${rates.wood.toFixed(1)}/m</span><span title="Iron production per minute">⛓️ +${rates.iron.toFixed(1)}/m</span><span title="Coin production per minute">🪙 +${rates.coins.toFixed(1)}/m</span></div>`;status.setAttribute('aria-label',`Storage ${used} of ${totalCap}. ${readyDetail} Food production ${rates.food.toFixed(1)} per minute, wood ${rates.wood.toFixed(1)}, iron ${rates.iron.toFixed(1)}, coins ${rates.coins.toFixed(1)}.`);const readyNode=status.querySelector('.economyReadySummary');if(readyNode)readyNode.title=readyDetail;}
  $('#cityLevel').textContent=S.level;$('#factionCrest').textContent=S.faction==='Wei'?'🐉':S.faction==='Shu'?'🦚':S.faction==='Wu'?'🐅':'⚔️';$('#cityViewport').dataset.faction=S.faction||'Neutral'
 }
 function buildingArt(type,level=1){
@@ -2236,19 +2275,34 @@ function playCompletionEffects(){while(pendingCompletions.length){const e=pendin
 function processTimers(){const now=Date.now();let changed=false;S.buildings.forEach(b=>{if((b.constructing||b.upgrading)&&now>=b.finishAt){if(b.constructing){completedPlots.set(b.slot,Date.now()+1400);pendingCompletions.push({kind:'build',slot:b.slot,icon:DB[b.type].icon,title:`${b.type} Complete`,subtitle:'Building is now operational'});b.constructing=false;b.productionUpdatedAt=now;if(b.type==='Lumber Yard'){S.quests.lumber=true;advanceTutorial(2)}toast(`${b.type} construction complete`)}else{completedPlots.set(b.slot,Date.now()+1400);b.upgrading=false;b.level=b.targetLevel||b.level+1;pendingCompletions.push({kind:'upgrade',slot:b.slot,icon:DB[b.type].icon,title:`${b.type} Upgraded`,subtitle:`Now Level ${b.level}`});delete b.targetLevel;if(b.type==='Palace'){S.level=b.level;S.quests.palace=true;advanceTutorial(3)}toast(`${b.type} reached Level ${b.level}`)}delete b.finishAt;delete b.startedAt;changed=true}});while(S.trainingQueue.length&&now>=S.trainingQueue[0].finishAt){const job=S.trainingQueue.shift();S.units[job.unit]+=job.qty;GameEvents.emit('training:completed',{unit:job.unit,amount:job.qty},`train-${job.unit}-${job.finishAt}`);pendingCompletions.push({kind:'training',icon:UNITS[job.unit].icon,title:'Training Complete',subtitle:`${job.qty} ${job.unit} joined the army`});if(job.unit==='Infantry'){S.quests.train=true;advanceTutorial(4)}toast(`${job.qty} ${job.unit} trained`);changed=true;if(S.trainingQueue.length){const next=S.trainingQueue[0],dur=trainingDuration(next.unit,next.qty);next.startedAt=now;next.finishAt=now+dur}}if(changed){save();renderAll();requestAnimationFrame(playCompletionEffects)}else updateTimerUI()}
 function updateTimerUI(){const now=Date.now();S.buildings.forEach(b=>{const el=document.querySelector(`[data-timer-slot="${b.slot}"]`);if(!el||!b.finishAt)return;const total=Math.max(1,b.finishAt-b.startedAt),left=Math.max(0,b.finishAt-now),pct=Math.min(100,100-left/total*100),timeEl=el.querySelector('.plotStatusTime'),barEl=el.querySelector('.plotStatusBar i'),pctEl=el.querySelector('.plotStatusPct');if(timeEl)timeEl.textContent=fmtTime(left);if(barEl)barEl.style.width=pct+'%';if(pctEl)pctEl.textContent=Math.floor(pct)+'% complete'});const q=$('#trainingQueue');if(q){const job=S.trainingQueue[0];q.classList.toggle('hidden',!job);if(job){const total=Math.max(1,job.finishAt-job.startedAt),left=Math.max(0,job.finishAt-now),pct=Math.min(100,100-left/total*100);q.innerHTML=`<div class="queueLine"><b>Training ${job.qty} ${job.unit}</b><span>${fmtTime(left)}</span></div><div class="queueBar"><i style="width:${pct}%"></i></div><small>${S.trainingQueue.length-1} queued after this order</small><div class="queueActions"><button class="danger" data-cancel-training="0">Cancel Active · 50% refund</button></div>`}}renderActivityPanel();S.buildings.filter(b=>b.constructing).forEach(b=>{const plot=document.querySelector(`.plot[data-slot="${b.slot}"]`);if(plot){plot.classList.remove('stage-foundation','stage-frame','stage-walls','stage-finish');plot.classList.add(stageClass(b))}})}
 function nextPlotLevel(i){return i<8?1:i<12?2:i<17?3:4}
-function updateProductionUI(){updateProduction();renderTop();updateBuildModeActions();const collectBtn=$('#collectAllBtn'),collectBar=$('#collectionBar'),readyCount=$('#collectionReadyCount'),readyTotal=S.buildings.filter(isProducerOperational).reduce((a,b)=>a+Math.floor(b.pending||0),0);if(readyCount)readyCount.textContent=readyTotal.toLocaleString();if(collectBtn){collectBtn.classList.remove('hidden');collectBtn.disabled=readyTotal<1;collectBtn.classList.toggle('empty',readyTotal<1);collectBtn.setAttribute('aria-label',readyTotal?`Collect all ${readyTotal.toLocaleString()} ready resources`:'No resources ready to collect')};S.buildings.forEach(b=>{if(!DB[b.type].prod)return;const bubble=document.querySelector(`[data-collect-slot="${b.slot}"]`);if(!bubble)return;const amount=Math.floor(b.pending||0),limit=pendingLimit(b),full=amount>=Math.floor(limit);bubble.textContent=full?'FULL':`${costsEmoji[DB[b.type].prod]} ${amount}`;bubble.title=`${amount} of ${limit} ready`;bubble.classList.toggle('hidden',amount<1);const prev=bubbleState.get(b.slot)||{ready:false,full:false};bubble.classList.toggle('justReady',amount>0&&!prev.ready);bubble.classList.toggle('justFull',full&&!prev.full);bubbleState.set(b.slot,{ready:amount>0,full});if(amount<1)bubbleState.set(b.slot,{ready:false,full:false})})}
+function updateProductionUI(){
+ updateProduction();renderTop();updateBuildModeActions();
+ const plan=buildCollectionPlan(),collectBtn=$('#collectAllBtn'),readyCount=$('#collectionReadyCount');
+ if(readyCount)readyCount.textContent=plan.total.toLocaleString();
+ if(collectBtn){collectBtn.classList.remove('hidden');collectBtn.disabled=plan.total<1;collectBtn.classList.toggle('empty',plan.total<1);const detail=collectionPlanText(plan);collectBtn.setAttribute('aria-label',plan.total?`Collect All. ${detail}`:plan.hasPending?`Collect All unavailable because storage is full. ${detail}`:'Collect All: no resources are ready yet.');collectBtn.setAttribute('title',detail);const label=collectBtn.querySelector('span');if(label)label.textContent='Collect All';}
+ const collectibleBySlot=new Map(plan.allocations.map(a=>[a.building.slot,a.amount]));
+ S.buildings.forEach(b=>{if(!DB[b.type].prod)return;const bubble=document.querySelector(`[data-collect-slot="${b.slot}"]`);if(!bubble)return;const pending=Math.max(0,Math.floor(Number(b.pending)||0)),amount=collectibleBySlot.get(b.slot)||0,limit=pendingLimit(b),producerFull=pending>=Math.floor(limit),resourceFull=(Number(S.r[DB[b.type].prod])||0)>=plan.cap,blocked=pending>0&&amount===0; bubble.textContent=amount>0?`${costsEmoji[DB[b.type].prod]} ${amount}`:blocked?'CAP':producerFull?'FULL':`${costsEmoji[DB[b.type].prod]} 0`;bubble.title=amount>0?`${amount} collectible now; ${pending} pending; ${Math.max(0,pending-amount)} blocked by storage.`:blocked?`${pending} pending; only ${plan.collectibleByResource[DB[b.type].prod]} of ${plan.pendingByResource[DB[b.type].prod]} ${readyNamesForResource(DB[b.type].prod)} units fit in storage across all producers.`:`${pending} of ${limit} pending capacity.`;bubble.classList.toggle('hidden',pending<1);const prev=bubbleState.get(b.slot)||{ready:false,full:false};bubble.classList.toggle('justReady',amount>0&&!prev.ready);bubble.classList.toggle('justFull',(producerFull||plan.blockedByResource[DB[b.type].prod]>0)&&!(prev.full));bubbleState.set(b.slot,{ready:amount>0,full:producerFull||plan.blockedByResource[DB[b.type].prod]>0});if(pending<1)bubbleState.set(b.slot,{ready:false,full:false});});
+}
+function readyNamesForResource(r){return ({food:'Food',wood:'Wood',iron:'Iron',coins:'Coins'})[r]||r}
 function plotTap(slot,b){if(b)return openBuilding(b);if(slot>=unlockedPlotCount())return toast('Upgrade the Palace to unlock this plot');if(!selected)return toast('Select a building from the dock');if(!isBuildingUnlocked(selected))return toast(`Requires Palace Level ${BUILD_LEVEL[selected]}`);if(!pay(DB[selected].cost)){updateBuildModeActions();toast('Not enough resources · Collect ready resources or tap Cancel');return;}const now=Date.now(),dur=buildDuration(palaceLevel());S.buildings.push({type:selected,level:1,slot,pending:0,constructing:true,startedAt:now,finishAt:now+dur,productionUpdatedAt:now});const name=selected;selected=null;const buildInfo=$('#buildInfo');if(buildInfo){buildInfo.className='buildInfo hidden';buildInfo.innerHTML=''}const tip=$('#cityTip');if(tip){tip.textContent='Choose a building below, then tap an empty plot.';tip.classList.add('idle')}updateBuildModeActions();save();renderAll();toast(`${name} construction started · ${fmtTime(dur)}`)}
 function collectBuilding(b){collectPending(b)}
 function collectAll(){
  updateProduction();
- const cap=storageCap();let total=0;
- S.buildings.forEach(b=>{
-  const r=DB[b.type].prod;if(!r||!isProducerOperational(b))return;
-  const room=Math.max(0,cap-S.r[r]);
-  const amount=Math.min(Math.floor(b.pending||0),room);
-  if(amount>0){S.r[r]+=amount;b.pending-=amount;total+=amount;if(r==='food'){S.quests.collect=true;advanceTutorial(1)}}
- });
- if(total>0)GameEvents.emit('resource:collected',{amount:total,source:'collect-all'},`all-${Math.floor(Date.now()/50)}`);save();renderAll();const btn=$('#collectAllBtn');if(btn){btn.classList.add('collectAck');clearTimeout(btn._ackTimer);btn._ackTimer=setTimeout(()=>btn.classList.remove('collectAck'),700)}
+ const plan=buildCollectionPlan();
+ if(plan.total<1){toast(plan.hasPending?'Storage is full. Spend resources or upgrade storage, then collect again.':'No resources ready to collect yet.');updateProductionUI();updateBuildModeActions();return;}
+ const byResource={food:0,wood:0,iron:0,coins:0};
+ for(const item of plan.allocations){
+  const {building,resource,amount}=item;
+  const currentPending=Math.max(0,Number(building.pending)||0);
+  const safeAmount=Math.min(amount,Math.floor(currentPending),Math.max(0,Math.floor(plan.cap-(Number(S.r[resource])||0))));
+  if(safeAmount<1)continue;
+  S.r[resource]=(Number(S.r[resource])||0)+safeAmount;
+  building.pending=Math.max(0,currentPending-safeAmount);
+  byResource[resource]+=safeAmount;
+ }
+ const total=Object.values(byResource).reduce((sum,n)=>sum+n,0);
+ if(total>0){if(byResource.food>0){S.quests.collect=true;advanceTutorial(1)}GameEvents.emit('resource:collected',{amount:total,byResource,buildings:plan.sourceCount,source:'collect-all'},`all-${Math.floor(Date.now()/50)}`);}
+ save();renderAll();const btn=$('#collectAllBtn');if(btn){btn.classList.add('collectAck');clearTimeout(btn._ackTimer);btn._ackTimer=setTimeout(()=>btn.classList.remove('collectAck'),700)}
 }
 function openBuilding(b){if(b.type==='Academy'&&!b.constructing&&!b.upgrading)return openResearchCenter();if(b.constructing)return toast(`${b.type} is still under construction`);if(b.upgrading)return toast(`${b.type} upgrade has ${fmtTime(b.finishAt-Date.now())} remaining`);
  const next=b.level+1,c=upgradeCost(b);if(b.level>=P1.maxBuildingLevel)return toast(`${b.type} has reached the Level ${P1.maxBuildingLevel} cap`);
@@ -2359,8 +2413,8 @@ if(!S.faction)$('#factionModal').classList.add('open');$('#cancelBuildMode').onc
 
 // integrated production-collect-state-guard
 
- const panel=document.getElementById('productionStatus'),tip=document.getElementById('cityTip'),info=document.getElementById('buildInfo');if(panel){panel.classList.remove('collapsed','interactionCompact');try{sessionStorage.removeItem('wd_economy_collapsed')}catch(e){}}
- function sync(){if(!panel)return;const busy=!!selected||(info&&!info.classList.contains('hidden'))||(tip&&!tip.classList.contains('idle'));panel.classList.toggle('interactionCompact',busy&&!panel.classList.contains('collapsed'));if(!busy)panel.classList.remove('interactionCompact')}
+ const panel=document.getElementById('productionStatus'),activityPanel=document.getElementById('activityPanel');if(panel){panel.classList.remove('interactionCompact');try{if(sessionStorage.getItem('wd_economy_collapsed')!=='1')panel.classList.remove('collapsed')}catch(e){panel.classList.remove('collapsed')}}
+ function sync(){if(!panel)return;const compact=!!(activityPanel&&!activityPanel.classList.contains('hidden'));panel.classList.toggle('interactionCompact',compact&&!panel.classList.contains('collapsed'));if(!compact)panel.classList.remove('interactionCompact')}
  document.addEventListener('click',()=>requestAnimationFrame(sync));setInterval(sync,500);sync();
 
 
@@ -2514,7 +2568,60 @@ window.addEventListener('orientationchange',()=>setTimeout(()=>window.dispatchEv
   try{sessionStorage.setItem('wd_economy_collapsed',collapsed?'1':'0')}catch(err){}
  });
 })();</script><script id="p0-runtime-cleanup">(()=>{
- const clean=()=>{document.querySelectorAll('.plot[role="button"],.building[role="button"],.buildItem[role="button"],.node[role="button"]').forEach(el=>{if(el.tagName!=='BUTTON'){el.removeAttribute('role');el.removeAttribute('tabindex')}});document.querySelectorAll('[title]').forEach(el=>{if(!el.matches('.res,.economyToggle,.collectBubble'))el.removeAttribute('title')})};
+ const clean=()=>{document.querySelectorAll('.plot[role="button"],.building[role="button"],.buildItem[role="button"],.node[role="button"]').forEach(el=>{if(el.tagName!=='BUTTON'){el.removeAttribute('role');el.removeAttribute('tabindex')}});document.querySelectorAll('[title]').forEach(el=>{if(!el.matches('.res,.economyToggle,.collectBubble,.economyReadySummary,#collectAllBtn'))el.removeAttribute('title')})};
  clean();new MutationObserver(()=>requestAnimationFrame(clean)).observe(document.body,{childList:true,subtree:true});
  
-})();</script><div class="researchCurrent hidden" id="researchCurrent"></div><div class="researchTabs" id="researchTabs"><button class="active" data-rbranch="Economy">Economy</button><button data-rbranch="Military">Military</button><button data-rbranch="Defense">Defense</button><button data-rbranch="Units">Units</button></div><div class="researchGrid" id="researchGrid"></div></div></div><script id="boot-health-check">setTimeout(()=>{if(window.WD_BOOT_OK)return;const tip=document.getElementById('cityTip');if(tip)tip.textContent='The game could not initialize. Please reload this corrected build.';console.error('Warlord Dominion boot did not complete')},1200);</script></body></html>
+})();</script><div class="researchCurrent hidden" id="researchCurrent"></div><div class="researchTabs" id="researchTabs"><button class="active" data-rbranch="Economy">Economy</button><button data-rbranch="Military">Military</button><button data-rbranch="Defense">Defense</button><button data-rbranch="Units">Units</button></div><div class="researchGrid" id="researchGrid"></div></div></div><script id="boot-health-check">setTimeout(()=>{if(window.WD_BOOT_OK)return;const tip=document.getElementById('cityTip');if(tip)tip.textContent='The game could not initialize. Please reload this corrected build.';console.error('Warlord Dominion boot did not complete')},1200);</script><style id="phase6-resource-collection-visibility-fix">
+/* Resource summary remains expanded while viewing a building description or placement hint. */
+html body .cityViewport #productionStatus.productionStatus,
+html body .cityViewport:has(#buildInfo:not(.hidden)) #productionStatus.productionStatus,
+html body .cityViewport:has(#cityTip:not(.idle)) #productionStatus.productionStatus {
+ display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;z-index:92!important;
+}
+html body .cityViewport #productionStatus.productionStatus:not(.collapsed):not(.interactionCompact){
+ width:min(244px,64vw)!important;max-width:min(244px,64vw)!important;min-width:0!important;min-height:88px!important;height:auto!important;overflow:visible!important;
+}
+html body .cityViewport #productionStatus.productionStatus .economyReadySummary{
+ display:block!important;visibility:visible!important;opacity:1!important;flex:1 1 auto!important;min-width:0!important;white-space:normal!important;overflow-wrap:anywhere!important;text-align:right!important;line-height:1.2!important;font-variant-numeric:tabular-nums;
+}
+/* Pin the action to the visible edge of the horizontally-scrollable build filters. */
+html body .cityViewport .buildDock .buildArea #buildFilters #collectAllBtn,
+html body .cityViewport:has(#buildInfo:not(.hidden)) .buildDock .buildArea #buildFilters #collectAllBtn,
+html body .cityViewport:has(#cityTip:not(.idle)) .buildDock .buildArea #buildFilters #collectAllBtn {
+ display:inline-flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;position:sticky!important;left:auto!important;right:0!important;bottom:auto!important;top:auto!important;z-index:96!important;flex:0 0 auto!important;align-self:center!important;justify-content:center!important;align-items:center!important;gap:0!important;width:auto!important;min-width:96px!important;max-width:112px!important;height:40px!important;min-height:40px!important;padding:4px 8px!important;margin-left:auto!important;white-space:nowrap!important;overflow:visible!important;transform:none!important;
+}
+html body .cityViewport .buildDock .buildArea #buildFilters #collectAllBtn span{display:inline!important;visibility:visible!important;white-space:nowrap!important;overflow:visible!important;font-size:11px!important;line-height:1.1!important}
+html body .cityViewport #collectAllBtn #collectionReadyCount{display:none!important}
+html body .cityViewport:has(#buildInfo:not(.hidden)) #collectAllBtn,
+html body .cityViewport:has(#activityPanel:not(.hidden)) #collectAllBtn{visibility:visible!important;opacity:1!important}
+html body .cityViewport #cityTip:not(.idle){
+ left:8px!important;right:auto!important;width:min(360px,max(72px,calc(100vw - 244px)))!important;max-width:min(360px,max(72px,calc(100vw - 244px)))!important;overflow-wrap:anywhere!important;z-index:86!important;
+}
+html body .cityViewport .buildFilters{mask-image:none!important;-webkit-mask-image:none!important}
+html body .cityViewport #buildModeActions{z-index:95!important}
+@media(max-width:520px){
+ html body .cityViewport #productionStatus.productionStatus:not(.collapsed):not(.interactionCompact){top:7px!important;right:7px!important;left:auto!important;width:min(220px,62vw)!important;max-width:min(220px,62vw)!important;min-width:0!important;padding:7px 8px!important}
+ html body .cityViewport #cityTip:not(.idle){width:max(72px,calc(100vw - 244px))!important;max-width:max(72px,calc(100vw - 244px))!important;padding:6px 7px!important;font-size:9px!important;line-height:1.25!important}
+ html body .cityViewport .buildDock .buildArea #buildFilters #collectAllBtn{min-width:96px!important;max-width:104px!important;padding-inline:6px!important}
+}
+@media(max-width:365px){
+ html body .cityViewport #productionStatus.productionStatus:not(.collapsed):not(.interactionCompact){width:min(198px,62vw)!important;max-width:min(198px,62vw)!important;min-width:0!important}
+ html body .cityViewport #cityTip:not(.idle){width:max(72px,calc(100vw - 234px))!important;max-width:max(72px,calc(100vw - 234px))!important}
+ html body .cityViewport .buildDock .buildArea #buildFilters #collectAllBtn{min-width:92px!important;max-width:96px!important;font-size:10px!important}
+}
+@media(orientation:landscape) and (max-height:620px){
+ html body .cityViewport #productionStatus.productionStatus:not(.collapsed):not(.interactionCompact){display:block!important;top:8px!important;right:98px!important;left:auto!important;width:218px!important;max-width:218px!important;min-width:0!important;min-height:80px!important}
+ html body .cityViewport #cityTip:not(.idle){top:8px!important;width:min(360px,max(72px,calc(100vw - 360px)))!important;max-width:min(360px,max(72px,calc(100vw - 360px)))!important}
+}
+@media(prefers-reduced-motion:reduce){html body .cityViewport #collectAllBtn{transition:none!important;animation:none!important}}
+</style>
+<style id="phase6-resource-summary-clarity">
+html body .cityViewport #productionStatus .economyReadySummary{white-space:normal!important;line-height:1.15!important;display:block!important}
+html body .cityViewport #productionStatus .economyReadyNow{display:block!important;white-space:normal!important;line-height:1.15!important}
+html body .cityViewport #productionStatus .economyBlockedSummary{display:block!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.1!important;font-size:7.5px!important;font-weight:700!important;color:#e7be84!important;margin-top:2px!important;text-align:right!important}
+/* The persistent toolbar action is the single Collect All entry point; avoid duplicate buttons while placing. */
+html body .cityViewport #buildModeActions #buildModeCollect{display:none!important;visibility:hidden!important;pointer-events:none!important}
+html body .cityViewport #buildModeActions .buildModeChoice{flex:1 1 auto!important}
+@media(max-width:520px){html body .cityViewport #productionStatus .economyBlockedSummary{font-size:7px!important}}
+</style>
+</body></html>
