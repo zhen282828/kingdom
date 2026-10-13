@@ -923,7 +923,468 @@ button:not(:disabled):active{transform:translateY(1px);filter:brightness(.98)}
 .battleDialog .battleMoraleRow .morale{flex:1 1 70px!important}
 .battleDialog .battleMoraleRow #abilityBtn{width:100%!important;flex:1 0 100%!important;margin:0!important}
 @media(max-width:560px){.battleDialog .battleControls button{font-size:11px!important;padding:4px 7px!important}.battleDialog .battleMoraleRow #abilityBtn{min-height:38px!important}}
-</style></head><body><div class="game"><header class="topbar"><div class="ab-crest"><div class="crestIcon" id="factionCrest">⚔️</div><div class="logo">THREE KINGDOMS<br>WARLORD DOMINION</div></div><div class="level">🏯 <span id="cityLevel">1</span></div><div class="resources"><span class="res">🌾 <b id="food">0</b><small id="foodCap"></small></span><span class="res">🪵 <b id="wood">0</b><small id="woodCap"></small></span><span class="res">⛓️ <b id="iron">0</b><small id="ironCap"></small></span><span class="res">🪙 <b id="coins">0</b><small id="coinsCap"></small></span></div><button class="iconBtn" id="settingsBtn" aria-label="Settings">⚙️</button></header>
+</style><style id="phase1-imperial-design-system">
+/* ===== PHASE 1: IMPERIAL LACQUER & JADE DESIGN SYSTEM =====
+   Presentation-only layer. No gameplay selectors, handlers, or state are changed. */
+:root{
+  --ds-lacquer:#121916;
+  --ds-lacquer-2:#1a241f;
+  --ds-lacquer-3:#233129;
+  --ds-jade:#376b57;
+  --ds-jade-deep:#244c3d;
+  --ds-jade-soft:#5c8a71;
+  --ds-jade-pale:#c5d9c8;
+  --ds-bronze:#8d774b;
+  --ds-gold:#d9be78;
+  --ds-gold-light:#f0dfa8;
+  --ds-paper:#f1e5c5;
+  --ds-paper-light:#faf1d8;
+  --ds-ink:#29291f;
+  --ds-muted:#b9c8bf;
+  --ds-red:#a83d32;
+  --ds-line:rgba(217,190,120,.38);
+  --ds-radius-sm:8px;
+  --ds-radius-md:12px;
+  --ds-radius-lg:16px;
+  --ds-shadow:0 8px 22px rgba(0,0,0,.24);
+  --ds-shadow-soft:0 3px 10px rgba(0,0,0,.2);
+}
+
+html,body,.game{background:var(--ds-lacquer)!important;color:#f4f1e5}
+body{font-family:var(--ui,Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif)!important}
+
+/* Global chrome */
+.game>.topbar,.topbar{
+  background:linear-gradient(180deg,#26372e 0%,#1a251f 74%,#121916 100%)!important;
+  border-bottom:1px solid var(--ds-line)!important;
+  box-shadow:0 4px 16px rgba(0,0,0,.34),inset 0 -1px rgba(255,255,255,.035)!important;
+}
+.topbar .level{
+  background:linear-gradient(180deg,#55482e,#332c1e)!important;
+  border:1px solid var(--ds-gold)!important;border-radius:9px!important;outline:0!important;
+  color:var(--ds-gold-light)!important;box-shadow:inset 0 1px rgba(255,255,255,.08),var(--ds-shadow-soft)!important;
+}
+.topbar .res{
+  background:linear-gradient(180deg,#293b31,#1a2821)!important;
+  border:1px solid rgba(170,190,164,.36)!important;border-top-color:rgba(217,190,120,.7)!important;
+  border-radius:9px!important;color:#f6f0dd!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.055),0 2px 6px rgba(0,0,0,.2)!important;
+}
+.topbar .res b{color:#fff7df!important;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.topbar .res small,.res small{color:#b9cabb!important;font-weight:700}
+.crestIcon,#factionCrest{box-shadow:inset 0 1px rgba(255,255,255,.18),0 3px 8px rgba(0,0,0,.35)!important}
+.logo{color:var(--ds-gold-light)!important;text-shadow:0 2px 3px rgba(0,0,0,.55)!important;letter-spacing:.035em!important}
+
+/* Screen surfaces and type hierarchy */
+.screen:not(.cityScreen){
+  background:radial-gradient(ellipse at 50% -10%,#31483a 0%,#1d2c23 40%,#111a16 100%)!important;
+}
+/* Override the legacy texture selector without touching screen markup. */
+html:not(#_) .screen:not(#city){
+  background:radial-gradient(ellipse at 50% -10%,#2a3a30 0%,#1b2921 42%,#111a16 100%)!important;
+  background-image:radial-gradient(ellipse at 50% -10%,#2a3a30 0%,#1b2921 42%,#111a16 100%)!important;
+  background-repeat:no-repeat!important;background-size:cover!important;
+}
+.heading{
+  color:var(--ds-gold-light)!important;text-shadow:0 2px 3px rgba(0,0,0,.42)!important;
+  letter-spacing:.025em!important;padding-bottom:7px!important;
+}
+.heading:after{height:1px!important;background:linear-gradient(90deg,rgba(217,190,120,.7),rgba(217,190,120,.05))!important}
+.card h3,.darkPanel h3,.phase3Card h3,.researchCard h3,.unitResearchCard h3{
+  color:#e9d69a!important;letter-spacing:.01em;
+}
+.small{line-height:1.48}
+
+/* One consistent card language; map/battle artwork stays intact */
+.card,.darkPanel,.phase3Card,.researchCard,.unitResearchCard{
+  background:linear-gradient(155deg,#293a30,#1a2921)!important;
+  color:#f0f2e9!important;
+  border:1px solid rgba(159,181,154,.34)!important;
+  border-image:none!important;border-radius:var(--ds-radius-lg)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.045),0 7px 18px rgba(0,0,0,.22)!important;
+}
+.card .small,.darkPanel .small,.phase3Card .small,.researchCard .small,.unitResearchCard .small{color:#c3d0c5!important}
+.card .cardIcon{border:1px solid rgba(217,190,120,.62)!important;box-shadow:inset 0 1px rgba(255,255,255,.14),0 3px 8px rgba(0,0,0,.24)!important}
+.panel,.buildInfo,.upgradeStat,.forecast{
+  background:linear-gradient(155deg,var(--ds-paper-light),var(--ds-paper))!important;
+  color:var(--ds-ink)!important;
+  border:1px solid #b39b62!important;border-image:none!important;
+  border-radius:var(--ds-radius-md)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.75),0 6px 18px rgba(0,0,0,.19)!important;
+}
+.panel h2,.panel h3,.buildInfo h2,.buildInfo h3,.upgradeStat strong,.forecast strong{color:#433a25!important}
+.panel .small,.panel small,.upgradeStat small,.forecast small{color:#655b43!important}
+.map,.battlefield{
+  border:1px solid rgba(217,190,120,.65)!important;border-image:none!important;
+  border-radius:var(--ds-radius-lg)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.08),0 8px 22px rgba(0,0,0,.28)!important;
+}
+.faction{border-radius:var(--ds-radius-md)!important;box-shadow:inset 0 1px rgba(255,255,255,.15),0 4px 10px rgba(0,0,0,.28)!important}
+.node{border-radius:var(--ds-radius-md)!important;border-width:1px!important;box-shadow:0 4px 0 rgba(0,0,0,.35),0 7px 16px rgba(0,0,0,.18)!important}
+.node.owned{border-color:#9fc8a0!important}
+
+/* Button hierarchy: jade for ordinary progression, cinnabar for danger */
+button,.primary,.secondary,.danger,.iconBtn,.speedBtn{
+  font-family:var(--ui,Inter,system-ui,-apple-system,"Segoe UI",sans-serif)!important;
+  letter-spacing:.005em!important;
+  transition:background-color .16s ease,border-color .16s ease,box-shadow .16s ease,filter .16s ease,transform .16s ease!important;
+}
+.primary,#collectAllBtn.primary,.buildInfoClose{
+  background:linear-gradient(180deg,#54866b,#315d49)!important;
+  border:1px solid #91b397!important;border-radius:10px!important;
+  color:#fff7df!important;text-shadow:0 1px 2px rgba(0,0,0,.32)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.15),0 3px 7px rgba(0,0,0,.25)!important;
+  font-weight:800!important;
+}
+.secondary,.iconBtn,.speedBtn{
+  background:linear-gradient(180deg,#344c3e,#24372d)!important;
+  border:1px solid rgba(167,190,164,.5)!important;border-radius:10px!important;
+  color:#e7eddf!important;box-shadow:inset 0 1px rgba(255,255,255,.07),0 3px 7px rgba(0,0,0,.22)!important;
+}
+.danger{background:linear-gradient(180deg,#b94c3f,#873128)!important;border:1px solid #dc8d72!important;border-radius:10px!important;color:#fff0e6!important;box-shadow:inset 0 1px rgba(255,255,255,.1),0 3px 7px rgba(0,0,0,.22)!important}
+.primary:hover:not(:disabled),.secondary:hover:not(:disabled),.danger:hover:not(:disabled),.iconBtn:hover:not(:disabled){filter:brightness(1.07)!important}
+button:active:not(:disabled){transform:translateY(1px)}
+button:disabled{filter:saturate(.35)!important;opacity:.52!important;box-shadow:none!important}
+button:focus-visible,[role="button"]:focus-visible{outline:2px solid #f6e6a6!important;outline-offset:3px!important}
+
+/* Filters, build palette and floating city UI */
+.filter{
+  background:linear-gradient(180deg,#2b4235,#1b2d23)!important;
+  border:1px solid rgba(154,181,151,.42)!important;border-radius:9px!important;
+  color:#d7e2d4!important;font-family:var(--ui,system-ui,sans-serif)!important;font-weight:750!important;
+}
+.filter.active{background:linear-gradient(180deg,#5b8c6f,#315b47)!important;border-color:var(--ds-gold)!important;color:#fff8de!important}
+.buildDock,.bottomNav{
+  background:linear-gradient(180deg,#1d2b23f5,#111a15f7)!important;
+  border-color:rgba(217,190,120,.42)!important;
+  box-shadow:0 -7px 22px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.04)!important;
+}
+.buildList{background:rgba(13,23,17,.62)!important;border:1px solid rgba(145,171,140,.35)!important;border-radius:12px!important}
+.buildItem{
+  background:linear-gradient(180deg,#314d3c,#20372b)!important;
+  border:1px solid rgba(154,184,151,.47)!important;border-radius:9px!important;
+  color:#edf0df!important;box-shadow:inset 0 1px rgba(255,255,255,.07)!important;
+}
+.buildItem .costMini{color:#e7cf8d!important}
+.buildItem.active{background:linear-gradient(180deg,#5c8d6c,#315b46)!important;border-color:#ead28a!important;outline:1px solid rgba(240,223,168,.6)!important;outline-offset:1px!important;box-shadow:inset 0 1px rgba(255,255,255,.14),0 3px 9px rgba(0,0,0,.25)!important}
+.navBtn{background:transparent!important;border:1px solid transparent!important;border-radius:10px!important;color:#b8c8bb!important;box-shadow:none!important;opacity:1!important}
+.navBtn span{filter:none!important;opacity:.93!important}
+.navBtn.active{background:linear-gradient(180deg,#385d49,#233e30)!important;border:1px solid rgba(217,190,120,.75)!important;color:#fff5d2!important;box-shadow:inset 0 1px rgba(255,255,255,.09),0 3px 9px rgba(0,0,0,.24)!important}
+.navBtn.active:before{background:var(--ds-gold-light)!important;box-shadow:0 0 7px rgba(217,190,120,.45)!important}
+.tip,.productionStatus,.activityToggle,.cameraControls button{
+  background:rgba(24,39,30,.94)!important;color:#edf0e4!important;
+  border:1px solid rgba(177,197,166,.48)!important;border-radius:11px!important;
+  box-shadow:0 4px 13px rgba(0,0,0,.28)!important;
+}
+.productionStatus{border-color:rgba(217,190,120,.45)!important}
+.activityToggle{font-weight:800!important}
+.buildInfo{border-color:#a38d59!important}
+
+/* Modals, status chips and feedback */
+.modal{background:rgba(6,13,9,.78)!important;backdrop-filter:blur(7px)!important;-webkit-backdrop-filter:blur(7px)!important}
+.dialog,.modal>div,[role="dialog"]{
+  background:linear-gradient(155deg,#f8efd6,#eadbb5)!important;color:#2c291f!important;
+  border:1px solid #b39a5f!important;border-image:none!important;border-radius:18px!important;
+  box-shadow:0 20px 60px rgba(0,0,0,.48),inset 0 1px rgba(255,255,255,.82)!important;
+}
+.dialog h2,[role="dialog"] h2{color:#3f4e3d!important;letter-spacing:.01em!important}
+.dialog p,[role="dialog"] p{line-height:1.52}
+.modal .panel{box-shadow:none!important}
+.queuePanel,.activityItem{background:linear-gradient(155deg,#263b2e,#192920)!important;border:1px solid rgba(150,177,146,.38)!important;border-radius:11px!important;color:#edf1e6!important}
+.queuePanel b,.activityTime{color:#ead28c!important}
+.unitChip{background:#314b3a!important;border:1px solid rgba(177,199,161,.42)!important;color:#f3efd9!important;border-radius:999px!important}
+.plotStatus,.timerBadge{background:rgba(20,34,25,.97)!important;border:1px solid rgba(217,190,120,.72)!important;border-radius:9px!important;box-shadow:0 3px 8px rgba(0,0,0,.24)!important}
+.levelBadge{background:rgba(22,37,27,.94)!important;border:1px solid rgba(217,190,120,.72)!important;border-radius:8px!important;color:#f4e2a6!important}
+.collectPop{background:#243d2d!important;border:1px solid var(--ds-gold)!important;border-radius:999px!important}
+.toast{background:rgba(23,39,29,.96)!important;border:1px solid rgba(217,190,120,.75)!important;color:#f8f0d8!important}
+.completionBanner{background:linear-gradient(155deg,#273d30f7,#16251cf7)!important;border:1px solid var(--ds-gold)!important;border-radius:16px!important;box-shadow:0 10px 28px rgba(0,0,0,.46),inset 0 1px rgba(255,255,255,.1)!important}
+.completionBanner strong{color:#f0d990!important}
+.tutorial{background:linear-gradient(155deg,#f8efd6,#eadbb5)!important;color:#30291e!important;border:1px solid #b39a5f!important;border-left:4px solid #9c4937!important;border-radius:13px!important;box-shadow:0 8px 24px rgba(0,0,0,.3)!important}
+.tutorial strong{color:#4c5f43!important}
+
+/* Consistent utility elements without changing their behaviour */
+#closeSettings,#closeResearch,.modalClose{border-radius:10px!important}
+.quest,.report{border-radius:12px!important}
+.upgradeStat{border-radius:10px!important}
+::selection{background:rgba(93,138,113,.5);color:#fff9e7}
+@media(prefers-reduced-motion:reduce){button,.card,.darkPanel,.phase3Card,.researchCard,.unitResearchCard{transition:none!important}}
+
+</style>
+<style id="phase2-city-diorama">
+/* ===== PHASE 2: CITY ENVIRONMENT & BUILDING PRESENTATION =====
+   CSS-only presentation layer. Existing rendering, state, handlers and game rules remain intact. */
+:root{
+  --city-forest:#263d2b;
+  --city-earth:#8b7447;
+  --city-gold:#dec17b;
+  --city-ink:#172019;
+}
+
+/* Preserve the illustrated world while lowering visual noise behind the city. */
+#cityViewport{isolation:isolate;background:#293e2d!important}
+#cityViewport>#scene{filter:saturate(.93) contrast(1.035);}
+#cityViewport>#scene .p4>rect:nth-of-type(2){opacity:.40!important;}
+#cityViewport:after{
+  display:block!important;content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(16,25,28,.12) 0%,transparent 23%,transparent 64%,rgba(10,19,13,.24) 100%),
+             radial-gradient(ellipse at 50% 40%,transparent 42%,rgba(13,22,15,.20) 100%);
+}
+
+/* The original board grid was too prominent and crossed directly over the buildings.
+   Keep its district structure as a faint cartographic guide, not the focal point. */
+#cityBoard{z-index:2;filter:none!important}
+#cityBoard>.boardArt{opacity:.15!important;transition:opacity .2s ease}
+#cityBoard.buildMode>.boardArt{opacity:.09!important}
+
+/* Give each footprint more grounding and a little separation from the landscape. */
+#cityBoard .plot .ground .tile{filter:drop-shadow(0 2px 1.5px rgba(12,18,10,.20));}
+#cityBoard .plot.available:not(.locked) .ground .tile{opacity:.62;filter:saturate(.72) drop-shadow(0 2px 1.5px rgba(12,18,10,.15));}
+#cityBoard.buildMode .plot.available:not(.locked) .ground .tile{opacity:1!important;filter:saturate(1.06) drop-shadow(0 3px 2px rgba(12,18,10,.25));}
+#cityBoard .plot.locked .ground .tile{filter:saturate(.82) brightness(.88) drop-shadow(0 2px 1.5px rgba(12,18,10,.20));}
+#cityBoard .plot.occupied .ground .tile{filter:saturate(1.05) drop-shadow(0 3px 2px rgba(12,18,10,.28));}
+#cityBoard .plot.palacePlot .ground .tile{filter:saturate(1.08) drop-shadow(0 4px 3px rgba(9,15,9,.34)) drop-shadow(0 0 2px rgba(229,199,126,.25));}
+
+/* Sharpen building silhouettes without enlarging their clickable plots or changing hitboxes. */
+#cityBoard .artBuilding .bsprite{filter:drop-shadow(0 2px 1px rgba(8,12,8,.35));}
+#cityBoard .plot.occupied .structure{filter:drop-shadow(0 5px 3px rgba(8,14,8,.22));}
+#cityBoard .plot.palacePlot .structure{filter:drop-shadow(0 7px 5px rgba(8,14,8,.31));}
+#cityBoard .plot.occupied .plotMain:hover .ground .tile,
+#cityBoard .plot.occupied .plotMain:focus-visible .ground .tile{filter:brightness(1.07) saturate(1.08) drop-shadow(0 4px 2px rgba(12,18,10,.28));}
+#cityBoard .plot.palacePlot .plotMain:hover .ground .tile,
+#cityBoard .plot.palacePlot .plotMain:focus-visible .ground .tile{filter:brightness(1.06) saturate(1.10) drop-shadow(0 4px 3px rgba(9,15,9,.34));}
+
+/* Reframe future-expansion markers as quiet cartographic annotations. */
+#cityBoard .expansionZone,
+#cityBoard .districtLabel{
+  background:linear-gradient(180deg,rgba(24,34,25,.82),rgba(15,23,17,.76))!important;
+  border:1px solid rgba(222,193,123,.48)!important;border-radius:7px!important;
+  color:#f0dca4!important;text-shadow:0 1px 2px rgba(0,0,0,.72);
+  box-shadow:0 3px 8px rgba(9,15,10,.18);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+}
+#cityBoard .expansionZone{font-size:9px!important;letter-spacing:.025em;padding:4px 7px!important}
+
+/* The coach card is kept beside the build dock but no longer stretches across the whole desktop. */
+.tutorial{
+  width:min(380px,calc(100vw - 28px))!important;max-width:min(380px,calc(100vw - 28px))!important;
+  left:14px!important;right:auto!important;padding:9px 12px!important;
+  border-radius:11px!important;border-left-width:4px!important;
+  font-size:12px!important;line-height:1.32!important;
+  bottom:calc(var(--dock-top,220px) + 12px)!important;
+}
+.tutorial strong{display:block;margin-bottom:2px;letter-spacing:.025em}
+.tutorial #skipTutorial{min-height:29px!important;padding:4px 9px!important;margin-top:4px!important;font-size:11px!important}
+
+/* Short-lived notifications sit above the city controls instead of covering the build palette. */
+.toast{top:calc(122px + env(safe-area-inset-top,0px))!important;bottom:auto!important;z-index:220!important;}
+
+@media(max-width:680px){
+  #cityBoard>.boardArt{opacity:.13!important}
+  #cityBoard.buildMode>.boardArt{opacity:.07!important}
+  .tutorial{
+    left:8px!important;right:8px!important;width:auto!important;max-width:none!important;
+    bottom:calc(var(--dock-top,220px) + 12px)!important;
+    padding:7px 9px!important;font-size:12px!important;line-height:1.25!important;
+    max-height:94px;overflow:auto;
+  }
+  .tutorial #skipTutorial{min-height:27px!important;padding:3px 8px!important}
+  .toast{top:calc(126px + env(safe-area-inset-top,0px))!important;max-width:calc(100vw - 28px)!important;}
+}
+@media(orientation:landscape) and (max-height:620px){
+  .tutorial{top:62px!important;bottom:auto!important;left:104px!important;right:104px!important;width:auto!important;max-width:none!important;}
+  .toast{top:calc(60px + env(safe-area-inset-top,0px))!important;}
+}
+@media(prefers-reduced-motion:reduce){#cityBoard>.boardArt{transition:none!important}}
+</style>
+
+<style id="phase3-hud-mobile-refinement">
+/* ===== PHASE 3: HUD & MOBILE LAYOUT REFINEMENT =====
+   Presentation-only. Existing markup hooks, handlers and gameplay scripts remain untouched. */
+:root{
+  --p3-hud-space:8px;
+  --p3-hud-line:rgba(217,190,120,.34);
+  --p3-hud-focus:#f4df9b;
+}
+/* Keep the desktop chrome balanced while giving the resource strip consistent rhythm. */
+@media (min-width:521px){
+  .topbar{gap:7px!important;padding-left:10px!important;padding-right:10px!important}
+  .topbar .res{min-width:0!important}
+  .topbar .resources{gap:6px!important}
+  .bottomNav{gap:4px!important;padding-left:10px!important;padding-right:10px!important}
+  .navBtn{min-width:0!important}
+}
+/* Phone portrait: compact two-row header, with all four resources kept visible. */
+@media (max-width:520px){
+  .topbar{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto auto!important;
+    grid-template-rows:34px 40px!important;
+    grid-template-areas:"brand level settings" "res res res"!important;
+    gap:4px 6px!important;
+    height:auto!important;
+    min-height:calc(86px + env(safe-area-inset-top,0px))!important;
+    flex:0 0 auto!important;
+    align-items:center!important;
+    padding:calc(4px + env(safe-area-inset-top,0px)) calc(7px + env(safe-area-inset-right,0px)) 4px calc(7px + env(safe-area-inset-left,0px))!important;
+  }
+  .ab-crest,.crest{
+    grid-area:brand!important;min-width:0!important;max-width:100%!important;
+    height:34px!important;max-height:34px!important;gap:6px!important;overflow:hidden!important;
+  }
+  .crestIcon,#factionCrest{width:34px!important;height:34px!important;min-width:34px!important;max-width:34px!important;font-size:18px!important;border-radius:10px!important}
+  .topbar .ab-crest .logo,.topbar .crest .logo{
+    display:block!important;min-width:0!important;max-width:145px!important;
+    font-size:9.4px!important;line-height:1.02!important;letter-spacing:.035em!important;
+    white-space:normal!important;overflow:hidden!important;text-overflow:clip!important;
+  }
+  .topbar .level{
+    grid-area:level!important;display:flex!important;align-items:center!important;justify-content:center!important;
+    min-width:46px!important;width:auto!important;height:34px!important;min-height:34px!important;
+    padding:4px 7px!important;border-radius:9px!important;font-size:10px!important;line-height:1!important;
+  }
+  .topbar #settingsBtn,.topbar .iconBtn{
+    grid-area:settings!important;width:36px!important;min-width:36px!important;max-width:36px!important;
+    height:34px!important;min-height:34px!important;padding:0!important;border-radius:9px!important;
+    display:grid!important;place-items:center!important;font-size:16px!important;
+  }
+  .topbar .resources{
+    grid-area:res!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:4px!important;width:100%!important;height:40px!important;min-width:0!important;margin:0!important;
+  }
+  .topbar .res{
+    display:grid!important;grid-template-columns:auto auto!important;grid-template-rows:18px 11px!important;
+    place-content:center!important;align-content:center!important;justify-content:center!important;
+    column-gap:3px!important;min-width:0!important;width:100%!important;height:40px!important;min-height:40px!important;
+    padding:3px 2px!important;border-radius:8px!important;overflow:hidden!important;line-height:1!important;
+  }
+  .topbar .res b{font-size:11px!important;line-height:1!important;white-space:nowrap!important;font-variant-numeric:tabular-nums!important}
+  .topbar .res small{grid-column:1/-1!important;display:block!important;width:100%!important;margin:0!important;text-align:center!important;font-size:7.5px!important;line-height:1!important;white-space:nowrap!important;color:#c9d7c8!important}
+
+  /* Tighter production summary without obscuring the activity toggle. */
+  .productionStatus{
+    width:min(218px,calc(100vw - 82px))!important;max-width:calc(100vw - 82px)!important;
+    padding:7px 8px!important;line-height:1.15!important;border-radius:11px!important;
+  }
+  .economyHeadline{gap:1px 6px!important}
+  .economyHeadline span{font-size:7.5px!important;letter-spacing:.1em!important}
+  .economyHeadline b{font-size:10.5px!important}
+  .economyHeadline small{font-size:7px!important}
+  .economyMeta{font-size:7.2px!important;gap:5px!important}
+  .economyRates{gap:3px 5px!important;margin-top:4px!important;padding-top:4px!important}
+  .economyRates span{font-size:7.8px!important}
+
+  /* The camera rail sits just below the production summary instead of mid-canvas. */
+  .cameraControls{top:112px!important;right:7px!important;bottom:auto!important;gap:4px!important}
+  .cameraControls button{width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;border-radius:10px!important}
+  .cameraControls #zoomReset{font-size:8.5px!important}
+
+  /* Reclaim a little city viewport height while retaining comfortable tap targets. */
+  .buildDock{left:5px!important;right:5px!important;bottom:4px!important;padding:5px!important;border-radius:13px!important;max-height:142px!important}
+  .buildArea{height:auto!important;min-height:0!important}
+  .buildFilters{height:28px!important;min-height:28px!important;margin:0 0 3px!important;gap:4px!important}
+  .filter{height:26px!important;min-height:26px!important;padding:3px 8px!important;font-size:9px!important;border-radius:8px!important}
+  .buildList{height:73px!important;min-height:73px!important;max-height:73px!important;padding:4px!important;gap:5px!important}
+  .buildItem{height:64px!important;min-height:64px!important;min-width:78px!important;width:78px!important;padding:4px 3px!important;border-radius:8px!important}
+  .buildItem b{font-size:19px!important;line-height:21px!important}
+  .buildItem span,.buildItem small{font-size:7.8px!important;line-height:8.8px!important}
+
+  /* A stable five-way navigation bar, respecting device safe areas. */
+  .bottomNav{
+    height:calc(60px + env(safe-area-inset-bottom,0px))!important;
+    min-height:60px!important;box-sizing:border-box!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:3px!important;
+    padding:4px 6px max(4px,env(safe-area-inset-bottom,0px))!important;
+  }
+  .navBtn{
+    min-width:0!important;width:100%!important;height:100%!important;min-height:48px!important;
+    padding:3px 1px!important;display:flex!important;flex-direction:column!important;
+    align-items:center!important;justify-content:center!important;gap:2px!important;
+    font-size:9px!important;line-height:1.05!important;white-space:nowrap!important;border-radius:9px!important;
+  }
+  .navBtn span{display:block!important;font-size:18px!important;line-height:1!important;margin:0!important}
+  .navBtn.active{box-shadow:inset 0 2px 0 rgba(240,223,168,.22),0 2px 6px rgba(0,0,0,.2)!important}
+  .tutorial{max-width:calc(100vw - 20px)!important;box-sizing:border-box!important}
+}
+@media (max-width:380px){
+  .topbar{grid-template-columns:minmax(0,1fr) auto auto!important;grid-template-rows:33px 38px!important;min-height:calc(82px + env(safe-area-inset-top,0px))!important;padding-top:calc(4px + env(safe-area-inset-top,0px))!important}
+  .ab-crest,.crest{height:33px!important;max-height:33px!important}
+  .crestIcon,#factionCrest{width:32px!important;height:32px!important;min-width:32px!important;max-width:32px!important}
+  .topbar .ab-crest .logo,.topbar .crest .logo{max-width:112px!important;font-size:8.6px!important}
+  .topbar .level{height:32px!important;min-height:32px!important;min-width:43px!important;padding:3px 5px!important}
+  .topbar #settingsBtn,.topbar .iconBtn{width:33px!important;min-width:33px!important;max-width:33px!important;height:32px!important;min-height:32px!important}
+  .topbar .resources,.topbar .res{height:38px!important;min-height:38px!important}
+  .topbar .res{grid-template-rows:17px 10px!important}
+  .topbar .res b{font-size:10px!important}.topbar .res small{font-size:7px!important}
+  .productionStatus{width:calc(100vw - 82px)!important;max-width:calc(100vw - 82px)!important}
+  .buildItem{min-width:73px!important;width:73px!important}
+}
+/* Short landscape phones use one compact row; resource counts remain individually visible. */
+@media (max-width:700px) and (orientation:landscape) and (max-height:500px){
+  .topbar{
+    display:grid!important;grid-template-columns:auto auto minmax(0,1fr) auto!important;
+    grid-template-rows:42px!important;grid-template-areas:"brand level res settings"!important;
+    height:auto!important;min-height:calc(50px + env(safe-area-inset-top,0px))!important;
+    padding:calc(4px + env(safe-area-inset-top,0px)) 7px 4px!important;gap:6px!important;
+  }
+  .ab-crest,.crest{height:38px!important;max-height:38px!important}
+  .crestIcon,#factionCrest{width:34px!important;height:34px!important;min-width:34px!important;max-width:34px!important}
+  .topbar .ab-crest .logo,.topbar .crest .logo{display:none!important}
+  .topbar .level{height:34px!important;min-height:34px!important}
+  .topbar .resources{height:36px!important;gap:3px!important}
+  .topbar .res{height:36px!important;min-height:36px!important;grid-template-rows:16px 9px!important;padding:2px!important}
+  .topbar .res b{font-size:10px!important}.topbar .res small{font-size:6.8px!important}
+  .topbar #settingsBtn,.topbar .iconBtn{width:34px!important;min-width:34px!important;max-width:34px!important;height:34px!important;min-height:34px!important}
+  .productionStatus{width:204px!important;max-width:204px!important}
+  .cameraControls{top:96px!important;bottom:auto!important}
+  .buildDock{max-height:119px!important}
+  .buildFilters{height:25px!important;min-height:25px!important}
+  .filter{height:24px!important;min-height:24px!important}
+  .buildList{height:65px!important;min-height:65px!important;max-height:65px!important}
+  .buildItem{height:56px!important;min-height:56px!important}
+  .bottomNav{height:calc(52px + env(safe-area-inset-bottom,0px))!important;min-height:52px!important}
+  .navBtn{min-height:42px!important;font-size:8px!important}.navBtn span{font-size:16px!important}
+  .tutorial{bottom:128px!important}
+}
+@media (prefers-reduced-motion:reduce){
+  .topbar,.res,.productionStatus,.cameraControls button,.buildDock,.navBtn{transition:none!important}
+}
+/* Authoritative conflict fixes: keep legacy high-specificity rules from undoing this phase. */
+@media (max-width:520px){
+  html:not(#_) .topbar .ab-crest .logo,html:not(#_) .topbar .crest .logo{
+    width:max-content!important;max-width:none!important;height:auto!important;flex:0 0 auto!important;
+    white-space:nowrap!important;overflow:visible!important;font-size:10px!important;line-height:1.02!important;letter-spacing:.02em!important;
+  }
+  html:not(#_) #productionStatus.productionStatus{
+    box-sizing:border-box!important;width:min(218px,calc(100vw - 82px))!important;
+    max-width:calc(100vw - 82px)!important;padding:7px 8px!important;
+  }
+  html:not(#_) .cameraControls{top:112px!important;bottom:auto!important;width:40px!important;height:auto!important;max-height:none!important}
+  html:not(#_) .cameraControls button{width:40px!important;min-width:40px!important;max-width:40px!important;height:40px!important;min-height:40px!important;max-height:40px!important;flex:0 0 40px!important}
+  html:not(#_) .buildFilters{height:31px!important;min-height:31px!important;margin-bottom:3px!important}
+  html:not(#_) .buildList{height:78px!important;min-height:78px!important;max-height:78px!important}
+  html:not(#_) .buildItem{height:68px!important;min-height:68px!important;max-height:68px!important;grid-template-rows:24px minmax(18px,auto) 18px!important;padding:2px 3px!important}
+  html:not(#_) #toast.toast{top:calc(188px + env(safe-area-inset-top,0px))!important;left:8px!important;right:auto!important;bottom:auto!important;transform:none!important;width:max-content!important;max-width:min(146px,calc(100vw - 18px))!important;padding:5px 8px!important;font-size:10.5px!important;text-align:center!important;z-index:220!important}
+}
+@media(max-width:380px){
+  html:not(#_) .topbar .ab-crest .logo,html:not(#_) .topbar .crest .logo{font-size:9.1px!important;letter-spacing:.005em!important}
+  html:not(#_) #productionStatus.productionStatus{width:min(218px,calc(100vw - 82px))!important;max-width:calc(100vw - 82px)!important}
+}
+@media (orientation:landscape) and (max-height:500px) and (max-width:900px){
+  html:not(#_) .cameraControls{top:96px!important;bottom:auto!important}
+  html:not(#_) #toast.toast{top:calc(90px + env(safe-area-inset-top,0px))!important}
+  /* Keep the coach card away from the economy summary and the right-side nav rail. */
+  html:not(#_) #tutorial.tutorial{
+    left:8px!important;right:auto!important;width:min(340px,calc(100vw - 112px))!important;max-width:none!important;
+    top:auto!important;bottom:calc(124px + env(safe-area-inset-bottom,0px))!important;margin:0!important;
+    max-height:88px!important;overflow:auto!important;padding:6px 9px!important;font-size:10px!important;
+  }
+  /* Short-height build tiles keep the name and lock status inside the card. */
+  html:not(#_) .buildItem{height:56px!important;min-height:56px!important;max-height:56px!important;grid-template-rows:19px minmax(16px,auto) 17px!important;padding:1px 3px!important;font-size:9px!important;line-height:1!important}
+  html:not(#_) .buildItem b{height:19px!important;max-height:19px!important;font-size:17px!important;line-height:19px!important}
+  html:not(#_) .buildItem span,html:not(#_) .buildItem small{font-size:7.2px!important;line-height:8px!important}
+}
+</style>
+
+</head><body><div class="game"><header class="topbar"><div class="ab-crest"><div class="crestIcon" id="factionCrest">⚔️</div><div class="logo">THREE KINGDOMS<br>WARLORD DOMINION</div></div><div class="level">🏯 <span id="cityLevel">1</span></div><div class="resources"><span class="res">🌾 <b id="food">0</b><small id="foodCap"></small></span><span class="res">🪵 <b id="wood">0</b><small id="woodCap"></small></span><span class="res">⛓️ <b id="iron">0</b><small id="ironCap"></small></span><span class="res">🪙 <b id="coins">0</b><small id="coinsCap"></small></span></div><button class="iconBtn" id="settingsBtn" aria-label="Settings">⚙️</button></header>
 <main class="main"><section class="screen cityScreen active" id="city"><div class="cityViewport" id="cityViewport"><div class="skyGlow"></div><div class="mountains"></div><div class="river"><span class="riverSpark r1"></span><span class="riverSpark r2"></span><span class="riverSpark r3"></span></div><div class="riverBankDecor"></div><div class="bridge"></div><div class="ambient" id="ambient"><span class="bird b1">⌁</span><span class="bird b2">⌁</span></div><div class="tip" id="cityTip">Choose a building below, then tap an empty plot.</div><div class="buildModeActions hidden" id="buildModeActions"><div class="buildModeChoice"><small>PLACING</small><b id="buildModeName">Building</b><span id="buildModeCost"></span></div><button class="secondary" id="buildModeCollect">Collect</button><button class="danger" id="cancelBuildMode">Cancel</button></div><div class="productionStatus" id="productionStatus"></div><div class="cityFocusLabel">Palace District</div><div class="cameraControls" aria-label="City camera controls"><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomReset">Reset</button><button id="zoomIn" aria-label="Zoom in">+</button></div><button class="activityToggle" id="activityToggle">Active Orders <b id="activityCount">0</b></button><div class="activityPanel hidden" id="activityPanel"></div><div class="cityBoard" id="cityBoard"></div><div class="buildDock"><div class="buildInfo hidden" id="buildInfo"></div><div class="buildArea"><div class="buildFilters" id="buildFilters"><button class="filter active" data-filter="All">All</button><button class="filter" data-filter="Economy">Economy</button><button class="filter" data-filter="Military">Military</button><button class="filter" data-filter="Defense">Defense</button><span class="filterSpacer"></span><button class="primary empty" id="collectAllBtn" disabled><span>Collect</span><b id="collectionReadyCount">0</b></button></div><div class="buildList" id="buildList"></div></div></div></div></section><section class="screen" id="army"><div class="heading">⚔️ Army Command</div><div class="panel row spread"><div><b id="armyPower">0 Power</b><div>Train troops for your field army.</div></div><button class="primary" id="balancedBtn">Balanced Reinforcement</button></div><div class="queuePanel hidden" id="trainingQueue"></div><div class="grid" id="unitGrid"></div></section><section class="screen" id="generals"><div class="heading">🎖️ General Roster</div><div class="panel row spread"><div><b>Recruit historical commanders</b><div>Each commander specializes in one troop type.</div></div><button class="primary" id="recruitBtn">Recruit · 300 🪙</button></div><div class="grid" id="generalGrid"></div></section><section class="screen" id="campaign"><div class="heading">🗺️ Campaign Map</div><div class="map" id="campaignMap"></div></section><section class="screen" id="quests"><div class="heading">📜 Quests & Reports</div><div id="questList"></div><div id="phase3Hub" class="phase3Hub">
   <div class="phase3Header"><div><div class="phase3Eyebrow">P1 PHASE 3</div><h2>Daily Command</h2></div><div id="phase3Reset" class="phase3Reset"></div></div>
   <div class="phase3Grid">
