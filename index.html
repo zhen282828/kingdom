@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion — Stage E Visual Refinement</title>
+<html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion — Stage F Gameplay Balance</title>
 <meta name="application-name" content="Three Kingdoms: Warlord Dominion">
-<meta name="wd-build" content="P1.4-E1">
+<meta name="wd-build" content="P1.4-F4">
 <meta name="wd-save-schema" content="4">
 <meta name="theme-color" content="#142641"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="format-detection" content="telephone=no">
 
@@ -11890,7 +11890,8 @@ body.motionReduced *::after {
   #detailDialog .forecast { display:block; border:1px solid #6d86a6; border-radius:14px; background:linear-gradient(145deg,#142b47,#0d1e32); padding:12px; box-shadow:inset 0 1px 0 #ffffff0a; }
   #detailDialog .forecastHeading { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px; }
   #detailDialog .forecastHeading > span { color:#bdcde0; font-size:11px; font-weight:800; }
-  #detailDialog .forecastStats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:10px 0; }
+  #detailDialog .forecastStats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:10px 0; }
+  @media(max-width:520px){#detailDialog .forecastStats{grid-template-columns:repeat(2,minmax(0,1fr))}#detailDialog .forecastStats>div:last-child{grid-column:1/-1}}
   #detailDialog .forecastStats > div { min-width:0; padding:9px; border:1px solid #647f9f88; border-radius:10px; background:#203a5b; }
   #detailDialog .forecastStats small, .battleOutcomeStats small, .battleOutcomeReward small { display:block; color:#bdcde0; font-size:10px; line-height:1.4; }
   #detailDialog .forecastStats strong { display:block; margin-top:3px; color:#ffe18a; font-size:13px; overflow-wrap:anywhere; }
@@ -12218,7 +12219,7 @@ body:has(.modal.open) #toast.toast.show {
 <div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
 <nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
 <div class="modal" id="factionModal"><div class="dialog"><h2>Raise Your Banner</h2><p>Choose a faction. This changes your crest and resource bonus.</p><div class="factionGrid"><button class="faction wei" data-faction="Wei"><div class="cardIcon">🐉</div>WEI<br><small>+15% Iron</small></button><button class="faction shu" data-faction="Shu"><div class="cardIcon">🦚</div>SHU<br><small>+15% Food</small></button><button class="faction wu" data-faction="Wu"><div class="cardIcon">🐅</div>WU<br><small>+15% Coins</small></button></div></div></div>
-<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-E1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
+<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F4 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
 <div class="modal" id="detailModal"><div class="dialog" id="detailDialog"></div></div>
 <div class="modal" id="battleModal"><div class="dialog battleDialog"><div class="row spread"><div><h2 id="battleTitle">Battle</h2><div id="battleStatus">Engaging enemy...</div></div><button class="secondary hidden" id="battleExit">Exit</button></div><div class="battlefield" id="battlefield"></div><div class="battleOutcomeSummary hidden" id="battleOutcomeSummary" aria-live="polite"></div><div class="battleTactics" id="battleTactics" aria-label="Tactical orders">
 <div class="battleTacticsHead"><span>TACTICAL ORDERS</span><strong id="battleTacticStatus">Choose an order · 5 second effect</strong></div>
@@ -12233,7 +12234,7 @@ body:has(.modal.open) #toast.toast.show {
 (() => {
   'use strict';
   const $ = q => document.querySelector(q), $$ = q => Array.from(document.querySelectorAll(q));
-  const BUILD_VERSION = 'P1.4-E1', SAVE_SCHEMA = 4;
+  const BUILD_VERSION = 'P1.4-F4', SAVE_SCHEMA = 4;
   const GameEvents = (() => {
     const listeners = new Map(), seen = new Map();
     return {
@@ -12260,7 +12261,8 @@ body:has(.modal.open) #toast.toast.show {
     }
   })();
   window.WDGame = { version: BUILD_VERSION, schema: SAVE_SCHEMA, events: GameEvents };
-  const P1 = { maxBuildingLevel: 15, costGrowth: 1.5, productionGrowth: 1.35, timeGrowth: 1.22, deploymentFoodPerPower: .06, deploymentCoinsPerPower: .018, repairWoodPerDamage: 5, repairIronPerDamage: 2 };
+  const P1 = { maxBuildingLevel: 15, costGrowth: 1.5, productionGrowth: 1.35, timeGrowth: 1.22, deploymentFoodPerPower: .06, deploymentCoinsPerPower: .018, repairWoodPerDamage: 5, repairIronPerDamage: 2, startResources: { food: 500, wood: 500, iron: 220, coins: 500 }, buildBaseSeconds: 25, buildStepSeconds: 20, upgradeBaseMs: 45000, upgradeTimeGrowth: 1.18, researchTimeMultiplier: 4, trainingBaseSeconds: 18, trainingStepSeconds: 3, defeatArmyLoss: .15, enemyThreatPowerRatio: .40, lateNodeThreatRatio: .30, finalNodeThreatRatio: .24, introEnemyDamageMultiplier: .40 };
+  // Stage F balance values affect new starts and newly initiated orders. Existing save inventory and active timers are preserved.
   function scaleCost(base, level, growth = P1.costGrowth) {
     const out = {};
     Object.entries(base || {}).forEach(([k, v]) => out[k] = Math.max(1, Math.round(v * Math.pow(growth, Math.max(0, level - 1)))));
@@ -12346,7 +12348,7 @@ body:has(.modal.open) #toast.toast.show {
   }
   const UNITS = { Infantry: { icon: '🗡️', cost: { food: 35, iron: 10 }, power: 10, need: 'Barracks', time: 1 }, Spearmen: { icon: '🔱', cost: { food: 45, wood: 15 }, power: 13, need: 'Barracks', time: 1.2 }, Archers: { icon: '🏹', cost: { food: 40, wood: 25 }, power: 14, need: 'Archer Camp', time: 1.35 }, Cavalry: { icon: '🐎', cost: { food: 75, coins: 30 }, power: 22, need: 'Stable', time: 1.8 }, 'Siege Engineers': { icon: '💣', cost: { wood: 70, iron: 45 }, power: 28, need: 'Academy', time: 2.3 } };
   const GENERALS = [{ name: 'Cao Cao', icon: '🧔🏻', skill: 'Commanding Surge', type: 'Infantry' }, { name: 'Liu Bei', icon: '👨🏻‍🦱', skill: 'Benevolent Rally', type: 'Spearmen' }, { name: 'Sun Quan', icon: '👨🏻', skill: 'Tigerfire Volley', type: 'Archers' }];
-  const MAP = [{ name: 'Home Citadel', x: 14, y: 80, p: 0 }, { name: 'Bandit Camp', x: 34, y: 65, p: 60 }, { name: 'Yellow Ford', x: 58, y: 78, p: 145 }, { name: 'Red Cliff', x: 76, y: 52, p: 250 }, { name: 'Hanzhong Gate', x: 48, y: 35, p: 380 }, { name: 'Imperial Capital', x: 76, y: 17, p: 540 }];
+  const MAP = [{ name: 'Home Citadel', x: 14, y: 80, p: 0 }, { name: 'Bandit Camp', x: 34, y: 65, p: 40 }, { name: 'Yellow Ford', x: 58, y: 78, p: 145 }, { name: 'Red Cliff', x: 76, y: 52, p: 250 }, { name: 'Hanzhong Gate', x: 48, y: 35, p: 380 }, { name: 'Imperial Capital', x: 76, y: 17, p: 540 }];
   const Store = (() => {
     let memory = null, available = false;
     try {
@@ -12387,7 +12389,7 @@ body:has(.modal.open) #toast.toast.show {
       }
     }
   })();
-  const fresh = () => ({ faction: null, r: { food: 700, wood: 700, iron: 300, coins: 700 }, level: 1, buildings: [{ type: 'Palace', level: 1, slot: 12, pending: 0 }, { type: 'Farm', level: 1, slot: 7, pending: 0 }], units: { Infantry: 0, Spearmen: 0, Archers: 0, Cavalry: 0, 'Siege Engineers': 0 }, generals: [], assigned: null, territory: 0, quests: { collect: false, lumber: false, palace: false, train: false, general: false, bandit: false, reward: false }, tutorial: 0, reports: [], sound: true, reducedMotion: false, trainingQueue: [], lastProduction: Date.now(), lastSeen: Date.now(), nextRaidAt: Date.now() + 1200000, campaignCycle: 0, endSeen: false });
+  const fresh = () => ({ faction: null, r: { ...P1.startResources }, level: 1, buildings: [{ type: 'Palace', level: 1, slot: 12, pending: 0 }, { type: 'Farm', level: 1, slot: 7, pending: 0 }], units: { Infantry: 0, Spearmen: 0, Archers: 0, Cavalry: 0, 'Siege Engineers': 0 }, generals: [], assigned: null, territory: 0, quests: { collect: false, lumber: false, palace: false, train: false, general: false, bandit: false, reward: false }, tutorial: 0, reports: [], sound: true, reducedMotion: false, trainingQueue: [], lastProduction: Date.now(), lastSeen: Date.now(), nextRaidAt: Date.now() + 1200000, campaignCycle: 0, endSeen: false });
   const RESEARCH = {
     food: { name: 'Agricultural Methods', branch: 'Economy', icon: '🌾', desc: '+8% Food production per level', cost: { coins: 160, wood: 80 }, time: 18000, max: 3 },
     wood: { name: 'Timber Administration', branch: 'Economy', icon: '🪵', desc: '+8% Wood production per level', cost: { coins: 160, food: 100 }, time: 18000, max: 3 },
@@ -12446,7 +12448,7 @@ body:has(.modal.open) #toast.toast.show {
     return o
   }
   function researchDuration(k, next) {
-    return Math.round(RESEARCH[k].time * Math.pow(1.3, next - 1) / Math.max(1, 1 + (academyLevel() - 1) * .08))
+    return Math.round(RESEARCH[k].time * P1.researchTimeMultiplier * Math.pow(1.3, next - 1) / Math.max(1, 1 + (academyLevel() - 1) * .08))
   }
   function researchUnlocked(k) {
     const d = RESEARCH[k], lvl = researchLevel(k);
@@ -12740,10 +12742,9 @@ body:has(.modal.open) #toast.toast.show {
     e._hideTimer = setTimeout(() => e.classList.remove('show'), 1500);
     tone()
   }
+  // Keep this compatibility helper aligned with the production rate used by the dashboard.
   function production(b) {
-    const r = DB[b.type].prod;
-    const boost = (S.faction === 'Shu' && r === 'food') || (S.faction === 'Wei' && r === 'iron') ? 1.15 : 1;
-    return Math.floor(20 * b.level * boost)
+    return Math.floor(ratePerSecond(b) * 60)
   }
   function stackPower(n, q) {
     const u = unitUpgrade(n), spec = n === 'Infantry' ? researchLevel('infantry') * .05 : n === 'Archers' ? researchLevel('archers') * .05 : n === 'Cavalry' ? researchLevel('cavalry') * .05 : 0;
@@ -13060,11 +13061,12 @@ body:has(.modal.open) #toast.toast.show {
     const n = Math.max(0, Math.ceil(ms / 1000)), m = Math.floor(n / 60), sec = String(n % 60).padStart(2, '0');
     return m ? `${m}:${sec}` : `0:${sec}`
   }
+  // Stage F pacing: longer actions support planning, while production/army management remain available.
   function buildDuration(level) {
-    return (8 + (Math.max(1, level) - 1) * 7) * 1000
+    return (P1.buildBaseSeconds + (Math.max(1, level) - 1) * P1.buildStepSeconds) * 1000
   }
   function upgradeDuration(targetLevel) {
-    return Math.round(12000 * Math.pow(P1.timeGrowth, Math.max(0, targetLevel - 2)))
+    return Math.round(P1.upgradeBaseMs * Math.pow(P1.upgradeTimeGrowth, Math.max(0, targetLevel - 2)))
   }
   function trainingBuildingLevel(unit) {
     const need = UNITS[unit]?.need, b = S.buildings.find(x => x.type === need && !x.constructing);
@@ -13072,7 +13074,8 @@ body:has(.modal.open) #toast.toast.show {
   }
   function trainingDuration(unit, q) {
     const lvl = trainingBuildingLevel(unit), factor = UNITS[unit]?.time || 1;
-    return Math.max(3000, Math.round((6 + Math.max(0, q - 1)) * factor * 1000 / (1 + (lvl - 1) * .16) / (1 + researchEffect('trainingSpeed'))))
+    const baseSeconds = P1.trainingBaseSeconds + Math.max(0, q - 1) * P1.trainingStepSeconds;
+    return Math.max(5000, Math.round(baseSeconds * factor * 1000 / (1 + (lvl - 1) * .16) / (1 + researchEffect('trainingSpeed'))))
   }
   function constructionStage(b, now = Date.now()) {
     if (!b.finishAt || !b.startedAt) return 1;
@@ -13791,9 +13794,31 @@ body:has(.modal.open) #toast.toast.show {
       map.appendChild(btn)
     })
   }
+  // Enemy power is scaled by territory threat and a progression-specific ratio.
+  // The introductory Bandit Camp is deliberately lighter; later encounters use
+  // compositions whose counters are available by the time those territories are reached.
   function enemyComposition(i) {
-    const p = nodePower(i);
-    return i % 3 === 0 ? [['Infantry', Math.max(3, Math.round(p / 22))], ['Archers', Math.max(1, Math.round(p / 58))]] : i % 3 === 1 ? [['Cavalry', Math.max(2, Math.round(p / 32))], ['Infantry', Math.max(2, Math.round(p / 50))]] : [['Archers', Math.max(3, Math.round(p / 25))], ['Spearmen', Math.max(2, Math.round(p / 48))]]
+    const cycle = Math.max(0, S.campaignCycle || 0);
+    if (i === 1 && cycle === 0) return [['Cavalry', 1], ['Infantry', 1]];
+    const threat = nodePower(i);
+    let ratio = P1.enemyThreatPowerRatio;
+    let groups;
+    switch (i) {
+      case 2: groups = [['Cavalry', 2], ['Infantry', 2]]; break;
+      case 3: groups = [['Infantry', 3], ['Archers', 1]]; break;
+      case 4: groups = [['Cavalry', 2], ['Infantry', 2]]; ratio = P1.lateNodeThreatRatio; break;
+      case 5: groups = [['Cavalry', 2], ['Archers', 2]]; ratio = P1.finalNodeThreatRatio; break;
+      default: groups = [['Cavalry', 2], ['Infantry', 2]]; break;
+    }
+    const targetPower = Math.max(18, threat * ratio);
+    return groups.map(([type, minimum]) => {
+      const desiredStackPower = targetPower / groups.length;
+      const quantity = Math.round(Math.pow(Math.max(1, desiredStackPower) / UNITS[type].power, 1 / .7));
+      return [type, Math.max(minimum, quantity)];
+    })
+  }
+  function combatDamageMultiplier(side, index) {
+    return side === 'enemy' && index === 1 && !(S.campaignCycle || 0) ? P1.introEnemyDamageMultiplier : 1
   }
   function compositionHTML(list) {
     return list.map(([n, q]) => `<span class="unitChip">${UNITS[n]?.icon || '⚔️'} ${n} ×${q}</span>`).join('')
@@ -13805,6 +13830,56 @@ body:has(.modal.open) #toast.toast.show {
     if (types.includes('Cavalry')) rec.push('Spearmen');
     return [...new Set(rec)]
   }
+  // Apply casualties against the army total, then distribute them proportionally across stacks.
+  // This avoids rounding every small troop type up to a whole casualty independently.
+  function distributeStackCasualties(stackRows, requestedLosses) {
+    const rows = stackRows.map(({ type, count }) => ({
+      type, count: Math.max(0, Math.floor(Number(count) || 0)), lost: 0, fraction: 0
+    }));
+    const total = rows.reduce((sum, row) => sum + row.count, 0);
+    const casualties = Math.min(total, Math.max(0, Math.floor(Number(requestedLosses) || 0)));
+    if (!total || !casualties) return { total, casualties: 0, survivors: Object.fromEntries(rows.map(row => [row.type, row.count])) };
+    rows.forEach(row => {
+      const exact = row.count * casualties / total;
+      row.lost = Math.min(row.count, Math.floor(exact));
+      row.fraction = exact - row.lost;
+    });
+    let remaining = casualties - rows.reduce((sum, row) => sum + row.lost, 0);
+    rows.slice().sort((a, b) => b.fraction - a.fraction || b.count - a.count || a.type.localeCompare(b.type)).forEach(row => {
+      if (remaining > 0 && row.lost < row.count) { row.lost++; remaining--; }
+    });
+    return { total, casualties, survivors: Object.fromEntries(rows.map(row => [row.type, Math.max(0, row.count - row.lost)])) };
+  }
+  function victoryCasualtyCount(totalTroops, rate) {
+    const total = Math.max(0, Math.floor(Number(totalTroops) || 0));
+    return total ? Math.min(total, Math.max(0, Math.round(total * Math.max(0, Number(rate) || 0)))) : 0;
+  }
+  // Round defeat casualties against the army total, then distribute them proportionally
+  // across troop types. This avoids losing an entire small troop group merely because each
+  // group's percentage was rounded independently.
+  function defeatLossCount(totalTroops) {
+    const total = Math.max(0, Math.floor(Number(totalTroops) || 0));
+    return total ? Math.min(total, Math.max(1, Math.floor(total * P1.defeatArmyLoss))) : 0;
+  }
+  function applyDefeatCasualties(unitCounts) {
+    const rows = Object.entries(unitCounts).map(([type, count]) => ({
+      type, count: Math.max(0, Math.floor(Number(count) || 0)), lost: 0, fraction: 0
+    }));
+    const total = rows.reduce((sum, row) => sum + row.count, 0);
+    const targetLosses = defeatLossCount(total);
+    if (!total || !targetLosses) return { total, casualties: 0, percent: 0 };
+    rows.forEach(row => {
+      const exact = row.count * targetLosses / total;
+      row.lost = Math.min(row.count, Math.floor(exact));
+      row.fraction = exact - row.lost;
+    });
+    let remaining = targetLosses - rows.reduce((sum, row) => sum + row.lost, 0);
+    rows.slice().sort((a, b) => b.fraction - a.fraction || b.count - a.count).forEach(row => {
+      if (remaining > 0 && row.lost < row.count) { row.lost++; remaining--; }
+    });
+    rows.forEach(row => { unitCounts[row.type] = Math.max(0, row.count - row.lost); });
+    return { total, casualties: targetLosses, percent: Math.round(targetLosses / total * 100) };
+  }
   function simulateForecast(i, runs = 30) {
     // Run a deterministic forecast using the same baseline movement, targeting,
     // counters, unit stats, general bonuses, attack cadence, and defeat rules as
@@ -13814,7 +13889,7 @@ body:has(.modal.open) #toast.toast.show {
     const enemy = enemyComposition(i);
     const initialArmyCount = mine.reduce((sum, [, q]) => sum + q, 0);
     const totalRuns = Math.max(10, Math.min(60, Math.round(runs) || 30));
-    if (!initialArmyCount) return { wins: 0, runs: totalRuns, chance: 0, losses: 0, capped: 0, noArmy: true };
+    if (!initialArmyCount) return { wins: 0, runs: totalRuns, chance: 0, losses: null, defeatLossCount: 0, defeatLosses: 0, capped: 0, noArmy: true };
 
     const fingerprint = [i, S.campaignCycle || 0, S.faction || '', S.assigned ?? '',
       ...mine.map(([type, q]) => `${type}:${q}:${JSON.stringify(battleUnitStats('player', type, q))}`),
@@ -13835,14 +13910,14 @@ body:has(.modal.open) #toast.toast.show {
       };
     };
 
-    let wins = 0, lossPctTotal = 0, capped = 0;
+    let wins = 0, victoryLossPctTotal = 0, capped = 0;
     for (let run = 0; run < totalRuns; run++) {
       const random = makeRandom((baseSeed + Math.imul(run + 1, 0x9E3779B9)) >>> 0);
       const units = [];
-      const addSide = (side, list) => list.slice(0, 5).forEach(([type, q]) => {
+      const addSide = (side, list) => list.slice(0, 5).forEach(([type, q], lane) => {
         const stats = battleUnitStats(side, type, q);
-        units.push({ side, type, q, hp: stats.hp, max: stats.hp,
-          x: side === 'player' ? 11 : 89, damage: stats.damage, cool: 0 });
+        units.push({ side, type, q, hp: stats.hp, max: stats.hp, hpPerTroop: stats.hpPerTroop || stats.hp / Math.max(1, q),
+          x: side === 'player' ? 11 : 89, y: 24 + lane * 14, damage: stats.damage * combatDamageMultiplier(side, i), cool: 0 });
       });
       addSide('player', mine);
       addSide('enemy', enemy);
@@ -13861,7 +13936,8 @@ body:has(.modal.open) #toast.toast.show {
         alive.forEach(u => {
           const targets = alive.filter(v => v.side !== u.side);
           if (!targets.length) return;
-          const target = targets.reduce((a, b) => Math.abs(b.x - u.x) < Math.abs(a.x - u.x) ? b : a);
+          const distanceTo = v => Math.hypot(v.x - u.x, (v.y - u.y) * .8);
+          const target = targets.reduce((a, b) => distanceTo(b) < distanceTo(a) ? b : a);
           if (Math.abs(target.x - u.x) > 9) {
             u.x += (u.side === 'player' ? 1 : -1) * .05 * (u.type === 'Cavalry' ? 19 : 12);
           } else if ((u.cool -= .05) <= 0) {
@@ -13869,7 +13945,7 @@ body:has(.modal.open) #toast.toast.show {
             // This deliberately mirrors the live battle loop's assigned-general bonus.
             if (u.side === 'player' && S.assigned !== null && GENERALS[S.assigned]?.type === u.type) damage *= 1.2;
             target.hp -= damage;
-            target.q = Math.max(0, Math.ceil(target.hp / 32));
+            target.q = Math.max(0, Math.ceil(Math.max(0, target.hp) / target.hpPerTroop));
             u.cool = .62;
           }
         });
@@ -13887,16 +13963,21 @@ body:has(.modal.open) #toast.toast.show {
       if (outcome) {
         wins++;
         const casualtyRate = Math.max(.02, (.08 + random() * .04) - researchEffect('casualtyReduction'));
-        const survivorCount = units.filter(u => u.side === 'player')
-          .reduce((sum, u) => sum + Math.max(0, Math.floor(u.q * (1 - casualtyRate))), 0);
-        lossPctTotal += Math.max(0, (initialArmyCount - survivorCount) / initialArmyCount * 100);
-      } else {
-        // The live defeat handler removes 30% of the player's pre-battle army.
-        lossPctTotal += 30;
+        const playerStacks = units.filter(u => u.side === 'player').map(u => ({ type: u.type, count: Math.max(0, Math.floor(u.q)) }));
+        const aliveBeforeAttrition = playerStacks.reduce((sum, row) => sum + row.count, 0);
+        const attrition = victoryCasualtyCount(aliveBeforeAttrition, casualtyRate);
+        const survivorCount = Object.values(distributeStackCasualties(playerStacks, attrition).survivors).reduce((sum, count) => sum + count, 0);
+        victoryLossPctTotal += Math.max(0, (initialArmyCount - survivorCount) / initialArmyCount * 100);
       }
+      // A defeat has its own fixed recovery rule. Do not average that penalty
+      // into the victory casualty estimate: doing so made tougher enemies
+      // misleadingly appear to cause fewer losses when more simulations failed.
     }
+    const defeatLosses = initialArmyCount ? Math.round(defeatLossCount(initialArmyCount) / initialArmyCount * 100) : 0;
     return { wins, runs: totalRuns, chance: Math.round(wins / totalRuns * 100),
-      losses: Math.round(lossPctTotal / totalRuns), capped };
+      losses: wins ? Math.round(victoryLossPctTotal / wins) : null,
+      defeatLossCount: initialArmyCount ? defeatLossCount(initialArmyCount) : 0,
+      defeatLosses, capped };
   }
   function openDeploy(i) {
     // A deployment dialog takes focus; clear transient city messages so they cannot cover it.
@@ -13911,20 +13992,20 @@ body:has(.modal.open) #toast.toast.show {
     const cappedReward = Object.fromEntries(Object.entries(reward).map(([key, amount]) => [key, Math.max(0, Math.min(amount, storageCap() - (S.r[key] || 0)))]));
     const rewardable = Object.fromEntries(Object.entries(cappedReward).filter(([, amount]) => amount > 0));
     const rewardText = Object.keys(rewardable).length ? `${costText(rewardable)}${Object.entries(reward).some(([key, amount]) => cappedReward[key] < amount) ? ' · some rewards limited by storage' : ''}` : 'Storage is full; no immediate resources will be added.';
-    const loss = forecast.noArmy ? 'Unavailable' : forecast.losses <= 12 ? 'Low' : forecast.losses <= 28 ? 'Moderate' : 'High';
+    const loss = forecast.noArmy || forecast.losses === null ? 'Unavailable' : forecast.losses <= 12 ? 'Low' : forecast.losses <= 28 ? 'Moderate' : 'High';
     const cappedNote = forecast.capped ? `<small class="forecastNote">${forecast.capped} simulation${forecast.capped === 1 ? '' : 's'} reached the safety limit; estimate is less certain.</small>` : '';
     $('#detailDialog').innerHTML = `<div class="row spread"><h2>Attack ${n.name}</h2><button class="secondary closeDetailAction">Close</button></div>
       <div class="deployGrid">
         <div class="deploySide"><b>Your Army · ${armyPower()} Power</b><div class="unitChips">${compositionHTML(mine) || 'No troops'}</div><p>General: ${S.assigned === null ? 'None' : GENERALS[S.assigned].name}</p></div>
-        <div class="deploySide"><b>Enemy · ${nodePower(i)} Threat</b><div class="unitChips">${compositionHTML(enemy)}</div><p>Defense: ${i > 2 ? 'Fortified' : 'Field position'}</p></div>
+        <div class="deploySide"><b>Enemy · ${nodePower(i)} Threat</b><div class="unitChips">${compositionHTML(enemy)}</div><p>Defense: ${i === 1 && !(S.campaignCycle || 0) ? 'Introductory patrol · reduced enemy damage' : i > 2 ? 'Fortified' : 'Field position'}</p></div>
       </div>
       <div class="forecast">
         <div class="forecastHeading"><b class="difficulty ${difficulty}">${forecast.noArmy ? 'No deployable troops' : `Estimated win chance · ${forecast.chance}%`}</b><span>${forecast.noArmy ? 'Train troops for an estimate' : `${forecast.wins}/${forecast.runs} simulations`}</span></div>
-        <div class="forecastStats"><div><small>Projected army losses</small><strong>${forecast.noArmy ? '— · Unavailable' : `${forecast.losses}% · ${loss}`}</strong></div><div><small>Deployment supply</small><strong>${costText(supply)}</strong></div></div>
+        <div class="forecastStats"><div><small>Casualties if victorious</small><strong>${forecast.noArmy || forecast.losses === null ? '— · No simulated victories' : `${forecast.losses}% · ${loss}`}</strong></div><div><small>Loss if defeated</small><strong>${forecast.noArmy ? '— · Unavailable' : `${forecast.defeatLossCount} troops · ${forecast.defeatLosses}%`}</strong></div><div><small>Deployment supply</small><strong>${costText(supply)}</strong></div></div>
         <p><b>Recommended counters:</b> ${recommend(enemy).join(', ') || 'Balanced force'}</p>
         <p><b>Battle tip:</b> Charge to break through, Shield Wall when your line is weak, or Focus Fire to finish a wounded enemy.</p>
         <p><b>Estimated resources received if victorious:</b> ${rewardText}</p>
-        <small class="forecastNote">Simulation uses your current troops, upgrades, research and assigned general, with standard tactics. Active tactical orders and general abilities can change the result.</small>
+        <small class="forecastNote">Victory casualties are averaged only across simulated wins. If defeated, the recovery penalty is 15% of the army, rounded down (minimum 1 troop lost when troops are deployed). Forecasts use standard tactics; active orders and general abilities can change the result.</small>
         ${cappedNote}
       </div>
       <button class="primary" id="deployBtn" ${armyPower() < 10 ? 'disabled aria-disabled="true"' : ''}>${armyPower() < 10 ? 'Train troops to deploy' : 'Deploy Army'}</button>`;
@@ -13935,15 +14016,16 @@ body:has(.modal.open) #toast.toast.show {
   }
   function battleUnitStats(side, type, q) {
     const qty = Math.max(1, q), baseDamage = (UNITS[type]?.power || 11) * Math.pow(qty, .7);
-    if (side !== 'player') return { hp: qty * 32, damage: baseDamage };
+    if (side !== 'player') return { hp: qty * 32, hpPerTroop: 32, damage: baseDamage };
     const u = unitUpgrade(type), spec = type === 'Infantry' ? researchLevel('infantry') * .05 : type === 'Archers' ? researchLevel('archers') * .05 : type === 'Cavalry' ? researchLevel('cavalry') * .05 : 0;
-    return { hp: qty * 32 * (1 + u.armor * .05), damage: baseDamage * (1 + researchEffect('unitDamage')) * (1 + u.weapon * .04) * (1 + u.doctrine * .025) * (1 + spec) }
+    const hpPerTroop = 32 * (1 + u.armor * .05);
+    return { hp: qty * hpPerTroop, hpPerTroop, damage: baseDamage * (1 + researchEffect('unitDamage')) * (1 + u.weapon * .04) * (1 + u.doctrine * .025) * (1 + spec) }
   }
   function makeBattleUnits(side, p, index) {
     const list = side === 'player' ? Object.entries(S.units).filter(([, q]) => q > 0) : enemyComposition(index);
     return list.slice(0, 5).map(([type, q], i) => {
       const stats = battleUnitStats(side, type, q);
-      return { side, type, q, hp: stats.hp, max: stats.hp, x: side === 'player' ? 11 : 89, y: 24 + i * 14, damage: stats.damage, cool: 0, el: null, baseDamage: stats.damage }
+      return { side, type, q, hp: stats.hp, max: stats.hp, hpPerTroop: stats.hpPerTroop || stats.hp / Math.max(1, q), x: side === 'player' ? 11 : 89, y: 24 + i * 14, damage: stats.damage * combatDamageMultiplier(side, index), cool: 0, el: null, baseDamage: stats.damage * combatDamageMultiplier(side, index) }
     })
   }
   function startBattle(i) {
@@ -14009,7 +14091,12 @@ body:has(.modal.open) #toast.toast.show {
       const targets = alive.filter(v => v.side !== u.side);
       if (!targets.length) return;
       let target;
-      if (u.side === 'player' && activeTactic === 'focus') target = targets.reduce((a, b) => a.hp < b.hp ? a : b); else target = targets.reduce((a, b) => Math.abs(b.x - u.x) < Math.abs(a.x - u.x) ? b : a);
+      if (u.side === 'player' && activeTactic === 'focus') {
+        target = targets.reduce((a, b) => a.hp < b.hp ? a : b);
+      } else {
+        const distanceTo = v => Math.hypot(v.x - u.x, (v.y - u.y) * .8);
+        target = targets.reduce((a, b) => distanceTo(b) < distanceTo(a) ? b : a);
+      }
       if (Math.abs(target.x - u.x) > 9) {
         const marchBoost = u.side === 'player' && activeTactic === 'charge' ? (S.faction === 'Wei' ? 1.65 : 1.5) : 1;
         u.x += (u.side === 'player' ? 1 : -1) * dt * (u.type === 'Cavalry' ? 19 : 12) * marchBoost
@@ -14021,7 +14108,7 @@ body:has(.modal.open) #toast.toast.show {
         if (u.side === 'player' && activeTactic === 'focus') dmg *= S.faction === 'Wu' ? 1.2 : 1.1;
         if (target.side === 'player' && activeTactic === 'wall') dmg *= S.faction === 'Shu' ? .44 : .62;
         target.hp -= dmg;
-        target.q = Math.max(0, Math.ceil(target.hp / 32));
+        target.q = Math.max(0, Math.ceil(Math.max(0, target.hp) / target.hpPerTroop));
         if (target.el && !S.reducedMotion) {
           target.el.classList.remove('hit');
           void target.el.offsetWidth;
@@ -14048,10 +14135,31 @@ body:has(.modal.open) #toast.toast.show {
     if (!battle || battle.used || S.assigned === null) return;
     battle.used = true;
     const g = GENERALS[S.assigned], players = battle.units.filter(u => u.side === 'player' && u.hp > 0), enemies = battle.units.filter(u => u.side === 'enemy' && u.hp > 0);
-    if (g.name === 'Cao Cao') players.filter(u => u.type === 'Infantry').forEach(u => {
-      u.damage *= 1.65;
-      u.haste = true
-    }); else if (g.name === 'Liu Bei') players.forEach(u => u.hp = Math.min(u.max, u.hp + u.max * .38)); else enemies.sort((a, b) => b.x - a.x).slice(0, 2).forEach(u => u.hp -= u.max * .42);
+    if (g.name === 'Cao Cao') {
+      players.filter(u => u.type === 'Infantry').forEach(u => {
+        u.damage *= 1.65;
+        u.haste = true
+      });
+    } else if (g.name === 'Liu Bei') {
+      players.forEach(u => {
+        u.hp = Math.min(u.max, u.hp + u.max * .38);
+        u.q = Math.max(0, Math.ceil(Math.max(0, u.hp) / u.hpPerTroop));
+        if (u.el) {
+          u.el.querySelector('small span').textContent = u.q;
+          u.el.querySelector('.hp i').style.width = Math.max(0, u.hp / u.max * 100) + '%';
+        }
+      });
+    } else {
+      enemies.sort((a, b) => b.x - a.x).slice(0, 2).forEach(u => {
+        u.hp -= u.max * .42;
+        u.q = Math.max(0, Math.ceil(Math.max(0, u.hp) / u.hpPerTroop));
+        if (u.el) {
+          u.el.querySelector('small span').textContent = u.q;
+          u.el.querySelector('.hp i').style.width = Math.max(0, u.hp / u.max * 100) + '%';
+          u.el.classList.toggle('hidden', u.hp <= 0);
+        }
+      });
+    }
     const wave = document.createElement('span');
     wave.className = 'abilityWave';
     $('#battlefield').appendChild(wave);
@@ -14070,8 +14178,10 @@ body:has(.modal.open) #toast.toast.show {
       const actualRewards = {};
       Object.entries(r).forEach(([k, v]) => { const before = S.r[k] || 0; S.r[k] = Math.min(storageCap(), before + v); actualRewards[k] = S.r[k] - before; });
       const casualtyRate = Math.max(.02, (.08 + Math.random() * .04) - researchEffect('casualtyReduction'));
-      const survivors = {};
-      battle.units.filter(u => u.side === 'player').forEach(u => survivors[u.type] = Math.max(0, Math.floor(u.q * (1 - casualtyRate))));
+      const playerStacks = battle.units.filter(u => u.side === 'player').map(u => ({ type: u.type, count: Math.max(0, Math.floor(u.q)) }));
+      const aliveBeforeAttrition = playerStacks.reduce((sum, row) => sum + row.count, 0);
+      const attrition = victoryCasualtyCount(aliveBeforeAttrition, casualtyRate);
+      const survivors = distributeStackCasualties(playerStacks, attrition).survivors;
       Object.keys(S.units).forEach(k => S.units[k] = survivors[k] || 0);
       S.territory = Math.max(S.territory, i);
       if (i === 1) {
@@ -14085,9 +14195,9 @@ body:has(.modal.open) #toast.toast.show {
       rewardForSummary = { actual: actualRewards, nominal: r, capped: rewardCapped };
       if (i === MAP.length - 1) setTimeout(showCampaignEnding, 500)
     } else {
-      Object.keys(S.units).forEach(k => S.units[k] = Math.floor(S.units[k] * .7));
-      S.reports.unshift(`Defeat at ${MAP[i].name} · Army lost 30% strength`);
-      $('#battleStatus').textContent = 'DEFEAT · Army withdrew'
+      const defeatLoss = applyDefeatCasualties(S.units);
+      S.reports.unshift(`Defeat at ${MAP[i].name} · ${defeatLoss.casualties} troops lost (${defeatLoss.percent}%)`);
+      $('#battleStatus').textContent = `DEFEAT · ${defeatLoss.casualties} troops lost · Army withdrew`
     }
     const survivingTotal = Object.values(S.units).reduce((sum, q) => sum + Math.max(0, q || 0), 0);
     const casualties = Math.max(0, startingTotal - survivingTotal);
