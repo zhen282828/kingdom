@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion — Defense Damage Fix</title>
+<html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion — Stage E Visual Refinement</title>
 <meta name="application-name" content="Three Kingdoms: Warlord Dominion">
-<meta name="wd-build" content="P1.4-Q3">
+<meta name="wd-build" content="P1.4-E1">
 <meta name="wd-save-schema" content="4">
 <meta name="theme-color" content="#142641"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="format-detection" content="telephone=no">
 
@@ -11884,7 +11884,329 @@ body.motionReduced *::after {
     and building-popup positioning. Keep these scripts in DOM order.
   - This file remains self-contained; no feature code or external dependency is required.
 -->
-</head><body><div class="game"><header class="topbar"><div class="ab-crest"><div class="crestIcon" id="factionCrest">⚔️</div><div class="logo">THREE KINGDOMS<br>WARLORD DOMINION</div></div><div class="level">🏯 <span id="cityLevel">1</span></div><div class="resources"><span class="res">🌾 <b id="food">0</b><small id="foodCap"></small></span><span class="res">🪵 <b id="wood">0</b><small id="woodCap"></small></span><span class="res">⛓️ <b id="iron">0</b><small id="ironCap"></small></span><span class="res">🪙 <b id="coins">0</b><small id="coinsCap"></small></span></div><button class="iconBtn" id="settingsBtn" aria-label="Settings">⚙️</button></header>
+
+<style id="wd-stage-b-combat-and-portrait">
+  /* Stage B: combat forecast and post-battle feedback; keep existing theme tokens. */
+  #detailDialog .forecast { display:block; border:1px solid #6d86a6; border-radius:14px; background:linear-gradient(145deg,#142b47,#0d1e32); padding:12px; box-shadow:inset 0 1px 0 #ffffff0a; }
+  #detailDialog .forecastHeading { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px; }
+  #detailDialog .forecastHeading > span { color:#bdcde0; font-size:11px; font-weight:800; }
+  #detailDialog .forecastStats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin:10px 0; }
+  #detailDialog .forecastStats > div { min-width:0; padding:9px; border:1px solid #647f9f88; border-radius:10px; background:#203a5b; }
+  #detailDialog .forecastStats small, .battleOutcomeStats small, .battleOutcomeReward small { display:block; color:#bdcde0; font-size:10px; line-height:1.4; }
+  #detailDialog .forecastStats strong { display:block; margin-top:3px; color:#ffe18a; font-size:13px; overflow-wrap:anywhere; }
+  #detailDialog .forecast p { margin:7px 0; line-height:1.45; }
+  #detailDialog .forecastNote { display:block; margin-top:7px; color:#b9cadd; font-size:10px; line-height:1.45; }
+  #battleOutcomeSummary { flex:0 0 auto; margin:8px 0 2px; padding:10px 12px; border:1px solid #8f7644; border-radius:13px; background:linear-gradient(145deg,#172f4b,#0e2035); color:#f2e6c9; box-shadow:0 4px 12px #0003; }
+  #battleOutcomeSummary.hidden { display:none !important; }
+  .battleOutcomeHead { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+  .battleOutcomeHead strong { color:#ffe18a; font-size:14px; }
+  .battleOutcomeHead span { color:#c6d5e6; font-size:11px; }
+  .battleOutcomeStats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+  .battleOutcomeStats > div { min-width:0; padding:7px; border-radius:8px; background:#203a5b; }
+  .battleOutcomeStats b { display:block; margin-top:3px; color:#fff; font-size:13px; overflow-wrap:anywhere; }
+  .battleOutcomeReward { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:8px; padding-top:7px; border-top:1px solid #60799566; }
+  .battleOutcomeReward strong { color:#f6d985; font-size:11px; text-align:right; }
+  #portraitLockOverlay { display:none; position:fixed; inset:0; z-index:2147483000; align-items:center; justify-content:center; padding:24px; background:radial-gradient(circle at 50% 15%,#294767,#091523 75%); color:#f7edcf; }
+  #portraitLockOverlay .portraitLockCard { width:min(340px,100%); padding:24px 20px; border:2px solid #d9b65f; border-radius:22px; background:linear-gradient(155deg,#1c3655,#0e2035); box-shadow:0 12px 36px #0009; text-align:center; }
+  #portraitLockOverlay .portraitLockIcon { font-size:42px; line-height:1.2; }
+  #portraitLockOverlay h2 { margin:12px 0 7px; color:#ffe18a; font-size:20px; }
+  #portraitLockOverlay p { margin:0; color:#d3dfed; font-size:13px; line-height:1.55; }
+  @media screen and (orientation:landscape) and (max-width:900px) {
+    #portraitLockOverlay { display:flex !important; }
+    body > .game { visibility:hidden !important; pointer-events:none !important; }
+  }
+  @media (max-width:420px) {
+    #detailDialog .forecastStats { gap:6px; }
+    #detailDialog .forecastStats > div { padding:8px; }
+    #battleOutcomeSummary { padding:8px; }
+    .battleOutcomeStats { gap:4px; }
+    .battleOutcomeStats > div { padding:6px 5px; }
+    .battleOutcomeStats b { font-size:12px; }
+  }
+  @media (prefers-reduced-motion:reduce) { #portraitLockOverlay *, #battleOutcomeSummary * { animation:none !important; transition:none !important; } }
+</style>
+
+
+<style id="wd-stage-b-forecast-contrast">
+  /* The new after-action panel supersedes the old duplicate one-line report. */
+  #battleStatus .battleSummary { display:none !important; }
+  html:not(#_):not(#_):not(#_) body #detailModal.open #detailDialog .forecastStats small { color:#d5e1ee !important; }
+  html:not(#_):not(#_):not(#_) body #detailModal.open #detailDialog .forecastStats strong { color:#ffe18a !important; }
+  html:not(#_):not(#_):not(#_) body #detailModal.open #detailDialog .forecastNote { color:#c8d7e7 !important; }
+  html:not(#_):not(#_):not(#_) body #detailModal.open #detailDialog .forecastHeading > span { color:#d1deeb !important; }
+</style>
+
+
+<style id="wd-stage-c-queue-management">
+/* Stage C — Construction and training queue management.
+   Scoped to existing queue/panel components; game rules and state are unchanged. */
+.queuePanel {
+  margin: 0 0 12px;
+  padding: 12px;
+  color: #edf3fb;
+  background: linear-gradient(155deg, #172b48, #0e1b30 78%);
+  border: 1px solid #7b673e;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px #0004, inset 0 1px 0 #ffffff0a;
+}
+.trainingQueueHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 9px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #8b744333;
+}
+.trainingQueueHeader > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.trainingQueueHeader b { color: #ffdf8b; font-size: 14px; }
+.trainingQueueHeader span,
+.trainingQueueHeader small { color: #b8c8dc; font-size: 11px; }
+.queueOrderCard {
+  min-width: 0;
+  margin-top: 8px;
+  padding: 10px;
+  color: #edf3fb;
+  background: linear-gradient(145deg, #203a5a, #172c48);
+  border: 1px solid #607a9b88;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 0 #ffffff08;
+}
+.queueOrderTop {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+}
+.queueOrderInfo { min-width: 0; }
+.queueOrderInfo > b {
+  display: block;
+  overflow-wrap: anywhere;
+  color: #fff0c7;
+  font-size: 12px;
+  line-height: 1.35;
+}
+.queueOrderInfo .activityMeta { margin-top: 2px; color: #bacbe0; font-size: 10px; line-height: 1.4; overflow-wrap: anywhere; }
+.queueOrderTop .activityTime { white-space: nowrap; color: #ffdc7b; font-size: 11px; font-weight: 900; }
+.queueProgress {
+  height: 7px;
+  margin-top: 9px;
+  overflow: hidden;
+  background: #091525;
+  border: 1px solid #6c7d91;
+  border-radius: 99px;
+}
+.queueProgress > i {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  background: linear-gradient(90deg, #b47a2e, #ffdf7a);
+  border-radius: inherit;
+  transition: width .25s linear;
+}
+.queueProgressMeta { display: flex; justify-content: space-between; gap: 8px; margin-top: 4px; color: #aebfd4; font-size: 9px; }
+.queueOrderActions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.queueOrderActions button {
+  min-height: 32px;
+  flex: 1 1 auto;
+  padding: 5px 9px;
+  border-radius: 9px;
+  font-size: 10px;
+}
+.queueCancelBtn { border-color: #bd756d !important; }
+.queueLocateBtn { border-color: #7c93b0 !important; }
+/* Queueing remains available while another batch is training. */
+.trainingActive [data-train] { opacity: .92 !important; pointer-events: auto !important; }
+.activityPanel .activityHead { color: #ffe18a; padding-bottom: 8px; border-bottom: 1px solid #8b744333; }
+.activityPanel .activityHead span { color: #b8c8dc; font-size: 11px; }
+.activityPanel .activityItem.queueOrderCard { display: block; }
+.queueConfirmHeading { align-items: center; gap: 10px; }
+.queueConfirmHeading h2 { margin: 0; color: #ffdf8b; font-size: 20px; }
+.queueConfirmHeading .closeQueueConfirm { width: auto !important; min-width: 72px; min-height: 40px; flex: 0 0 auto; padding: 7px 13px; }
+.queueConfirmOrder,
+.queueConfirmRefund {
+  margin-top: 12px;
+  padding: 12px;
+  color: #eaf1fa;
+  background: #122641;
+  border: 1px solid #607b9e;
+  border-radius: 12px;
+}
+.queueConfirmOrder b { color: #ffe4a0; }
+.queueConfirmOrder p,
+.queueConfirmRefund p { margin: 6px 0 0; color: #c2d0e1; font-size: 12px; line-height: 1.5; }
+html:not(#_) body #detailModal .queueConfirmOrder p,
+html:not(#_) body #detailModal .queueConfirmRefund p { color: #c2d0e1 !important; }
+.queueRefundHeading { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #ffdf8b; font-size: 12px; }
+.queueRefundHeading span { color: #b8c8dc; font-size: 10px; text-align: right; }
+.queueRefundRows { display: grid; gap: 6px; margin-top: 9px; }
+.queueRefundRows > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 8px; align-items: center; padding-bottom: 6px; border-bottom: 1px solid #ffffff0d; font-size: 12px; }
+.queueRefundRows > div:last-child { padding-bottom: 0; border-bottom: 0; }
+.queueRefundRows strong { color: #bde3a9; }
+.queueRefundRows small { grid-column: 1 / -1; color: #e7b6a8; font-size: 10px; }
+.queueRefundEmpty { margin-top: 8px; color: #c2d0e1; font-size: 12px; }
+.queueConfirmActions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.queueConfirmActions button { min-height: 42px; }
+@media (max-width: 600px) {
+  .queuePanel { padding: 9px; }
+  .queueOrderCard { padding: 9px; }
+  .queueOrderTop { grid-template-columns: 26px minmax(0, 1fr) auto; gap: 6px; }
+  .queueOrderTop .activityIcon { font-size: 20px; }
+  .queueOrderInfo > b { font-size: 11px; }
+  .queueOrderTop .activityTime { font-size: 10px; }
+  .queueOrderActions button { min-height: 36px; font-size: 10px; }
+  .queueConfirmActions { display: grid; grid-template-columns: 1fr 1fr; }
+}
+/* Do not let transient toasts sit on top of a modal or cancellation confirmation. */
+body:has(.modal.open) #toast.toast.show {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .queueProgress > i { transition: none; }
+}
+</style>
+
+<style id="stage-d-defense-transparency">
+  /* Stage D: defense and raid transparency, using the shared navy/gold message-box system. */
+  .activityOrdersHeading {
+    margin: 12px 2px 7px;
+    color: #b9c9dd;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+  #activityPanel .defenseSummaryCard {
+    overflow: hidden;
+    margin: 9px 0 11px;
+    border: 1px solid #b78b3f;
+    border-radius: 14px;
+    color: #eaf1fa;
+    background: linear-gradient(155deg, #1a3152, #101f37 78%);
+    box-shadow: inset 0 1px 0 #ffffff0b, 0 4px 10px #0003;
+  }
+  #activityPanel .defenseSummaryCard > summary {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 9px;
+    padding: 11px;
+    list-style: none;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  #activityPanel .defenseSummaryCard > summary::-webkit-details-marker { display: none; }
+  #activityPanel .defenseSummaryCard > summary::after {
+    content: '⌄';
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+    margin-top: -2px;
+    color: #e8c46a;
+    font-size: 17px;
+    line-height: 12px;
+    transform: translateY(-2px);
+  }
+  #activityPanel .defenseSummaryCard[open] > summary::after { content: '⌃'; }
+  .defenseSummaryEmblem {
+    grid-row: 1 / span 2;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: linear-gradient(160deg, #3b5574, #243b5b);
+    border: 1px solid #7187a4;
+    font-size: 18px;
+  }
+  .defenseSummaryHeading { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .defenseSummaryHeading b { color: #ffe19a; font-size: 12px; }
+  .defenseSummaryHeading small { color: #c6d4e7; font-size: 10px; line-height: 1.4; }
+  .defenseThreatBadge {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+    max-width: 115px;
+    padding: 4px 6px;
+    border: 1px solid #8fa4be;
+    border-radius: 8px;
+    color: #e6edf6;
+    background: #344b6a;
+    font-size: 8px;
+    line-height: 1.25;
+    font-weight: 1000;
+    text-align: center;
+  }
+  .defenseThreatBadge.strong { color: #e2f9e8; background: #244c3a; border-color: #5d9c79; }
+  .defenseThreatBadge.weak { color: #ffe2db; background: #683b3b; border-color: #c47e73; }
+  .defenseThreatBadge.variable { color: #fff0c5; background: #63522d; border-color: #bca365; }
+  .defenseSummaryBody { padding: 0 10px 11px; border-top: 1px solid #66809f55; }
+  .defenseCoreStats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 10px; }
+  .defenseCoreStats > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    border: 1px solid #607a9955;
+    border-radius: 9px;
+    background: #0c1b30;
+  }
+  .defenseCoreStats small { color: #b5c5d9; font-size: 9px; }
+  .defenseCoreStats b { color: #ffe19a; font-size: 14px; overflow-wrap: anywhere; }
+  .defenseFormula { display: grid; gap: 4px; margin-top: 8px; padding: 8px 9px; border-radius: 9px; background: #233b59; }
+  .defenseFormula span { color: #bbcadd; font-size: 9px; text-transform: uppercase; letter-spacing: .06em; font-weight: 900; }
+  .defenseFormula b { color: #eaf2fc; font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
+  .defenseBuildingsHeading { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 11px 1px 6px; }
+  .defenseBuildingsHeading b { color: #ffe19a; font-size: 11px; }
+  .defenseBuildingsHeading small { color: #b7c8dd; font-size: 9px; text-align: right; }
+  .defenseBuildingsList { display: grid; gap: 5px; }
+  .defenseBuildingRow { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; align-items: center; gap: 7px; padding: 7px; border-radius: 9px; background: #182d49; border: 1px solid #55708f55; }
+  .defenseBuildingIcon { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 8px; background: #344d6e; font-size: 16px; }
+  .defenseBuildingInfo { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .defenseBuildingInfo b { color: #edf3fb; font-size: 10px; }
+  .defenseBuildingInfo small { color: #b7c8dc; font-size: 9px; line-height: 1.35; }
+  .defensePoints { color: #bce8c8; font-size: 12px; white-space: nowrap; }
+  .defensePoints.inactive { color: #9ba9bb; }
+  .defenseNoBuildings { padding: 9px; border-radius: 9px; border: 1px dashed #7790ae; background: #142944; color: #cbd8e7; font-size: 10px; line-height: 1.5; }
+  .defenseDamageSummary { display: grid; gap: 4px; margin-top: 8px; padding: 8px 9px; border-radius: 9px; background: #183b31; border: 1px solid #4d8e70; }
+  .defenseDamageSummary span { color: #d5f2df; font-weight: 900; font-size: 10px; }
+  .defenseDamageSummary small { color: #b8d7c5; font-size: 9px; line-height: 1.4; }
+  .defenseDamageSummary.damaged { background: #4d3032; border-color: #ae6c65; }
+  .defenseDamageSummary.damaged span { color: #ffe0d7; }
+  .defenseDamageSummary.damaged small { color: #efc8bf; }
+  .defenseRepairArea { margin-top: 8px; }
+  .defenseRepairCost { display: grid; gap: 4px; padding: 8px 9px; border-radius: 9px; background: #0f2038; border: 1px solid #647d9b66; }
+  .defenseRepairCost span { color: #b9c9dd; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; }
+  .defenseRepairCost b { color: #ffe3a0; font-size: 10px; line-height: 1.45; overflow-wrap: anywhere; }
+  .defenseRepairCost.intact { background: #172f2d; border-color: #457766; }
+  .defenseRepairButton { width: 100%; margin-top: 7px; background: linear-gradient(#e5bb58, #b87728) !important; border-color: #ffe19a !important; color: #2e210f !important; }
+  .defenseRepairButton:disabled { opacity: .55; filter: grayscale(.5); }
+  .defenseRepairNote { display: block; margin-top: 5px; color: #b9c9dd; font-size: 9px; line-height: 1.45; }
+  .defenseRepairNote.shortage { color: #ffc5b8; }
+  .defenseRaidRisk, .defenseLastRaid { display: grid; gap: 4px; margin-top: 8px; padding: 8px 9px; border-radius: 9px; background: #172c47; }
+  .defenseRaidRisk b { color: #efcf86; font-size: 10px; }
+  .defenseRaidRisk small, .defenseLastRaid span { color: #c5d2e4; font-size: 9px; line-height: 1.45; overflow-wrap: anywhere; }
+  .defenseLastRaid small { color: #efcf86; font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: .05em; }
+  #activityPanel .defenseSummaryCard summary:focus-visible { outline: 2px solid #ffe071; outline-offset: -3px; border-radius: 12px; }
+  @media (max-width: 520px) {
+    #activityPanel .defenseSummaryCard > summary { grid-template-columns: 30px minmax(0, 1fr) auto; gap: 7px; padding: 9px; }
+    .defenseSummaryEmblem { width: 30px; height: 30px; }
+    .defenseSummaryHeading b { font-size: 11px; }
+    .defenseSummaryHeading small { font-size: 9px; }
+    .defenseThreatBadge { max-width: 94px; font-size: 7px; }
+    .defenseSummaryBody { padding: 0 8px 9px; }
+    .defenseCoreStats > div { padding: 7px; }
+  }
+</style>
+
+</head><body><div id="portraitLockOverlay" role="status" aria-live="polite"><div class="portraitLockCard"><div class="portraitLockIcon" aria-hidden="true">📱 ↻</div><h2>Please rotate your device</h2><p>Warlord Dominion is designed for portrait play. Rotate your iPhone vertically to continue your campaign.</p></div></div><div class="game"><header class="topbar"><div class="ab-crest"><div class="crestIcon" id="factionCrest">⚔️</div><div class="logo">THREE KINGDOMS<br>WARLORD DOMINION</div></div><div class="level">🏯 <span id="cityLevel">1</span></div><div class="resources"><span class="res">🌾 <b id="food">0</b><small id="foodCap"></small></span><span class="res">🪵 <b id="wood">0</b><small id="woodCap"></small></span><span class="res">⛓️ <b id="iron">0</b><small id="ironCap"></small></span><span class="res">🪙 <b id="coins">0</b><small id="coinsCap"></small></span></div><button class="iconBtn" id="settingsBtn" aria-label="Settings">⚙️</button></header>
 <main class="main"><section class="screen cityScreen active" id="city"><div class="cityViewport" id="cityViewport"><div class="skyGlow"></div><div class="mountains"></div><div class="river"><span class="riverSpark r1"></span><span class="riverSpark r2"></span><span class="riverSpark r3"></span></div><div class="riverBankDecor"></div><div class="bridge"></div><div class="ambient" id="ambient"><span class="bird b1">⌁</span><span class="bird b2">⌁</span></div><div class="tip" id="cityTip">Choose a building below, then tap an empty plot.</div><div class="buildModeActions hidden" id="buildModeActions"><div class="buildModeChoice"><small>PLACING</small><b id="buildModeName">Building</b><span id="buildModeCost"></span></div><button class="secondary" id="buildModeCollect">Collect</button><button class="danger" id="cancelBuildMode">Cancel</button></div><div class="productionStatus" id="productionStatus"></div><div class="cityFocusLabel">Palace District</div><div class="cameraControls" aria-label="City camera controls"><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomReset">Reset</button><button id="zoomIn" aria-label="Zoom in">+</button></div><button class="activityToggle" id="activityToggle">Active Orders <b id="activityCount">0</b></button><div class="activityPanel hidden" id="activityPanel"></div><div class="cityBoard" id="cityBoard"></div><div class="buildDock"><div class="buildInfo hidden" id="buildInfo"></div><div class="buildArea"><div class="buildFilters" id="buildFilters"><button class="filter active" data-filter="All">All</button><button class="filter" data-filter="Economy">Economy</button><button class="filter" data-filter="Military">Military</button><button class="filter" data-filter="Defense">Defense</button><span class="filterSpacer"></span><button class="primary empty" id="collectAllBtn" disabled><span>Collect</span><b id="collectionReadyCount">0</b></button></div><div class="buildList" id="buildList"></div></div></div></div></section><section class="screen" id="army"><div class="heading">⚔️ Army Command</div><div class="panel row spread"><div><b id="armyPower">0 Power</b><div>Train troops for your field army.</div></div><button class="primary" id="balancedBtn">Balanced Reinforcement</button></div><div class="queuePanel hidden" id="trainingQueue"></div><div class="grid" id="unitGrid"></div></section><section class="screen" id="generals"><div class="heading">🎖️ General Roster</div><div class="panel row spread"><div><b>Recruit historical commanders</b><div>Each commander specializes in one troop type.</div></div><button class="primary" id="recruitBtn">Recruit · 300 🪙</button></div><div class="grid" id="generalGrid"></div></section><section class="screen" id="campaign"><div class="heading">🗺️ Campaign Map</div><div class="map" id="campaignMap"></div></section><section class="screen" id="quests"><div class="heading">📜 Quests & Reports</div><div id="questList"></div><div id="phase3Hub" class="phase3Hub">
   <div class="phase3Header"><div><div class="phase3Eyebrow">P1 PHASE 3</div><h2>Daily Command</h2></div><div id="phase3Reset" class="phase3Reset"></div></div>
   <div class="phase3Grid">
@@ -11896,9 +12218,9 @@ body.motionReduced *::after {
 <div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
 <nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
 <div class="modal" id="factionModal"><div class="dialog"><h2>Raise Your Banner</h2><p>Choose a faction. This changes your crest and resource bonus.</p><div class="factionGrid"><button class="faction wei" data-faction="Wei"><div class="cardIcon">🐉</div>WEI<br><small>+15% Iron</small></button><button class="faction shu" data-faction="Shu"><div class="cardIcon">🦚</div>SHU<br><small>+15% Food</small></button><button class="faction wu" data-faction="Wu"><div class="cardIcon">🐅</div>WU<br><small>+15% Coins</small></button></div></div></div>
-<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-Q3 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
+<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-E1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
 <div class="modal" id="detailModal"><div class="dialog" id="detailDialog"></div></div>
-<div class="modal" id="battleModal"><div class="dialog battleDialog"><div class="row spread"><div><h2 id="battleTitle">Battle</h2><div id="battleStatus">Engaging enemy...</div></div><button class="secondary hidden" id="battleExit">Exit</button></div><div class="battlefield" id="battlefield"></div><div class="battleTactics" id="battleTactics" aria-label="Tactical orders">
+<div class="modal" id="battleModal"><div class="dialog battleDialog"><div class="row spread"><div><h2 id="battleTitle">Battle</h2><div id="battleStatus">Engaging enemy...</div></div><button class="secondary hidden" id="battleExit">Exit</button></div><div class="battlefield" id="battlefield"></div><div class="battleOutcomeSummary hidden" id="battleOutcomeSummary" aria-live="polite"></div><div class="battleTactics" id="battleTactics" aria-label="Tactical orders">
 <div class="battleTacticsHead"><span>TACTICAL ORDERS</span><strong id="battleTacticStatus">Choose an order · 5 second effect</strong></div>
 <div class="battleTacticsButtons">
 <button class="tacticBtn" type="button" data-tactic="charge"><span>⚡</span><b>Charge</b><small>+Damage · Faster advance</small></button>
@@ -11911,7 +12233,7 @@ body.motionReduced *::after {
 (() => {
   'use strict';
   const $ = q => document.querySelector(q), $$ = q => Array.from(document.querySelectorAll(q));
-  const BUILD_VERSION = 'P1.4-Q2', SAVE_SCHEMA = 4;
+  const BUILD_VERSION = 'P1.4-E1', SAVE_SCHEMA = 4;
   const GameEvents = (() => {
     const listeners = new Map(), seen = new Map();
     return {
@@ -12761,10 +13083,65 @@ body.motionReduced *::after {
     if (b.upgrading) return 'stage-finish';
     return ['stage-foundation', 'stage-frame', 'stage-walls', 'stage-finish'][constructionStage(b)]
   }
-  function activeOrders() {
-    const builds = S.buildings.filter(b => b.constructing || b.upgrading).map(b => ({ kind: b.constructing ? 'Construction' : 'Upgrade', name: b.type, icon: DB[b.type].icon, finishAt: b.finishAt, slot: b.slot }));
-    const trains = S.trainingQueue.map((j, i) => ({ kind: i ? 'Queued Training' : 'Training', name: `${j.qty} ${j.unit}`, icon: UNITS[j.unit].icon, finishAt: j.finishAt, index: i }));
-    return [...builds, ...trains]
+  function activeOrders(now = Date.now()) {
+    const builds = S.buildings
+      .filter(b => b.constructing || b.upgrading)
+      .map(b => {
+        const kind = b.constructing ? 'Construction' : 'Upgrade';
+        const cost = b.constructing ? (DB[b.type]?.cost || {}) : upgradeCost(b);
+        const startedAt = Number(b.startedAt) || now;
+        const finishAt = Number(b.finishAt) || now;
+        const durationMs = Math.max(1, finishAt - startedAt);
+        const remainingMs = Math.max(0, finishAt - now);
+        return {
+          category: 'building', kind, cancelKind: b.constructing ? 'construction' : 'upgrade',
+          name: b.type, icon: DB[b.type].icon, finishAt, startedAt, durationMs, remainingMs,
+          progressPct: Math.max(0, Math.min(100, (1 - remainingMs / durationMs) * 100)),
+          slot: b.slot, commitment: Object.keys(cost).length ? costText(cost) : 'No resource cost'
+        };
+      });
+    const queue = S.trainingQueue;
+    const activeLeft = queue.length
+      ? (Number(queue[0].finishAt) > 0 && Number(queue[0].startedAt) > 0
+        ? Math.max(0, Number(queue[0].finishAt) - now)
+        : trainingDuration(queue[0].unit, queue[0].qty))
+      : 0;
+    const trains = queue.map((job, index) => {
+      const durationMs = trainingDuration(job.unit, job.qty);
+      const startedAt = Number(job.startedAt) || 0;
+      const finishAt = Number(job.finishAt) || 0;
+      const remainingMs = index === 0
+        ? activeLeft
+        : activeLeft + queue.slice(1, index + 1).reduce((sum, queued) => sum + trainingDuration(queued.unit, queued.qty), 0);
+      const progressPct = index === 0 && startedAt > 0 && finishAt > startedAt
+        ? Math.max(0, Math.min(100, (1 - Math.max(0, finishAt - now) / (finishAt - startedAt)) * 100))
+        : 0;
+      return {
+        category: 'training', kind: index === 0 ? 'Training' : 'Queued Training', cancelKind: 'training',
+        name: `${job.qty} ${job.unit}`, unit: job.unit, qty: job.qty, icon: UNITS[job.unit].icon,
+        finishAt, startedAt, durationMs, remainingMs, progressPct, index,
+        commitment: costText(UNITS[job.unit].cost, job.qty)
+      };
+    });
+    return [...builds, ...trains];
+  }
+  function captureQueuePanelState(panel) {
+    const active = document.activeElement;
+    let focus = null;
+    if (active && panel.contains(active)) {
+      if (active.matches('[data-cancel-training]')) focus = { selector: `[data-cancel-training="${active.dataset.cancelTraining}"]` };
+      else if (active.matches('[data-cancel-order-kind]')) focus = { selector: `[data-cancel-order-kind="${active.dataset.cancelOrderKind}"][data-order-slot="${active.dataset.orderSlot}"]` };
+      else if (active.matches('[data-locate]')) focus = { selector: `[data-locate="${active.dataset.locate}"]` };
+    }
+    return { scrollTop: panel.scrollTop, focus };
+  }
+  function restoreQueuePanelState(panel, state) {
+    if (!panel || !state) return;
+    panel.scrollTop = state.scrollTop;
+    if (state.focus?.selector) {
+      const target = panel.querySelector(state.focus.selector);
+      if (target) target.focus({ preventScroll: true });
+    }
   }
   function locatePlot(slot) {
     const el = document.querySelector(`.plot[data-slot="${slot}"]`);
@@ -12773,12 +13150,184 @@ body.motionReduced *::after {
     el.scrollIntoView?.({ behavior: S.reducedMotion ? 'auto' : 'smooth', block: 'center', inline: 'center' });
     setTimeout(() => el.classList.remove('locatePulse'), 2100)
   }
+  function escapeDefenseText(value) {
+    return String(value ?? '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  }
+  function defenseSummaryMarkup(expanded = false) {
+    const buildingRecords = defenseBuildingRecords();
+    const operational = operationalDefenseBuildings();
+    const raw = operational.reduce((sum, building) => sum + DEFENSE_BUILDING_VALUES[building.type] * building.level, 0);
+    const bonus = researchEffect('raidDefense');
+    const adjusted = Math.round(raw * (1 + bonus));
+    const damage = Math.max(0, Number(S.defenseDamage) || 0);
+    const current = defenseRating();
+    const threatMin = 35 + (S.campaignCycle || 0) * 18;
+    const threatMax = threatMin + 35;
+    const untilRaid = Math.max(0, Number(S.nextRaidAt || 0) - Date.now());
+    const lastRaid = (S.reports || []).find(report => /raid (repelled|breached)|raid damage/i.test(String(report))) || '';
+    let status = 'VARIABLE OUTCOME', statusClass = 'variable';
+    if (!operational.length) { status = buildingRecords.length ? 'DEFENSES BUILDING' : 'UNDEFENDED'; statusClass = 'weak'; }
+    else if (current >= threatMax) { status = 'LIKELY TO REPEL'; statusClass = 'strong'; }
+    else if (current < threatMin) { status = 'AT RISK'; statusClass = 'weak'; }
+    const rows = buildingRecords.length ? buildingRecords.map(building => {
+      const points = DEFENSE_BUILDING_VALUES[building.type] * building.level;
+      const online = !building.constructing;
+      return `<div class="defenseBuildingRow"><span class="defenseBuildingIcon">${DB[building.type]?.icon || '🛡️'}</span><div class="defenseBuildingInfo"><b>${escapeDefenseText(building.type)} · Lv ${building.level}</b><small>${online ? 'Contributing to defense' : 'Under construction · not counted yet'}</small></div><strong class="${online ? 'defensePoints' : 'defensePoints inactive'}">${online ? '+' + points : '—'}</strong></div>`;
+    }).join('') : '<div class="defenseNoBuildings">No Watchtower, Walls or Gate built yet. Raids can still steal resources, but undefended raids do not add defense damage.</div>';
+    const latest = lastRaid ? `<div class="defenseLastRaid"><small>Latest raid result</small><span>${escapeDefenseText(lastRaid)}</span></div>` : '<div class="defenseLastRaid"><small>Latest raid result</small><span>No raid resolved this campaign yet.</span></div>';
+    return `<details class="defenseSummaryCard" ${expanded ? 'open' : ''}>
+      <summary class="defenseSummaryTrigger">
+        <span class="defenseSummaryEmblem" aria-hidden="true">🛡️</span>
+        <span class="defenseSummaryHeading"><b>City Defense & Raids</b><small>${current} defense · Raid in ${untilRaid ? fmtTime(untilRaid) : 'imminent'}</small></span>
+        <span class="defenseThreatBadge ${statusClass}">${status}</span>
+      </summary>
+      <div class="defenseSummaryBody">
+        <div class="defenseCoreStats">
+          <div><small>Effective defense</small><b>${current}</b></div>
+          <div><small>Raid threat range</small><b>${threatMin}–${threatMax}</b></div>
+          <div><small>Research bonus</small><b>+${Math.round(bonus * 100)}%</b></div>
+          <div><small>Damage penalty</small><b>${damage ? '−' + damage : '0'}</b></div>
+        </div>
+        <div class="defenseFormula"><span>Defense breakdown</span><b>max(0, ${adjusted} − ${damage}) = ${current} effective</b></div>
+        <div class="defenseBuildingsHeading"><b>Defensive structures</b><small>${operational.length} operational · ${buildingRecords.length - operational.length} under construction</small></div>
+        <div class="defenseBuildingsList">${rows}</div>
+        <div class="defenseDamageSummary ${damage ? 'damaged' : ''}"><span>${damage ? '🔧 Damage recorded' : '✅ No defense damage'}</span><small>${damage ? `Repair all damage to restore ${damage} defense points.` : 'Repairs are not currently required.'}</small></div>
+        <div class="defenseRepairArea"></div>
+        <div class="defenseRaidRisk"><b>When a raid breaches</b><small>Resource loss scales with the threat gap (2–12% before protection research). Protected Storehouses reduce that loss by ${Math.round(researchEffect('raidProtection') * 100)}%.</small></div>
+        ${latest}
+      </div>
+    </details>`;
+  }
   function renderActivityPanel() {
     const orders = activeOrders(), count = $('#activityCount'), panel = $('#activityPanel');
     if (count) count.textContent = orders.length;
     if (!panel) return;
-    panel.innerHTML = `<div class="activityHead"><b>Active Orders</b><span>${orders.length} total</span></div>` + (orders.length ? orders.map((o, i) => `<div class="activityItem"><span class="activityIcon">${o.icon}</span><div><b>${o.kind}: ${o.name}</b><div class="activityMeta">${o.index > 0 ? `Queue position ${o.index + 1}` : 'In progress'}</div></div><span class="activityTime">${o.finishAt ? fmtTime(o.finishAt - Date.now()) : 'Waiting'}</span>${o.slot !== undefined ? `<button data-locate="${o.slot}">Locate Plot</button>` : ''}</div>`).join('') : '<div class="activityEmpty">No construction, upgrades, or training orders.</div>');
-    panel.querySelectorAll('[data-locate]').forEach(btn => btn.onclick = () => locatePlot(Number(btn.dataset.locate)))
+    const panelState = captureQueuePanelState(panel);
+    const wasDefenseExpanded = panel.querySelector('.defenseSummaryCard')?.open;
+    const defenseExpanded = wasDefenseExpanded === undefined ? (Number(S.defenseDamage) > 0) : wasDefenseExpanded;
+    const orderMarkup = orders.length ? orders.map(o => {
+      const queueLabel = o.category === 'training'
+        ? (o.index === 0 ? 'In progress' : `Queue position ${o.index + 1} · Estimated completion in ${fmtTime(o.remainingMs)}`)
+        : 'In progress';
+      const cancelButton = o.category === 'training'
+        ? `<button class="queueCancelBtn" data-cancel-training="${o.index}">Cancel · 50% refund</button>`
+        : `<button class="queueCancelBtn" data-cancel-order-kind="${o.cancelKind}" data-order-slot="${o.slot}">Cancel · 50% refund</button>`;
+      const locateButton = o.slot !== undefined ? `<button class="queueLocateBtn" data-locate="${o.slot}">Locate Plot</button>` : '';
+      return `<div class="activityItem queueOrderCard">
+        <div class="queueOrderTop"><span class="activityIcon">${o.icon}</span><div class="queueOrderInfo"><b>${o.kind}: ${o.name}</b><div class="activityMeta">${queueLabel}</div><div class="activityMeta">Resources paid: ${o.commitment}</div></div><span class="activityTime">${fmtTime(o.remainingMs)}</span></div>
+        <div class="queueProgress" role="progressbar" aria-label="${o.kind} progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(o.progressPct)}"><i style="width:${o.progressPct}%"></i></div>
+        <div class="queueProgressMeta"><span>${o.category === 'training' && o.index > 0 ? 'Queued' : `${Math.floor(o.progressPct)}% complete`}</span><span>${o.category === 'training' && o.index > 0 ? 'ETA' : 'Time left'}</span></div>
+        <div class="queueOrderActions">${locateButton}${cancelButton}</div>
+      </div>`;
+    }).join('') : '<div class="activityEmpty">No construction, upgrades, or training orders.</div>';
+    panel.innerHTML = `<div class="activityHead"><b>Active Orders</b><span>${orders.length} total</span></div>${defenseSummaryMarkup(defenseExpanded)}<div class="activityOrdersHeading">Construction & Training</div>${orderMarkup}`;
+    panel.querySelectorAll('[data-locate]').forEach(btn => btn.onclick = () => locatePlot(Number(btn.dataset.locate)));
+    updateRepair();
+    restoreQueuePanelState(panel, panelState);
+  }
+  function renderTrainingQueuePanel() {
+    const panel = $('#trainingQueue');
+    if (!panel) return;
+    const panelState = captureQueuePanelState(panel);
+    const orders = activeOrders().filter(order => order.category === 'training');
+    panel.classList.toggle('hidden', orders.length === 0);
+    if (!orders.length) {
+      panel.innerHTML = '';
+      restoreQueuePanelState(panel, panelState);
+      return;
+    }
+    const last = orders[orders.length - 1];
+    panel.innerHTML = `<div class="trainingQueueHeader"><div><b>Training Queue</b><span>${orders.length} ${orders.length === 1 ? 'order' : 'orders'}</span></div><small>Time until all training completes: ${fmtTime(last.remainingMs)}</small></div>` + orders.map(order => {
+      const state = order.index === 0 ? 'In progress' : `Queue position ${order.index + 1}`;
+      return `<div class="queueOrderCard trainingQueueOrder">
+        <div class="queueOrderTop"><span class="activityIcon">${order.icon}</span><div class="queueOrderInfo"><b>${order.qty} ${order.unit}</b><div class="activityMeta">${state} · Resources paid: ${order.commitment}</div></div><span class="activityTime">${fmtTime(order.remainingMs)}</span></div>
+        <div class="queueProgress" role="progressbar" aria-label="${order.unit} training progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(order.progressPct)}"><i style="width:${order.progressPct}%"></i></div>
+        <div class="queueProgressMeta"><span>${order.index === 0 ? `${Math.floor(order.progressPct)}% complete` : 'Waiting for previous order'}</span><span>${order.index === 0 ? 'Time left' : 'Estimated completion'}</span></div>
+        <div class="queueOrderActions"><button class="queueCancelBtn danger" data-cancel-training="${order.index}">Cancel order · 50% refund</button></div>
+      </div>`;
+    }).join('');
+    restoreQueuePanelState(panel, panelState);
+  }
+  function queueOrderForCancellation(kind, id) {
+    if (kind === 'training') {
+      const index = Number(id), job = S.trainingQueue[index];
+      if (!job || !UNITS[job.unit]) return null;
+      return { kind, id: index, title: `${job.qty} ${job.unit} training`, cost: Object.fromEntries(Object.entries(UNITS[job.unit].cost).map(([resource, value]) => [resource, value * job.qty])), detail: index === 0 ? 'This is the active training order.' : `This is queued order ${index + 1}. Earlier orders will keep their current progress.` };
+    }
+    const slot = Number(id), building = S.buildings.find(item => Number(item.slot) === slot);
+    if (!building || (kind === 'construction' && !building.constructing) || (kind === 'upgrade' && !building.upgrading)) return null;
+    const isConstruction = kind === 'construction';
+    const cost = isConstruction ? (DB[building.type]?.cost || {}) : upgradeCost(building);
+    return { kind, id: slot, title: `${building.type} ${isConstruction ? 'construction' : 'upgrade'}`, cost, detail: isConstruction ? 'Cancelling removes this unfinished building and frees its plot.' : `Cancelling returns the building to its current Level ${building.level}.` };
+  }
+  function queueRefundBreakdown(cost) {
+    const cap = Math.max(0, Math.floor(storageCap()));
+    return Object.entries(cost || {}).map(([resource, value]) => {
+      const current = Math.max(0, Number(S.r[resource]) || 0);
+      const nominal = Math.max(0, Math.floor(Number(value) * 0.5));
+      const room = Math.max(0, cap - current);
+      return { resource, nominal, credited: Math.min(nominal, room), blocked: Math.max(0, nominal - room) };
+    }).filter(row => row.nominal > 0);
+  }
+  function refundBreakdownHTML(rows) {
+    if (!rows.length) return '<div class="queueRefundEmpty">No resources were spent on this order.</div>';
+    const names = { food: 'Food', wood: 'Wood', iron: 'Iron', coins: 'Coins' };
+    return `<div class="queueRefundRows">${rows.map(row => `<div><span>${costsEmoji[row.resource] || ''} ${names[row.resource] || row.resource}</span><strong>+${row.credited}</strong>${row.blocked ? `<small>${row.blocked} cannot be returned because storage is full</small>` : ''}</div>`).join('')}</div>`;
+  }
+  function requestQueueCancellation(kind, id) {
+    const order = queueOrderForCancellation(kind, id);
+    if (!order) return toast('That order is no longer available to cancel');
+    const detail = $('#detailDialog');
+    const rows = queueRefundBreakdown(order.cost);
+    detail.innerHTML = `<div class="row spread queueConfirmHeading"><h2>Cancel order?</h2><button class="secondary closeQueueConfirm" type="button">Close</button></div>
+      <div class="queueConfirmOrder"><b>${order.title}</b><p>${order.detail}</p></div>
+      <div class="queueConfirmRefund"><div class="queueRefundHeading"><b>Refund preview</b><span>50% refund · rounded down</span></div>${refundBreakdownHTML(rows)}<p class="small">Refunds cannot exceed available storage. The remaining 50% is forfeited.</p></div>
+      <div class="queueConfirmActions"><button class="secondary closeQueueConfirm" type="button">Keep order</button><button class="danger" id="confirmQueueCancel" type="button">Confirm cancellation</button></div>`;
+    $('#detailModal').classList.add('open');
+    renderMotionState();
+    detail.querySelectorAll('.closeQueueConfirm').forEach(button => button.onclick = closeDetail);
+    $('#confirmQueueCancel').focus({ preventScroll: true });
+    $('#confirmQueueCancel').onclick = () => {
+      const success = performQueueCancellation(kind, id);
+      closeDetail();
+      if (success) {
+        renderAll();
+        toast('Order cancelled · 50% refund applied');
+      }
+    };
+  }
+  function performQueueCancellation(kind, id) {
+    const order = queueOrderForCancellation(kind, id);
+    if (!order) {
+      toast('That order has already completed or was cancelled');
+      return false;
+    }
+    queueRefundBreakdown(order.cost).forEach(row => {
+      S.r[row.resource] = Math.max(0, Number(S.r[row.resource]) || 0) + row.credited;
+    });
+    if (kind === 'training') {
+      const index = Number(id);
+      S.trainingQueue.splice(index, 1);
+      if (index === 0 && S.trainingQueue[0] && !Number(S.trainingQueue[0].finishAt)) {
+        const next = S.trainingQueue[0], now = Date.now();
+        next.startedAt = now;
+        next.finishAt = now + trainingDuration(next.unit, next.qty);
+      }
+    } else {
+      const index = S.buildings.findIndex(item => Number(item.slot) === Number(id));
+      if (index < 0) return false;
+      const building = S.buildings[index];
+      if (kind === 'construction') {
+        S.buildings.splice(index, 1);
+      } else {
+        building.upgrading = false;
+        delete building.targetLevel;
+        delete building.startedAt;
+        delete building.finishAt;
+      }
+    }
+    save();
+    return true;
   }
   function completionParticles(plot, color = '#ffe26c') {
     if (S.reducedMotion || !plot) return;
@@ -12892,15 +13441,7 @@ body.motionReduced *::after {
       if (barEl) barEl.style.width = pct + '%';
       if (pctEl) pctEl.textContent = Math.floor(pct) + '% complete'
     });
-    const q = $('#trainingQueue');
-    if (q) {
-      const job = S.trainingQueue[0];
-      q.classList.toggle('hidden', !job);
-      if (job) {
-        const total = Math.max(1, job.finishAt - job.startedAt), left = Math.max(0, job.finishAt - now), pct = Math.min(100, 100 - left / total * 100);
-        q.innerHTML = `<div class="queueLine"><b>Training ${job.qty} ${job.unit}</b><span>${fmtTime(left)}</span></div><div class="queueBar"><i style="width:${pct}%"></i></div><small>${S.trainingQueue.length - 1} queued after this order</small><div class="queueActions"><button class="danger" data-cancel-training="0">Cancel Active · 50% refund</button></div>`
-      }
-    }
+    renderTrainingQueuePanel();
     renderActivityPanel();
     S.buildings.filter(b => b.constructing).forEach(b => {
       const plot = document.querySelector(`.plot[data-slot="${b.slot}"]`);
@@ -13264,33 +13805,139 @@ body.motionReduced *::after {
     if (types.includes('Cavalry')) rec.push('Spearmen');
     return [...new Set(rec)]
   }
-  function simulateForecast(i, runs = 10) {
-    const enemy = enemyComposition(i), mine = Object.entries(S.units).filter(([, q]) => q > 0);
-    let wins = 0, lossPct = 0;
-    const sideStrength = (list, isPlayer, seed) => list.reduce((sum, [type, q], idx) => {
-      const stats = battleUnitStats(isPlayer ? 'player' : 'enemy', type, q), effective = stats.damage * Math.sqrt(stats.hp / Math.max(1, q * 32));
-      return sum + effective * (.92 + (((seed + idx * 17) % 19) / 100));
-    }, 0);
-    for (let r = 0; r < runs; r++) {
-      const a = sideStrength(mine, true, r + 3), e = sideStrength(enemy, false, r + 11), ratio = a / Math.max(1, e);
-      if (ratio >= .92) wins++;
-      lossPct += Math.max(8, Math.min(65, Math.round(38 / Math.max(.55, ratio))));
+  function simulateForecast(i, runs = 30) {
+    // Run a deterministic forecast using the same baseline movement, targeting,
+    // counters, unit stats, general bonuses, attack cadence, and defeat rules as
+    // the real-time battle. Player tactical orders and active general abilities
+    // are deliberately excluded and called out in the UI.
+    const mine = Object.entries(S.units).filter(([, q]) => q > 0).slice(0, 5);
+    const enemy = enemyComposition(i);
+    const initialArmyCount = mine.reduce((sum, [, q]) => sum + q, 0);
+    const totalRuns = Math.max(10, Math.min(60, Math.round(runs) || 30));
+    if (!initialArmyCount) return { wins: 0, runs: totalRuns, chance: 0, losses: 0, capped: 0, noArmy: true };
+
+    const fingerprint = [i, S.campaignCycle || 0, S.faction || '', S.assigned ?? '',
+      ...mine.map(([type, q]) => `${type}:${q}:${JSON.stringify(battleUnitStats('player', type, q))}`),
+      ...enemy.map(([type, q]) => `${type}:${q}`)].join('|');
+    let baseSeed = 2166136261;
+    for (let k = 0; k < fingerprint.length; k++) {
+      baseSeed ^= fingerprint.charCodeAt(k);
+      baseSeed = Math.imul(baseSeed, 16777619);
     }
-    return { wins, losses: Math.round(lossPct / runs) };
+    const makeRandom = initialSeed => {
+      let seed = initialSeed >>> 0;
+      return () => {
+        seed = (seed + 0x6D2B79F5) | 0;
+        let t = seed;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    };
+
+    let wins = 0, lossPctTotal = 0, capped = 0;
+    for (let run = 0; run < totalRuns; run++) {
+      const random = makeRandom((baseSeed + Math.imul(run + 1, 0x9E3779B9)) >>> 0);
+      const units = [];
+      const addSide = (side, list) => list.slice(0, 5).forEach(([type, q]) => {
+        const stats = battleUnitStats(side, type, q);
+        units.push({ side, type, q, hp: stats.hp, max: stats.hp,
+          x: side === 'player' ? 11 : 89, damage: stats.damage, cool: 0 });
+      });
+      addSide('player', mine);
+      addSide('enemy', enemy);
+
+      let outcome = null;
+      // The live loop caps frame delta at 0.05 seconds. Forecast uses that same
+      // step size with a generous simulated-time limit to avoid blocking the UI.
+      for (let step = 0; step < 5000; step++) {
+        const alive = units.filter(u => u.hp > 0);
+        const playerHp = alive.filter(u => u.side === 'player').reduce((sum, u) => sum + u.hp, 0);
+        const enemyHp = alive.filter(u => u.side === 'enemy').reduce((sum, u) => sum + u.hp, 0);
+        if (playerHp <= 0 || enemyHp <= 0) {
+          outcome = playerHp > 0;
+          break;
+        }
+        alive.forEach(u => {
+          const targets = alive.filter(v => v.side !== u.side);
+          if (!targets.length) return;
+          const target = targets.reduce((a, b) => Math.abs(b.x - u.x) < Math.abs(a.x - u.x) ? b : a);
+          if (Math.abs(target.x - u.x) > 9) {
+            u.x += (u.side === 'player' ? 1 : -1) * .05 * (u.type === 'Cavalry' ? 19 : 12);
+          } else if ((u.cool -= .05) <= 0) {
+            let damage = u.damage * counter(u.type, target.type) * (.8 + random() * .4);
+            // This deliberately mirrors the live battle loop's assigned-general bonus.
+            if (u.side === 'player' && S.assigned !== null && GENERALS[S.assigned]?.type === u.type) damage *= 1.2;
+            target.hp -= damage;
+            target.q = Math.max(0, Math.ceil(target.hp / 32));
+            u.cool = .62;
+          }
+        });
+      }
+
+      let playerHp = units.filter(u => u.side === 'player' && u.hp > 0).reduce((sum, u) => sum + u.hp, 0);
+      let enemyHp = units.filter(u => u.side === 'enemy' && u.hp > 0).reduce((sum, u) => sum + u.hp, 0);
+      if (outcome === null) {
+        capped++;
+        // Real combat has no draw state; for the rare forecast timeout use the
+        // remaining HP as a transparent fallback rather than blocking the popup.
+        outcome = playerHp > enemyHp;
+      }
+
+      if (outcome) {
+        wins++;
+        const casualtyRate = Math.max(.02, (.08 + random() * .04) - researchEffect('casualtyReduction'));
+        const survivorCount = units.filter(u => u.side === 'player')
+          .reduce((sum, u) => sum + Math.max(0, Math.floor(u.q * (1 - casualtyRate))), 0);
+        lossPctTotal += Math.max(0, (initialArmyCount - survivorCount) / initialArmyCount * 100);
+      } else {
+        // The live defeat handler removes 30% of the player's pre-battle army.
+        lossPctTotal += 30;
+      }
+    }
+    return { wins, runs: totalRuns, chance: Math.round(wins / totalRuns * 100),
+      losses: Math.round(lossPctTotal / totalRuns), capped };
   }
   function openDeploy(i) {
-    const n = MAP[i], enemy = enemyComposition(i), mine = Object.entries(S.units).filter(([, q]) => q > 0), forecast = simulateForecast(i, 10), difficulty = forecast.wins >= 8 ? 'easy' : forecast.wins >= 4 ? 'moderate' : 'hard', reward = { food: 80 + i * 30, wood: 70 + i * 25, iron: 35 + i * 15, coins: 90 + i * 35 }, loss = forecast.losses <= 12 ? 'Low' : forecast.losses <= 28 ? 'Moderate' : 'High';
-    $('#detailDialog').innerHTML = `<div class="row spread"><h2>Attack ${n.name}</h2><button class="secondary closeDetailAction">Close</button></div><div class="deployGrid"><div class="deploySide"><b>Your Army · ${armyPower()} Power</b><div class="unitChips">${compositionHTML(mine) || 'No troops'}</div><p>General: ${S.assigned === null ? 'None' : GENERALS[S.assigned].name}</p></div><div class="deploySide"><b>Enemy · ${nodePower(i)} Threat</b><div class="unitChips">${compositionHTML(enemy)}</div><p>Defense: ${i > 2 ? 'Fortified' : 'Field position'}</p></div></div><div class="forecast"><b class="difficulty ${difficulty}">Forecast: ${forecast.wins}/10 victories</b><br>Recommended: ${recommend(enemy).join(', ') || 'Balanced force'}<br>Estimated casualties: ${forecast.losses}% (${loss})<br><b>Battle tip:</b> Charge to break through, Shield Wall when your line is weak, or Focus Fire to finish a wounded enemy.<br>Victory reward: ${costText(reward)}</div><button class="primary" id="deployBtn" ${armyPower() < 10 ? 'disabled aria-disabled="true"' : ''}>${armyPower() < 10 ? 'Train troops to deploy' : 'Deploy Army'}</button>`;
+    // A deployment dialog takes focus; clear transient city messages so they cannot cover it.
+    $('#toast')?.classList.remove('show');
+    $('#completionBanner')?.classList.remove('show');
+    $('#tapName')?.classList.remove('show');
+    const n = MAP[i], enemy = enemyComposition(i), mine = Object.entries(S.units).filter(([, q]) => q > 0);
+    const forecast = simulateForecast(i, 30);
+    const difficulty = forecast.chance >= 75 ? 'easy' : forecast.chance >= 45 ? 'moderate' : 'hard';
+    const reward = { food: 80 + i * 30, wood: 70 + i * 25, iron: 35 + i * 15, coins: 90 + i * 35 };
+    const supply = deploymentCost(i);
+    const cappedReward = Object.fromEntries(Object.entries(reward).map(([key, amount]) => [key, Math.max(0, Math.min(amount, storageCap() - (S.r[key] || 0)))]));
+    const rewardable = Object.fromEntries(Object.entries(cappedReward).filter(([, amount]) => amount > 0));
+    const rewardText = Object.keys(rewardable).length ? `${costText(rewardable)}${Object.entries(reward).some(([key, amount]) => cappedReward[key] < amount) ? ' · some rewards limited by storage' : ''}` : 'Storage is full; no immediate resources will be added.';
+    const loss = forecast.noArmy ? 'Unavailable' : forecast.losses <= 12 ? 'Low' : forecast.losses <= 28 ? 'Moderate' : 'High';
+    const cappedNote = forecast.capped ? `<small class="forecastNote">${forecast.capped} simulation${forecast.capped === 1 ? '' : 's'} reached the safety limit; estimate is less certain.</small>` : '';
+    $('#detailDialog').innerHTML = `<div class="row spread"><h2>Attack ${n.name}</h2><button class="secondary closeDetailAction">Close</button></div>
+      <div class="deployGrid">
+        <div class="deploySide"><b>Your Army · ${armyPower()} Power</b><div class="unitChips">${compositionHTML(mine) || 'No troops'}</div><p>General: ${S.assigned === null ? 'None' : GENERALS[S.assigned].name}</p></div>
+        <div class="deploySide"><b>Enemy · ${nodePower(i)} Threat</b><div class="unitChips">${compositionHTML(enemy)}</div><p>Defense: ${i > 2 ? 'Fortified' : 'Field position'}</p></div>
+      </div>
+      <div class="forecast">
+        <div class="forecastHeading"><b class="difficulty ${difficulty}">${forecast.noArmy ? 'No deployable troops' : `Estimated win chance · ${forecast.chance}%`}</b><span>${forecast.noArmy ? 'Train troops for an estimate' : `${forecast.wins}/${forecast.runs} simulations`}</span></div>
+        <div class="forecastStats"><div><small>Projected army losses</small><strong>${forecast.noArmy ? '— · Unavailable' : `${forecast.losses}% · ${loss}`}</strong></div><div><small>Deployment supply</small><strong>${costText(supply)}</strong></div></div>
+        <p><b>Recommended counters:</b> ${recommend(enemy).join(', ') || 'Balanced force'}</p>
+        <p><b>Battle tip:</b> Charge to break through, Shield Wall when your line is weak, or Focus Fire to finish a wounded enemy.</p>
+        <p><b>Estimated resources received if victorious:</b> ${rewardText}</p>
+        <small class="forecastNote">Simulation uses your current troops, upgrades, research and assigned general, with standard tactics. Active tactical orders and general abilities can change the result.</small>
+        ${cappedNote}
+      </div>
+      <button class="primary" id="deployBtn" ${armyPower() < 10 ? 'disabled aria-disabled="true"' : ''}>${armyPower() < 10 ? 'Train troops to deploy' : 'Deploy Army'}</button>`;
     $('#detailModal').classList.add('open');
     renderMotionState();
     $('#detailDialog .closeDetailAction').onclick = closeDetail;
-    $('#deployBtn').onclick = () => startBattle(i)
+    $('#deployBtn').onclick = () => startBattle(i);
   }
   function battleUnitStats(side, type, q) {
     const qty = Math.max(1, q), baseDamage = (UNITS[type]?.power || 11) * Math.pow(qty, .7);
     if (side !== 'player') return { hp: qty * 32, damage: baseDamage };
     const u = unitUpgrade(type), spec = type === 'Infantry' ? researchLevel('infantry') * .05 : type === 'Archers' ? researchLevel('archers') * .05 : type === 'Cavalry' ? researchLevel('cavalry') * .05 : 0;
-    return { hp: qty * 32 * (1 + u.armor * .05), damage: baseDamage * (1 + researchEffect('unitDamage')) * (1 + u.weapon * .04) * (1 + u.doctrine * .025) * (1 + spec) * ((S.assigned !== null && GENERALS[S.assigned].type === type) ? 1.2 : 1) }
+    return { hp: qty * 32 * (1 + u.armor * .05), damage: baseDamage * (1 + researchEffect('unitDamage')) * (1 + u.weapon * .04) * (1 + u.doctrine * .025) * (1 + spec) }
   }
   function makeBattleUnits(side, p, index) {
     const list = side === 'player' ? Object.entries(S.units).filter(([, q]) => q > 0) : enemyComposition(index);
@@ -13306,6 +13953,9 @@ body.motionReduced *::after {
     pay(supply);
     save();
     closeDetail();
+    $('#battleTactics').classList.remove('hidden');
+    $('.battleMoraleRow').classList.remove('hidden');
+    $('#abilityHint').classList.remove('hidden');
     $('#battleModal').classList.add('open');
     renderMotionState();
     $('#battleExit').classList.add('hidden');
@@ -13313,7 +13963,9 @@ body.motionReduced *::after {
     $('#abilityBtn').disabled = !g;
     $('#abilityBtn').textContent = g ? g.skill : 'No General Assigned';
     $('#abilityHint').textContent = g ? g.name === 'Cao Cao' ? 'Infantry attack speed and damage' : g.name === 'Liu Bei' ? 'Restore health and morale' : 'Damage the enemy rear line' : '';
-    battle = { index: i, units: [...makeBattleUnits('player', armyPower(), i), ...makeBattleUnits('enemy', MAP[i].p, i)], used: false, over: false, last: performance.now(), speed: 1, paused: false, tactic: 'balanced', tacticUntil: 0, tacticReadyAt: 0 };
+    battle = { index: i, startingArmy: { ...S.units }, units: [...makeBattleUnits('player', armyPower(), i), ...makeBattleUnits('enemy', MAP[i].p, i)], used: false, over: false, last: performance.now(), speed: 1, paused: false, tactic: 'balanced', tacticUntil: 0, tacticReadyAt: 0 };
+    const outcomePanel = $('#battleOutcomeSummary');
+    if (outcomePanel) { outcomePanel.classList.add('hidden'); outcomePanel.textContent = ''; }
     $('#battleTitle').textContent = `Battle of ${MAP[i].name}`;
     $('#battleStatus').textContent = 'Armies are engaging';
     $('#battlefield').innerHTML = '';
@@ -13411,9 +14063,12 @@ body.motionReduced *::after {
   function endBattle(win) {
     battle.over = true;
     const i = battle.index;
+    const startingTotal = Object.values(battle.startingArmy || S.units).reduce((sum, q) => sum + Math.max(0, q || 0), 0);
+    let rewardForSummary = null;
     if (win) {
       const r = { food: 80 + i * 30, wood: 70 + i * 25, iron: 35 + i * 15, coins: 90 + i * 35 };
-      Object.entries(r).forEach(([k, v]) => S.r[k] = Math.min(storageCap(), S.r[k] + v));
+      const actualRewards = {};
+      Object.entries(r).forEach(([k, v]) => { const before = S.r[k] || 0; S.r[k] = Math.min(storageCap(), before + v); actualRewards[k] = S.r[k] - before; });
       const casualtyRate = Math.max(.02, (.08 + Math.random() * .04) - researchEffect('casualtyReduction'));
       const survivors = {};
       battle.units.filter(u => u.side === 'player').forEach(u => survivors[u.type] = Math.max(0, Math.floor(u.q * (1 - casualtyRate))));
@@ -13423,19 +14078,36 @@ body.motionReduced *::after {
         S.quests.bandit = true;
         advanceTutorial(6)
       }
-      S.reports.unshift(`Victory at ${MAP[i].name} · ${costText(r)}`);
+      const receivedText = costText(Object.fromEntries(Object.entries(actualRewards).filter(([, amount]) => amount > 0))) || 'Storage full';
+      const rewardCapped = Object.entries(r).some(([key, amount]) => actualRewards[key] < amount);
+      S.reports.unshift(`Victory at ${MAP[i].name} · ${receivedText} received${rewardCapped ? ' · storage cap limited rewards' : ''}`);
       $('#battleStatus').textContent = 'VICTORY · Territory secured · casualties recorded';
+      rewardForSummary = { actual: actualRewards, nominal: r, capped: rewardCapped };
       if (i === MAP.length - 1) setTimeout(showCampaignEnding, 500)
     } else {
       Object.keys(S.units).forEach(k => S.units[k] = Math.floor(S.units[k] * .7));
       S.reports.unshift(`Defeat at ${MAP[i].name} · Army lost 30% strength`);
       $('#battleStatus').textContent = 'DEFEAT · Army withdrew'
     }
+    const survivingTotal = Object.values(S.units).reduce((sum, q) => sum + Math.max(0, q || 0), 0);
+    const casualties = Math.max(0, startingTotal - survivingTotal);
+    const casualtyPct = startingTotal ? Math.round(casualties / startingTotal * 100) : 0;
+    const outcomePanel = $('#battleOutcomeSummary');
+    if (outcomePanel) {
+      outcomePanel.innerHTML = `<div class="battleOutcomeHead"><strong>${win ? 'Victory report' : 'Defeat report'}</strong><span>${MAP[i].name}</span></div>
+        <div class="battleOutcomeStats"><div><small>Troops deployed</small><b>${startingTotal}</b></div><div><small>Troops returned</small><b>${survivingTotal}</b></div><div><small>Casualties</small><b>${casualties} · ${casualtyPct}%</b></div></div>
+        ${rewardForSummary ? `<div class="battleOutcomeReward"><small>Resources received${rewardForSummary.capped ? ' · storage cap applied' : ''}</small><strong>${costText(Object.fromEntries(Object.entries(rewardForSummary.actual).filter(([, amount]) => amount > 0))) || 'Storage full'}</strong></div>` : '<div class="battleOutcomeReward"><small>Recovery</small><strong>Train replacements and retry when ready.</strong></div>'}`;
+      outcomePanel.classList.remove('hidden');
+    }
     S.reports = S.reports.slice(0, 10);
     GameEvents.emit('battle:completed', { won: win, index: i }, `battle-${i}-${Math.floor(Date.now() / 100)}`);
     save();
     renderAll();
     $('#battleExit').classList.remove('hidden');
+    $('#battleTactics').classList.add('hidden');
+    $('.battleMoraleRow').classList.add('hidden');
+    $('#abilityHint').classList.add('hidden');
+    $('#abilityBtn').disabled = true;
     renderBattleTactics(performance.now())
   }
   // Defensive buildings are tracked centrally so raid, repair, and display logic
@@ -13797,20 +14469,16 @@ body.motionReduced *::after {
     $('#battlePauseBtn').textContent = battle.paused ? 'Resume' : 'Pause'
   };
   document.addEventListener('click', e => {
-    const b = e.target.closest('[data-cancel-training]');
-    if (!b) return;
-    const i = Number(b.dataset.cancelTraining), job = S.trainingQueue[i];
-    if (!job) return;
-    Object.entries(UNITS[job.unit].cost).forEach(([k, v]) => S.r[k] = Math.min(storageCap(), S.r[k] + Math.floor(v * job.qty * .5)));
-    S.trainingQueue.splice(i, 1);
-    if (S.trainingQueue[0] && !S.trainingQueue[0].finishAt) {
-      const n = S.trainingQueue[0], now = Date.now();
-      n.startedAt = now;
-      n.finishAt = now + trainingDuration(n.unit, n.qty)
+    const button = e.target.closest('[data-cancel-training]');
+    if (button) {
+      e.preventDefault();
+      requestQueueCancellation('training', Number(button.dataset.cancelTraining));
+      return;
     }
-    save();
-    renderAll();
-    toast('Order cancelled · 50% refunded')
+    const buildingButton = e.target.closest('[data-cancel-order-kind]');
+    if (!buildingButton) return;
+    e.preventDefault();
+    requestQueueCancellation(buildingButton.dataset.cancelOrderKind, Number(buildingButton.dataset.orderSlot));
   });
   $('#battleExit').onclick = () => {
     $('#battleModal').classList.remove('open');
@@ -13923,20 +14591,22 @@ body.motionReduced *::after {
   save();
   function updateRepair() {
     const panel = document.getElementById('activityPanel');
-    if (!panel) return;
-    let box = panel.querySelector('.repairPanel');
-    if (!box) {
-      box = document.createElement('div');
-      box.className = 'repairPanel';
-      panel.prepend(box)
-    }
-    const d = S.defenseDamage || 0;
-    const canRepair = d > 0 && operationalDefenseBuildings().length > 0;
-    box.classList.toggle('hidden', !canRepair);
-    if (canRepair) {
+    const box = panel?.querySelector('.defenseRepairArea');
+    if (!box) return;
+    const damage = Math.max(0, Number(S.defenseDamage) || 0);
+    const operational = operationalDefenseBuildings().length > 0;
+    if (damage > 0 && operational) {
       const c = repairCost();
-      box.innerHTML = `<b>🧱 Defense damage: ${d}</b><small>Current defense ${defenseRating()} · Repair ${costText(c)}</small><button class="secondary" id="repairDefenses">Repair defenses</button>`;
-      box.querySelector('button').onclick = repairDefenses
+      const affordable = canPay(c);
+      box.innerHTML = `<div class="defenseRepairCost"><span>Repair cost</span><b>${costText(c)}</b></div><button class="secondary defenseRepairButton" id="repairDefenses" type="button" ${affordable ? '' : 'disabled'}>Repair defenses · Restore ${damage}</button>${affordable ? '<small class="defenseRepairNote">Repairs restore the full current damage penalty.</small>' : `<small class="defenseRepairNote shortage">Missing ${escapeDefenseText(missingCost(c))}. Collect or produce more resources first.</small>`}`;
+      const button = box.querySelector('#repairDefenses');
+      if (button) button.onclick = repairDefenses;
+    } else if (damage > 0) {
+      box.innerHTML = '<div class="defenseRepairCost"><span>Repair unavailable</span><b>Complete a defensive structure first.</b></div>';
+    } else if (defenseBuildingRecords().length) {
+      box.innerHTML = '<div class="defenseRepairCost intact"><span>Repair status</span><b>No recorded damage · No repair cost</b></div>';
+    } else {
+      box.innerHTML = '<div class="defenseRepairCost intact"><span>Suggested preparation</span><b>Build a Watchtower, Walls or Gate to increase raid defense.</b></div>';
     }
   }
   updateRepair();
@@ -16130,4 +16800,235 @@ html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;v
   }
 </style>
 
+<style id="wd-stage-e-visual-refinement">
+/*
+ * STAGE E — VISUAL REFINEMENT
+ * Purpose: tighten visual consistency and interaction feedback without changing
+ * layout logic, game state, button wiring, campaign rules, or save data.
+ */
+:root {
+  --wd-stage-e-ink: #edf3fb;
+  --wd-stage-e-muted: #bdcadd;
+  --wd-stage-e-gold: #ffe18a;
+  --wd-stage-e-border: #71849a88;
+  --wd-stage-e-surface: linear-gradient(155deg, #1b3452, #102137 82%);
+  --wd-stage-e-surface-raised: linear-gradient(145deg, #243f5d, #172b44);
+  --wd-stage-e-success: #bde3a9;
+  --wd-stage-e-warning: #f2cf7a;
+  --wd-stage-e-danger: #f0aaa1;
+}
+
+/* Numeric information should line up as values update. */
+.resources .res,
+#productionStatus,
+.productionDashStat strong,
+.productionMetricValue,
+.activityTime,
+.queueOrderTop .activityTime,
+#activityPanel .defenseValue,
+#activityPanel .defenseThreat,
+.battleOutcomeStats b,
+#detailDialog .upgradeStat strong {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Keep focus visible for keyboard and switch-control users. Existing special
+   focus geometry on city plots is deliberately retained. */
+button:focus-visible:not(.plotMain),
+summary:focus-visible,
+[role="button"]:focus-visible:not(.plotMain),
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--wd-stage-e-gold) !important;
+  outline-offset: 2px !important;
+  scroll-margin: 12px;
+}
+
+/* Consistent tactile feedback without overwriting controls whose transforms
+   define map placement or animation. */
+button:not(:disabled),
+summary,
+[role="button"]:not(.plotMain):not(:disabled) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+button:not(:disabled) {
+  transition: filter .14s ease, box-shadow .14s ease, border-color .14s ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  button:not(:disabled):hover {
+    filter: brightness(1.06);
+  }
+  button:disabled:hover {
+    filter: none;
+  }
+}
+button:not(:disabled):active {
+  filter: brightness(1.07);
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
+/* All modal shells share the same lacquer-and-gold frame. Inner layouts
+   (battlefield, faction cards, research tabs, stats) retain their own roles. */
+html:not(#_):not(#_):not(#_) body .modal.open > .dialog {
+  color: var(--wd-message-text, #f6e7bf) !important;
+  background: var(--wd-message-bg, linear-gradient(145deg, #112640f8, #1a3551f8)) !important;
+  border: 1px solid var(--wd-message-border, #e3c36d) !important;
+  border-radius: var(--wd-message-radius, 16px) !important;
+  box-shadow: var(--wd-message-shadow, 0 14px 36px #000a, inset 0 0 0 1px #ffffff0d) !important;
+}
+html:not(#_):not(#_):not(#_) body .modal.open {
+  background: rgb(4 10 18 / 78%) !important;
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+html:not(#_):not(#_):not(#_) body .modal.open > .dialog h2,
+html:not(#_):not(#_):not(#_) body .modal.open > .dialog h3 {
+  color: var(--wd-stage-e-gold) !important;
+}
+html:not(#_):not(#_):not(#_) body .modal.open > .dialog > p {
+  color: var(--wd-stage-e-muted) !important;
+  line-height: 1.5;
+}
+html:not(#_):not(#_):not(#_) body .modal.open > .dialog button:not(.faction) {
+  border-radius: 10px;
+}
+
+/* Quest and battle-report tiles previously used the old parchment panel skin,
+   unlike the rest of the dark strategy UI. Keep the icons and content intact. */
+#questList .panel.quest,
+#reportList > .panel,
+#reportList .panel {
+  color: var(--wd-stage-e-ink) !important;
+  background: var(--wd-message-bg-deep, linear-gradient(155deg, #0e2035f8, #172b43f8)) !important;
+  border: 1px solid var(--wd-stage-e-border) !important;
+  border-left: 3px solid #b99549 !important;
+  border-radius: 13px !important;
+  box-shadow: 0 4px 12px #0003, inset 0 1px 0 #ffffff08 !important;
+  padding: 12px 14px !important;
+}
+#questList .panel.quest {
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+  margin-bottom: 9px !important;
+}
+#questList .questMark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 28px;
+  width: 28px;
+  min-height: 28px;
+  color: var(--wd-stage-e-warning);
+}
+#questList .quest > div:last-child {
+  min-width: 0;
+  line-height: 1.4;
+}
+#questList .quest > div:last-child > b {
+  display: block;
+  color: var(--wd-stage-e-gold) !important;
+  font-size: 13px;
+  line-height: 1.35;
+}
+#questList .quest > div:last-child > div {
+  margin-top: 2px;
+  color: var(--wd-stage-e-muted) !important;
+  font-size: 12px;
+  line-height: 1.45;
+}
+#reportList > .panel,
+#reportList .panel {
+  color: var(--wd-stage-e-muted) !important;
+  line-height: 1.5;
+}
+
+/* Slightly regularise screen-title rhythm without changing screen geometry. */
+.screen > .heading {
+  letter-spacing: .015em;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+#phase3Hub .phase3Card {
+  border-radius: 14px;
+  box-shadow: 0 5px 14px #0002, inset 0 1px 0 #ffffff08;
+}
+#phase3Hub .phase3Title {
+  gap: 10px;
+}
+
+/* Transient notifications must not compete with an active modal or dialog. */
+html:not(#_):not(#_):not(#_) body:has(.modal.open) #toast.toast.show,
+html:not(#_):not(#_):not(#_) body:has(.modal.open) #tapName.tapName.show,
+html:not(#_):not(#_):not(#_) body:has(.modal.open) .completionBanner.show {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: none !important;
+}
+#toast.toast.show,
+#tapName.tapName.show {
+  max-width: min(460px, calc(100vw - 28px));
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+  text-align: center;
+}
+#completionBanner.completionBanner.show {
+  max-width: calc(100vw - 28px);
+  overflow-wrap: anywhere;
+}
+
+/* Desktop pointer polish and iPhone portrait-safe spacing. */
+@media (max-width: 600px) {
+  #questList .panel.quest,
+  #reportList > .panel,
+  #reportList .panel {
+    padding: 11px 12px !important;
+  }
+  #questList .quest > div:last-child > b {
+    font-size: 12px;
+  }
+  #questList .quest > div:last-child > div {
+    font-size: 11px;
+  }
+  .phase3Title > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .phase3Title button {
+    flex: 0 0 auto;
+  }
+  #toast.toast.show,
+  #tapName.tapName.show {
+    width: max-content;
+    max-width: calc(100vw - 24px);
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+}
+
+/* On portrait phones, keep the production summary in the top-right safe strip;
+   the camera controls begin below it. This prevents the two overlays competing. */
+@media (max-width: 600px) and (orientation: portrait) {
+  html:not(#_):not(#_):not(#_) body .cityViewport #productionStatus.productionStatus:not(.collapsed):not(.interactionCompact) {
+    top: 8px !important;
+    right: 8px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button:not(:disabled),
+  .phase3Card,
+  #questList .panel.quest,
+  #reportList .panel {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
 </body></html>
