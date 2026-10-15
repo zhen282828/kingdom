@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion — Stage F Gameplay Balance</title>
+<html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion — Mobile UI Polish</title>
 <meta name="application-name" content="Three Kingdoms: Warlord Dominion">
-<meta name="wd-build" content="P1.4-F4">
+<meta name="wd-build" content="P1.4-F5.3">
 <meta name="wd-save-schema" content="4">
 <meta name="theme-color" content="#142641"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="format-detection" content="telephone=no">
 
@@ -12207,8 +12207,29 @@ body:has(.modal.open) #toast.toast.show {
   }
 </style>
 
+<style id="wd-palace-defense-repair-styles">
+  .palaceConditionPanel { margin: 12px 0; padding: 12px; border: 2px solid #6b805d; border-radius: 15px; background: linear-gradient(145deg,#203b52,#152b41); color: #f3e6c5; box-shadow: inset 0 1px 0 #ffffff12; }
+  .palaceConditionHeader { display:flex; align-items:center; justify-content:space-between; gap:8px; font-weight:900; color:#ffe19a; }
+  .palaceConditionHeader strong { font-size:15px; white-space:nowrap; }
+  .palaceConditionTrack { height:10px; overflow:hidden; border:1px solid #6e8296; border-radius:9px; background:#471f2a; margin:8px 0; }
+  .palaceConditionTrack i { display:block; height:100%; border-radius:inherit; background:linear-gradient(90deg,#e45f50,#e8bc53 58%,#64c983); }
+  .palaceConditionTrack.damaged i { background:linear-gradient(90deg,#d84b43,#e8a448); }
+  .palaceConditionMeta { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; margin-top:9px; }
+  .palaceConditionMeta > div { padding:8px; border-radius:9px; background:#0e2034; border:1px solid #647d9b66; min-width:0; }
+  .palaceConditionMeta small { display:block; color:#bfd0e2; font-size:10px; margin-bottom:3px; }
+  .palaceConditionMeta b { color:#ffe6aa; font-size:12px; overflow-wrap:anywhere; }
+  .palaceRepairCost { margin-top:9px; padding:9px; border-radius:9px; background:#0e2034; border:1px solid #647d9b66; }
+  .palaceRepairCost span { display:block; color:#bfd0e2; font-size:10px; margin-bottom:4px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
+  .palaceRepairCost b { color:#ffe19a; font-size:12px; line-height:1.5; overflow-wrap:anywhere; }
+  .palaceRepairButton { width:100%; margin-top:8px; }
+  .palaceRepairButton:disabled { opacity:.55; filter:grayscale(.5); }
+  .palaceRepairNote { display:block; margin-top:6px; color:#c3d1e0; font-size:10px; line-height:1.45; }
+  .palaceRepairNote.shortage { color:#ffc5b8; }
+  .palaceConditionIntact { padding:10px; border-radius:10px; color:#d9f0d9; background:#173a31; border:1px solid #4d8e70; font-size:11px; line-height:1.5; }
+  @media (max-width:430px) { .palaceConditionPanel { padding:10px; } .palaceConditionMeta { gap:5px; } }
+</style>
 </head><body><div id="portraitLockOverlay" role="status" aria-live="polite"><div class="portraitLockCard"><div class="portraitLockIcon" aria-hidden="true">📱 ↻</div><h2>Please rotate your device</h2><p>Warlord Dominion is designed for portrait play. Rotate your iPhone vertically to continue your campaign.</p></div></div><div class="game"><header class="topbar"><div class="ab-crest"><div class="crestIcon" id="factionCrest">⚔️</div><div class="logo">THREE KINGDOMS<br>WARLORD DOMINION</div></div><div class="level">🏯 <span id="cityLevel">1</span></div><div class="resources"><span class="res">🌾 <b id="food">0</b><small id="foodCap"></small></span><span class="res">🪵 <b id="wood">0</b><small id="woodCap"></small></span><span class="res">⛓️ <b id="iron">0</b><small id="ironCap"></small></span><span class="res">🪙 <b id="coins">0</b><small id="coinsCap"></small></span></div><button class="iconBtn" id="settingsBtn" aria-label="Settings">⚙️</button></header>
-<main class="main"><section class="screen cityScreen active" id="city"><div class="cityViewport" id="cityViewport"><div class="skyGlow"></div><div class="mountains"></div><div class="river"><span class="riverSpark r1"></span><span class="riverSpark r2"></span><span class="riverSpark r3"></span></div><div class="riverBankDecor"></div><div class="bridge"></div><div class="ambient" id="ambient"><span class="bird b1">⌁</span><span class="bird b2">⌁</span></div><div class="tip" id="cityTip">Choose a building below, then tap an empty plot.</div><div class="buildModeActions hidden" id="buildModeActions"><div class="buildModeChoice"><small>PLACING</small><b id="buildModeName">Building</b><span id="buildModeCost"></span></div><button class="secondary" id="buildModeCollect">Collect</button><button class="danger" id="cancelBuildMode">Cancel</button></div><div class="productionStatus" id="productionStatus"></div><div class="cityFocusLabel">Palace District</div><div class="cameraControls" aria-label="City camera controls"><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomReset">Reset</button><button id="zoomIn" aria-label="Zoom in">+</button></div><button class="activityToggle" id="activityToggle">Active Orders <b id="activityCount">0</b></button><div class="activityPanel hidden" id="activityPanel"></div><div class="cityBoard" id="cityBoard"></div><div class="buildDock"><div class="buildInfo hidden" id="buildInfo"></div><div class="buildArea"><div class="buildFilters" id="buildFilters"><button class="filter active" data-filter="All">All</button><button class="filter" data-filter="Economy">Economy</button><button class="filter" data-filter="Military">Military</button><button class="filter" data-filter="Defense">Defense</button><span class="filterSpacer"></span><button class="primary empty" id="collectAllBtn" disabled><span>Collect</span><b id="collectionReadyCount">0</b></button></div><div class="buildList" id="buildList"></div></div></div></div></section><section class="screen" id="army"><div class="heading">⚔️ Army Command</div><div class="panel row spread"><div><b id="armyPower">0 Power</b><div>Train troops for your field army.</div></div><button class="primary" id="balancedBtn">Balanced Reinforcement</button></div><div class="queuePanel hidden" id="trainingQueue"></div><div class="grid" id="unitGrid"></div></section><section class="screen" id="generals"><div class="heading">🎖️ General Roster</div><div class="panel row spread"><div><b>Recruit historical commanders</b><div>Each commander specializes in one troop type.</div></div><button class="primary" id="recruitBtn">Recruit · 300 🪙</button></div><div class="grid" id="generalGrid"></div></section><section class="screen" id="campaign"><div class="heading">🗺️ Campaign Map</div><div class="map" id="campaignMap"></div></section><section class="screen" id="quests"><div class="heading">📜 Quests & Reports</div><div id="questList"></div><div id="phase3Hub" class="phase3Hub">
+<main class="main"><section class="screen cityScreen active" id="city"><div class="cityViewport" id="cityViewport"><div class="skyGlow"></div><div class="mountains"></div><div class="river"><span class="riverSpark r1"></span><span class="riverSpark r2"></span><span class="riverSpark r3"></span></div><div class="riverBankDecor"></div><div class="bridge"></div><div class="ambient" id="ambient"><span class="bird b1">⌁</span><span class="bird b2">⌁</span></div><div class="tip" id="cityTip">Choose a building below, then tap an empty plot.</div><div class="buildModeActions hidden" id="buildModeActions"><div class="buildModeChoice"><small>PLACING</small><b id="buildModeName">Building</b><span id="buildModeCost"></span></div><button class="secondary" id="buildModeCollect">Collect</button><button class="danger" id="cancelBuildMode">Cancel</button></div><div class="productionStatus" id="productionStatus"></div><div class="cityFocusLabel">Citadel</div><div class="cameraControls" aria-label="City camera controls"><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomReset">Reset</button><button id="zoomIn" aria-label="Zoom in">+</button></div><button class="activityToggle" id="activityToggle" aria-label="Active orders">Orders <b id="activityCount">0</b></button><div class="activityPanel hidden" id="activityPanel"></div><div class="cityBoard" id="cityBoard"></div><div class="buildDock"><div class="buildInfo hidden" id="buildInfo"></div><div class="buildArea"><div class="buildFilters" id="buildFilters"><button class="filter active" data-filter="All">All</button><button class="filter" data-filter="Economy">Economy</button><button class="filter" data-filter="Military">Military</button><button class="filter" data-filter="Defense">Defense</button><span class="filterSpacer"></span><button class="primary empty" id="collectAllBtn" disabled><span>Collect</span><b id="collectionReadyCount">0</b></button></div><div class="buildList" id="buildList"></div></div></div></div></section><section class="screen" id="army"><div class="heading">⚔️ Army Command</div><div class="panel row spread"><div><b id="armyPower">0 Power</b><div>Train troops for your field army.</div></div><button class="primary" id="balancedBtn" aria-label="Queue balanced reinforcement">Reinforce</button></div><div class="queuePanel hidden" id="trainingQueue"></div><div class="grid" id="unitGrid"></div></section><section class="screen" id="generals"><div class="heading">🎖️ General Roster</div><div class="panel row spread"><div><b>Recruit historical commanders</b><div>Each commander specializes in one troop type.</div></div><button class="primary" id="recruitBtn">Recruit · 300 🪙</button></div><div class="grid" id="generalGrid"></div></section><section class="screen" id="campaign"><div class="heading">🗺️ Campaign Map</div><div class="map" id="campaignMap"></div></section><section class="screen" id="quests"><div class="heading">📜 Quests & Reports</div><div id="questList"></div><div id="phase3Hub" class="phase3Hub">
   <div class="phase3Header"><div><div class="phase3Eyebrow">P1 PHASE 3</div><h2>Daily Command</h2></div><div id="phase3Reset" class="phase3Reset"></div></div>
   <div class="phase3Grid">
     <section class="phase3Card"><div class="phase3Title"><span>Daily Bounties</span><button id="rerollDaily" class="smallBtn" type="button">Replace 1</button></div><div id="dailyBounties"></div></section>
@@ -12219,7 +12240,7 @@ body:has(.modal.open) #toast.toast.show {
 <div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
 <nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
 <div class="modal" id="factionModal"><div class="dialog"><h2>Raise Your Banner</h2><p>Choose a faction. This changes your crest and resource bonus.</p><div class="factionGrid"><button class="faction wei" data-faction="Wei"><div class="cardIcon">🐉</div>WEI<br><small>+15% Iron</small></button><button class="faction shu" data-faction="Shu"><div class="cardIcon">🦚</div>SHU<br><small>+15% Food</small></button><button class="faction wu" data-faction="Wu"><div class="cardIcon">🐅</div>WU<br><small>+15% Coins</small></button></div></div></div>
-<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F4 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
+<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F5.1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
 <div class="modal" id="detailModal"><div class="dialog" id="detailDialog"></div></div>
 <div class="modal" id="battleModal"><div class="dialog battleDialog"><div class="row spread"><div><h2 id="battleTitle">Battle</h2><div id="battleStatus">Engaging enemy...</div></div><button class="secondary hidden" id="battleExit">Exit</button></div><div class="battlefield" id="battlefield"></div><div class="battleOutcomeSummary hidden" id="battleOutcomeSummary" aria-live="polite"></div><div class="battleTactics" id="battleTactics" aria-label="Tactical orders">
 <div class="battleTacticsHead"><span>TACTICAL ORDERS</span><strong id="battleTacticStatus">Choose an order · 5 second effect</strong></div>
@@ -12234,7 +12255,7 @@ body:has(.modal.open) #toast.toast.show {
 (() => {
   'use strict';
   const $ = q => document.querySelector(q), $$ = q => Array.from(document.querySelectorAll(q));
-  const BUILD_VERSION = 'P1.4-F4', SAVE_SCHEMA = 4;
+  const BUILD_VERSION = 'P1.4-F5.3', SAVE_SCHEMA = 4;
   const GameEvents = (() => {
     const listeners = new Map(), seen = new Map();
     return {
@@ -12261,16 +12282,37 @@ body:has(.modal.open) #toast.toast.show {
     }
   })();
   window.WDGame = { version: BUILD_VERSION, schema: SAVE_SCHEMA, events: GameEvents };
-  const P1 = { maxBuildingLevel: 15, costGrowth: 1.5, productionGrowth: 1.35, timeGrowth: 1.22, deploymentFoodPerPower: .06, deploymentCoinsPerPower: .018, repairWoodPerDamage: 5, repairIronPerDamage: 2, startResources: { food: 500, wood: 500, iron: 220, coins: 500 }, buildBaseSeconds: 25, buildStepSeconds: 20, upgradeBaseMs: 45000, upgradeTimeGrowth: 1.18, researchTimeMultiplier: 4, trainingBaseSeconds: 18, trainingStepSeconds: 3, defeatArmyLoss: .15, enemyThreatPowerRatio: .40, lateNodeThreatRatio: .30, finalNodeThreatRatio: .24, introEnemyDamageMultiplier: .40 };
-  // Stage F balance values affect new starts and newly initiated orders. Existing save inventory and active timers are preserved.
+  // Read-only Palace diagnostics allow targeted balance/regression checks.
+  window.WDPalaceDefense = Object.freeze({ previewVolley: (threat, level, condition) => calculatePalaceVolley(threat, level, condition), baseVolley: level => palaceVolleyBase(level), snapshot: () => Object.freeze({ condition: palaceCondition(), level: palaceLevel(), baseVolley: palaceVolleyBase(), defenseDamage: Math.max(0, Number(S.defenseDamage) || 0) }) });
+  const P1 = { maxBuildingLevel: 15, costGrowth: 1.25, productionGrowth: 1.15, timeGrowth: 1.22, deploymentFoodPerPower: .06, deploymentCoinsPerPower: .018, repairWoodPerDamage: 5, repairIronPerDamage: 2, startResources: { food: 500, wood: 500, iron: 220, coins: 500 }, upgradeBaseMs: 45000, upgradeTimeGrowth: 1.18, researchTimeMultiplier: 4, trainingBaseSeconds: 18, trainingStepSeconds: 3, defeatArmyLoss: .15, enemyThreatPowerRatio: .40, lateNodeThreatRatio: .30, finalNodeThreatRatio: .24, introEnemyDamageMultiplier: .40 };
+  // Stage F.8 role-specific upgrade economy.
+  // Economy producers use 20% growth, storage and defense 18%, and military/core progression 22%.
+  // Each building has a distinct resource recipe; initial construction costs are not changed.
+  // b.level is the currently owned level, so the next upgrade starts at the profile's base cost.
+  // Production (15% growth), construction/upgrade timers, warehouse capacity and save schema are unchanged.
   function scaleCost(base, level, growth = P1.costGrowth) {
     const out = {};
     Object.entries(base || {}).forEach(([k, v]) => out[k] = Math.max(1, Math.round(v * Math.pow(growth, Math.max(0, level - 1)))));
     return out
   }
+  const UPGRADE_COST_PROFILES = Object.freeze({
+    Palace:        { role: 'Core progression',             growth: 1.22, base: { wood: 100, iron: 60, coins: 80 } },
+    Farm:          { role: 'Food economy',                 growth: 1.20, base: { wood: 55, coins: 20 } },
+    'Lumber Yard': { role: 'Wood economy',                 growth: 1.20, base: { food: 40, coins: 20 } },
+    'Iron Mine':   { role: 'Iron economy',                 growth: 1.20, base: { wood: 75, food: 50, coins: 15 } },
+    Market:        { role: 'Coin economy',                 growth: 1.20, base: { wood: 70, iron: 20, coins: 35 } },
+    Warehouse:     { role: 'Storage',                      growth: 1.18, base: { wood: 90, iron: 35, coins: 25 } },
+    Barracks:      { role: 'Infantry and spearmen',        growth: 1.22, base: { wood: 90, iron: 40, food: 25 } },
+    'Archer Camp': { role: 'Ranged military',              growth: 1.22, base: { wood: 105, iron: 50, food: 25 } },
+    Stable:        { role: 'Cavalry',                      growth: 1.22, base: { wood: 115, iron: 55, food: 35, coins: 25 } },
+    Academy:       { role: 'Advanced military/research',   growth: 1.22, base: { wood: 130, iron: 60, coins: 65 } },
+    Watchtower:    { role: 'Early warning defense',        growth: 1.18, base: { wood: 75, iron: 40, coins: 15 } },
+    Walls:         { role: 'Passive fortification',        growth: 1.18, base: { wood: 55, iron: 35 } },
+    Gate:          { role: 'Entrance defense',             growth: 1.18, base: { wood: 70, iron: 40, coins: 15 } }
+  });
   function upgradeCost(b) {
-    const base = b.type === 'Palace' ? { wood: 100, iron: 60, coins: 80 } : b.type === 'Warehouse' ? { wood: 90, iron: 35, coins: 25 } : { wood: 70, iron: 30, coins: 25 };
-    return scaleCost(base, b.level)
+    const profile = UPGRADE_COST_PROFILES[b.type] || { role: 'Default', growth: P1.costGrowth, base: { wood: 70, iron: 30, coins: 25 } };
+    return scaleCost(profile.base, b.level, profile.growth)
   }
   function missingCost(c) {
     return Object.entries(c).filter(([k, v]) => S.r[k] < v).map(([k, v]) => `${costsEmoji[k]} ${Math.ceil(v - S.r[k])}`).join(' · ')
@@ -12280,6 +12322,22 @@ body:has(.modal.open) #toast.toast.show {
     return { food: Math.max(20, Math.round((power + threat) * P1.deploymentFoodPerPower)), coins: Math.max(8, Math.round((power + threat) * P1.deploymentCoinsPerPower)) }
   }
   const DB = { Palace: { icon: '🏯', cost: {}, prod: null }, Farm: { icon: '🌾', cost: { wood: 60, coins: 25 }, prod: 'food' }, 'Lumber Yard': { icon: '🪵', cost: { food: 45, coins: 25 }, prod: 'wood' }, 'Iron Mine': { icon: '⛏️', cost: { wood: 90, food: 70 }, prod: 'iron' }, Market: { icon: '🏮', cost: { wood: 120, food: 80, iron: 25 }, prod: 'coins' }, Warehouse: { icon: '📦', cost: { wood: 100, iron: 35 } }, Barracks: { icon: '🛡️', cost: { wood: 120, iron: 45 } }, 'Archer Camp': { icon: '🏹', cost: { wood: 150, iron: 65 } }, Stable: { icon: '🐎', cost: { wood: 180, iron: 80, coins: 70 } }, Academy: { icon: '📚', cost: { wood: 200, iron: 90, coins: 100 } }, Watchtower: { icon: '🗼', cost: { wood: 110, iron: 60 } }, Walls: { icon: '🧱', cost: { wood: 70, iron: 45 } }, Gate: { icon: '⛩️', cost: { wood: 90, iron: 50 } } };
+  // New construction is based on the structure's complexity, never the current Palace level.
+  // Palace level still controls building unlocks and available plots; it does not lengthen a new build.
+  const BUILD_CONSTRUCTION_SECONDS = Object.freeze({
+    Farm: 25,
+    'Lumber Yard': 30,
+    Warehouse: 35,
+    'Iron Mine': 40,
+    Market: 40,
+    Barracks: 45,
+    'Archer Camp': 50,
+    Stable: 60,
+    Academy: 70,
+    Watchtower: 45,
+    Walls: 30,
+    Gate: 40
+  });
   const BUILD_DESCRIPTIONS = {
     Farm: 'Produces Food for troop training, construction, and city growth.',
     'Lumber Yard': 'Produces Wood used for buildings, defenses, and military facilities.',
@@ -12305,14 +12363,14 @@ body:has(.modal.open) #toast.toast.show {
     const available = isBuildingUnlocked(type);
     const gap = Math.max(0, need - current);
     const pct = Math.min(100, current / need * 100);
-    const buildMs = buildDuration(available ? current : Math.max(current, need));
+    const buildMs = buildDuration(type);
     const description = BUILD_DESCRIPTIONS[type] || 'Develops the city and supports progression.';
     if (available) {
       el.className = 'buildInfo';
-      el.innerHTML = `<button class="buildInfoClose" aria-label="Close building description">×</button><span class="buildInfoIcon">${d.icon}</span><div class="buildInfoBody"><h3>${type}</h3><p>${description}</p></div><div class="buildInfoMeta"><div class="buildInfoMetric"><span>Construction cost</span><strong>${costText(d.cost)}</strong></div><div class="buildInfoMetric buildInfoEstimate"><span>Estimated build time</span><strong>⏱ ${fmtTime(buildMs)}</strong></div></div>`;
+      el.innerHTML = `<button class="buildInfoClose" aria-label="Close building description">×</button><span class="buildInfoIcon">${d.icon}</span><div class="buildInfoBody"><h3>${displayBuildingName(type)}</h3><p>${description}</p></div><div class="buildInfoMeta"><div class="buildInfoMetric"><span>Construction cost</span><strong>${costText(d.cost)}</strong></div><div class="buildInfoMetric buildInfoEstimate"><span>Estimated build time</span><strong>⏱ ${fmtTime(buildMs)}</strong></div></div>`;
     } else {
       el.className = 'buildInfo lockedPanel';
-      el.innerHTML = `<button class="buildInfoClose" aria-label="Close building description">×</button><span class="buildInfoIcon">🔒</span><div class="buildInfoBody"><h3>${type}</h3><p>${description}</p></div><div class="buildInfoMeta"><div class="buildInfoMetric"><span>Unlock requirement</span><strong>Palace Lv${need}</strong></div><div class="buildInfoMetric buildInfoEstimate"><span>Estimated build time after unlock</span><strong>⏱ ${fmtTime(buildMs)}</strong></div></div><div class="lockedInfo"><div class="lockedInfoTitle">Upgrade the Palace ${gap} more level${gap === 1 ? '' : 's'} to unlock</div><div class="lockedProgress"><i style="width:${pct}%"></i></div><div class="lockedReason">Current Palace: Level ${current} · Required: Level ${need}</div><div class="lockedSteps"><div class="lockedStep done">✓ Current<br>Palace Lv${current}</div><div class="lockedStep">1. Upgrade<br>Palace toward Lv${need}</div><div class="lockedStep">2. Build<br>${type}</div></div><div class="unlockPreview"><b>Unlock benefit:</b> ${UNLOCK_BENEFITS[type] || 'Expands city development.'}<br><b>Future construction cost:</b> ${costText(d.cost)}<br><b>Estimated build time after unlock:</b> ${fmtTime(buildMs)}</div><button class="lockedPalaceAction" id="viewPalaceUpgrade">View Palace Upgrade</button></div>`;
+      el.innerHTML = `<button class="buildInfoClose" aria-label="Close building description">×</button><span class="buildInfoIcon">🔒</span><div class="buildInfoBody"><h3>${displayBuildingName(type)}</h3><p>${description}</p></div><div class="buildInfoMeta"><div class="buildInfoMetric"><span>Unlock requirement</span><strong>Palace Lv${need}</strong></div><div class="buildInfoMetric buildInfoEstimate"><span>Estimated build time after unlock</span><strong>⏱ ${fmtTime(buildMs)}</strong></div></div><div class="lockedInfo"><div class="lockedInfoTitle">Upgrade the Palace ${gap} more level${gap === 1 ? '' : 's'} to unlock</div><div class="lockedProgress"><i style="width:${pct}%"></i></div><div class="lockedReason">Current Palace: Level ${current} · Required: Level ${need}</div><div class="lockedSteps"><div class="lockedStep done">✓ Current<br>Palace Lv${current}</div><div class="lockedStep">1. Upgrade<br>Palace toward Lv${need}</div><div class="lockedStep">2. Build<br>${displayBuildingName(type)}</div></div><div class="unlockPreview"><b>Unlock benefit:</b> ${UNLOCK_BENEFITS[type] || 'Expands city development.'}<br><b>Future construction cost:</b> ${costText(d.cost)}<br><b>Estimated build time after unlock:</b> ${fmtTime(buildMs)}</div><button class="lockedPalaceAction" id="viewPalaceUpgrade">View Palace Upgrade</button></div>`;
     }
     el.classList.remove('hidden');
     const closeInfo = el.querySelector('.buildInfoClose');
@@ -12330,6 +12388,9 @@ body:has(.modal.open) #toast.toast.show {
   }
   const BUILD_LEVEL = { 'Farm': 1, 'Lumber Yard': 1, 'Warehouse': 1, 'Barracks': 1, 'Iron Mine': 2, 'Market': 2, 'Archer Camp': 2, 'Watchtower': 2, 'Stable': 3, 'Walls': 3, 'Gate': 3, 'Academy': 4 };
   const BUILD_CATEGORY = { 'Farm': 'Economy', 'Lumber Yard': 'Economy', 'Iron Mine': 'Economy', 'Market': 'Economy', 'Warehouse': 'Economy', 'Barracks': 'Military', 'Archer Camp': 'Military', 'Stable': 'Military', 'Academy': 'Military', 'Watchtower': 'Defense', 'Walls': 'Defense', 'Gate': 'Defense' };
+  // Short labels are presentation-only; canonical building IDs and save data keep their existing names.
+  const COMPACT_BUILDING_LABELS = { 'Lumber Yard': 'Lumber', 'Iron Mine': 'Mine', 'Archer Camp': 'Archery' };
+  function displayBuildingName(type) { return COMPACT_BUILDING_LABELS[type] || type; }
   const PLOT_UNLOCKS = { 1: 9, 2: 13, 3: 18, 4: 25 };
   const DECOR = { 'Farm': '🌱🌾', 'Lumber Yard': '🪵🪓', 'Iron Mine': '🪨⛏️', 'Market': '🏮🧺', 'Warehouse': '📦🛒', 'Barracks': '🎯⚔️', 'Archer Camp': '🎯🏹', 'Stable': '🪵🐴', 'Academy': '📜🏮', 'Watchtower': '🚩🔥', 'Walls': '🧱🧱', 'Gate': '🚩⛩️', 'Palace': '🚩🏮🚩' };
   function palaceLevel() {
@@ -12389,7 +12450,7 @@ body:has(.modal.open) #toast.toast.show {
       }
     }
   })();
-  const fresh = () => ({ faction: null, r: { ...P1.startResources }, level: 1, buildings: [{ type: 'Palace', level: 1, slot: 12, pending: 0 }, { type: 'Farm', level: 1, slot: 7, pending: 0 }], units: { Infantry: 0, Spearmen: 0, Archers: 0, Cavalry: 0, 'Siege Engineers': 0 }, generals: [], assigned: null, territory: 0, quests: { collect: false, lumber: false, palace: false, train: false, general: false, bandit: false, reward: false }, tutorial: 0, reports: [], sound: true, reducedMotion: false, trainingQueue: [], lastProduction: Date.now(), lastSeen: Date.now(), nextRaidAt: Date.now() + 1200000, campaignCycle: 0, endSeen: false });
+  const fresh = () => ({ faction: null, r: { ...P1.startResources }, level: 1, buildings: [{ type: 'Palace', level: 1, slot: 12, pending: 0 }, { type: 'Farm', level: 1, slot: 7, pending: 0 }], units: { Infantry: 0, Spearmen: 0, Archers: 0, Cavalry: 0, 'Siege Engineers': 0 }, generals: [], assigned: null, territory: 0, quests: { collect: false, lumber: false, palace: false, train: false, general: false, bandit: false, reward: false }, tutorial: 0, reports: [], sound: true, reducedMotion: false, trainingQueue: [], lastProduction: Date.now(), lastSeen: Date.now(), nextRaidAt: Date.now() + 1200000, campaignCycle: 0, palaceCondition: 100, endSeen: false });
   const RESEARCH = {
     food: { name: 'Agricultural Methods', branch: 'Economy', icon: '🌾', desc: '+8% Food production per level', cost: { coins: 160, wood: 80 }, time: 18000, max: 3 },
     wood: { name: 'Timber Administration', branch: 'Economy', icon: '🪵', desc: '+8% Wood production per level', cost: { coins: 160, food: 100 }, time: 18000, max: 3 },
@@ -12557,6 +12618,10 @@ body:has(.modal.open) #toast.toast.show {
   S.saveSchema = SAVE_SCHEMA;
   S.buildVersion = BUILD_VERSION;
   S.lastProduction = S.lastProduction || Date.now();
+  // Stage F.5 Palace condition migration: existing saves start undamaged; new values are clamped safely.
+  S.palaceCondition = S.palaceCondition == null || !Number.isFinite(Number(S.palaceCondition))
+    ? 100
+    : Math.max(0, Math.min(100, Math.round(Number(S.palaceCondition))));
   const savedPalace = S.buildings.find(b => b.type === 'Palace');
   if (savedPalace) S.level = savedPalace.level;
   if (typeof S.reducedMotion !== 'boolean') S.reducedMotion = false;
@@ -12645,13 +12710,13 @@ body:has(.modal.open) #toast.toast.show {
     if (!bar) return;
     bar.classList.toggle('hidden', !selected);
     if (!selected) return;
-    name.textContent = selected;
+    name.textContent = displayBuildingName(selected);
     cost.textContent = costText(DB[selected].cost);
     const ready = buildReadyTotal();
     collect.classList.toggle('hidden', ready < 1);
-    collect.textContent = 'Collect All';
+    collect.textContent = 'Collect Reserve';
     collect.disabled = ready < 1;
-    collect.setAttribute('aria-label', ready ? `Collect all ${ready} resources that fit in storage` : 'No resources can currently fit in storage')
+    collect.setAttribute('aria-label', ready ? `Claim ${ready} units of production reserve` : 'No reserve is ready to claim')
   }
   function cancelBuildSelection(message = 'Building placement cancelled') {
     if (!selected) return;
@@ -12669,18 +12734,18 @@ body:has(.modal.open) #toast.toast.show {
     const resourceOrder = Object.keys(costsEmoji);
     const pendingByResource = {}, collectibleByResource = {}, blockedByResource = {}, allocations = [];
     for (const r of resourceOrder) {
-      const sources = S.buildings.filter(b => isProducerOperational(b) && DB[b.type].prod === r);
-      const pending = sources.reduce((sum, b) => sum + Math.max(0, Math.floor(Number(b.pending) || 0)), 0);
-      const current = Math.max(0, Number(S.r[r]) || 0);
-      const room = Math.max(0, Math.floor(cap - current));
-      const collectible = Math.min(pending, room);
-      pendingByResource[r] = pending;
-      collectibleByResource[r] = collectible;
-      blockedByResource[r] = Math.max(0, pending - collectible);
-      let remaining = collectible;
+      const sources = S.buildings.filter(b => isProducerOperational(b) && DB[b.type]?.prod === r);
+      const rawPending = sources.reduce((sum, b) => sum + Math.max(0, Number(b.pending) || 0), 0);
+      const claimable = Math.max(0, Math.floor(rawPending));
+      pendingByResource[r] = claimable;
+      // Reserve is a shared resource pool logically: aggregate fractional output
+      // across buildings, then allocate the whole-number claim across its sources.
+      collectibleByResource[r] = claimable;
+      blockedByResource[r] = 0;
+      let remaining = claimable;
       for (const b of sources) {
         if (remaining <= 0) break;
-        const available = Math.max(0, Math.floor(Number(b.pending) || 0));
+        const available = Math.max(0, Number(b.pending) || 0);
         const amount = Math.min(available, remaining);
         if (amount > 0) {
           allocations.push({ building: b, resource: r, amount });
@@ -12696,8 +12761,7 @@ body:has(.modal.open) #toast.toast.show {
   function collectionPlanText(plan) {
     const names = { food: 'Food', wood: 'Wood', iron: 'Iron', coins: 'Coins' };
     const ready = plan.resourceOrder.filter(r => plan.collectibleByResource[r] > 0).map(r => `${names[r]} ${plan.collectibleByResource[r]}`).join('; ') || 'none';
-    const blocked = plan.resourceOrder.filter(r => plan.blockedByResource[r] > 0).map(r => `${names[r]} ${plan.blockedByResource[r]}`).join('; ') || 'none';
-    return `Collectible now: ${ready}. Pending but blocked by storage: ${blocked}. Storage cap per resource: ${plan.cap}.`;
+    return `Reserve ready to claim: ${ready}. Regular storage cap: ${plan.cap} per resource. Claiming reserve can temporarily take stock above the passive storage cap.`;
   }
   function save() {
     updateProduction();
@@ -12753,11 +12817,34 @@ body:has(.modal.open) #toast.toast.show {
   function armyPower() {
     return Math.floor(Object.entries(S.units).reduce((sum, [n, q]) => sum + stackPower(n, q), 0))
   }
+  // Warehouse storage scales in five-level bands: +200 per level for Lv1-5,
+  // +300 per level for Lv6-10, and +400 per level for Lv11-15.
+  // This yields meaningful late-game gains without the old flat +700 per level.
+  function warehouseCapacityAtLevel(level) {
+    const lv = Math.max(0, Math.min(P1.maxBuildingLevel, Math.floor(Number(level) || 0)));
+    const earlyLevels = Math.min(lv, 5);
+    const midLevels = Math.min(Math.max(0, lv - 5), 5);
+    const lateLevels = Math.max(0, lv - 10);
+    return earlyLevels * 200 + midLevels * 300 + lateLevels * 400;
+  }
   function storageCap() {
     const palace = S.buildings.find(b => b.type === 'Palace');
     const palaceLevel = palace ? palace.level : 1;
-    const warehouseBonus = S.buildings.filter(b => b.type === 'Warehouse').reduce((sum, b) => sum + 700 * b.level, 0);
+    const warehouseBonus = S.buildings.filter(b => b.type === 'Warehouse').reduce((sum, b) => sum + warehouseCapacityAtLevel(b.level), 0);
     return Math.round((1200 + (palaceLevel - 1) * 500 + warehouseBonus) * (1 + researchLevel('storage') * .06));
+  }
+  // Rewards may fill available storage, but must never reduce existing stock when
+  // reserve claims have temporarily put inventory above the passive storage cap.
+  function grantResourceWithinStorage(resource, amount) {
+    if (!Object.prototype.hasOwnProperty.call(S.r, resource)) return 0;
+    const rawCurrent = Number(S.r[resource]);
+    const current = Number.isFinite(rawCurrent) ? Math.max(0, rawCurrent) : 0;
+    const rawRequested = Number(amount);
+    const requested = Number.isFinite(rawRequested) ? Math.max(0, rawRequested) : 0;
+    const room = Math.max(0, storageCap() - current);
+    const credited = Math.min(requested, room);
+    S.r[resource] = current + credited;
+    return credited;
   }
   function ratePerSecond(b) {
     if (!DB[b.type].prod) return 0;
@@ -12771,6 +12858,8 @@ body:has(.modal.open) #toast.toast.show {
     // Start at two hours; Warehouse levels and offline-production research raise this to eight hours.
     return Math.min(8 * 3600, 2 * 3600 + warehouses * 3600 + researchEffect('offlineSeconds'));
   }
+  // Reserve overflow cap is shared per resource: 125% of passive storage, minimum 250.
+  // At the base 1,200 storage cap this means 1,500 reserve units per resource.
   function pendingResourceCap(resource) {
     if (!resource) return 0;
     return Math.max(250, Math.floor(storageCap() * 1.25));
@@ -12796,28 +12885,34 @@ body:has(.modal.open) #toast.toast.show {
       accruals.push({ building: b, resource, amount: elapsed > 0 ? ratePerSecond(b) * elapsed : 0 });
       b.productionUpdatedAt = now;
     });
-    // Each resource has one finite pending buffer shared by all producers of that type.
+    // Resources automatically fill regular storage. Only production that exceeds
+    // the regular storage cap is held in the shared, manually claimable reserve.
+    const normalCap = Math.max(0, Math.floor(Number(storageCap()) || 0));
     for (const resource of Object.keys(costsEmoji)) {
       const sources = S.buildings.filter(b => DB[b.type]?.prod === resource);
       const bufferCap = pendingResourceCap(resource);
-      let alreadyPending = sources.reduce((sum, b) => sum + Math.max(0, Number(b.pending) || 0), 0);
-      // Old saves used a separate cap per producer. Normalize any legacy overflow
-      // proportionally so it cannot remain an unlimited stockpile after upgrading.
-      if (alreadyPending > bufferCap && alreadyPending > 0) {
-        const ratio = bufferCap / alreadyPending;
-        sources.forEach(b => {
-          b.pending = Math.max(0, Number(b.pending) || 0) * ratio;
-        });
-        alreadyPending = sources.reduce((sum, b) => sum + Math.max(0, Number(b.pending) || 0), 0);
-      }
-      const room = Math.max(0, bufferCap - alreadyPending);
-      if (room <= 0) continue;
+      const alreadyPending = sources.reduce((sum, b) => sum + Math.max(0, Number(b.pending) || 0), 0);
+      // Preserve reserve earned by older saves even if it exceeds the newer shared cap.
+      // The cap restricts future accrual; excess legacy reserve stays claimable instead
+      // of being silently scaled down during load/update/migration.
       const candidates = accruals.filter(a => a.resource === resource && a.amount > 0);
       const requested = candidates.reduce((sum, a) => sum + a.amount, 0);
       if (requested <= 0) continue;
-      const ratio = Math.min(1, room / requested);
+
+      const currentStock = Math.max(0, Number(S.r[resource]) || 0);
+      const stockRoom = Math.max(0, normalCap - currentStock);
+      const autoAdded = Math.min(requested, stockRoom);
+      S.r[resource] = currentStock + autoAdded;
+
+      const overflow = Math.max(0, requested - autoAdded);
+      if (overflow <= 0) continue;
+      const reserveRoom = Math.max(0, bufferCap - alreadyPending);
+      if (reserveRoom <= 0) continue; // Reserve is full; excess production is not retained.
+      const reserveRatio = Math.min(1, reserveRoom / overflow);
+      const overflowRatio = overflow / requested;
       candidates.forEach(a => {
-        a.building.pending = Math.max(0, Number(a.building.pending) || 0) + a.amount * ratio;
+        const reserveAmount = a.amount * overflowRatio * reserveRatio;
+        a.building.pending = Math.max(0, Number(a.building.pending) || 0) + reserveAmount;
       });
     }
     S.lastProduction = now;
@@ -12826,27 +12921,25 @@ body:has(.modal.open) #toast.toast.show {
     updateProduction();
     const r = DB[b.type].prod;
     if (!r || !isProducerOperational(b)) return;
-    const room = Math.max(0, Math.floor(storageCap() - (Number(S.r[r]) || 0)));
-    const amount = Math.min(Math.floor(b.pending || 0), room);
+    const amount = Math.floor(Math.max(0, Number(b.pending) || 0));
     if (amount < 1) {
-      toast(room < 1 ? 'Storage is full' : 'Resources are still producing');
+      toast('No reserve ready to claim yet');
       return;
     }
-    S.r[r] += amount;
-    b.pending -= amount;
-    GameEvents.emit('resource:collected', { resource: r, amount, source: 'building' }, `building-${b.slot}-${Math.floor(Date.now() / 50)}`);
-    if (r === 'food') {
-      S.quests.collect = true;
-      advanceTutorial(1)
-    }
+    // Reserve is manually claimable overflow and may temporarily take stock above
+    // the passive storage cap. Passive production pauses at the regular cap again.
+    S.r[r] = Math.max(0, Number(S.r[r]) || 0) + amount;
+    b.pending = Math.max(0, Number(b.pending) || 0) - amount;
+    GameEvents.emit('resource:collected', { resource: r, amount, source: 'reserve-building' }, `building-${b.slot}-${Math.floor(Date.now() / 50)}`);
+    if (r === 'food') S.quests.collect = true;
     showCollectPop(`${costsEmoji[r]} +${amount}`, document.querySelector(`[data-collect-slot="${b.slot}"]`), r);
     save();
     renderAll();
   }
   function productionSummary() {
     const cap = storageCap();
-    const waiting = S.buildings.filter(isProducerOperational).reduce((a, b) => a + Math.floor(b.pending || 0), 0);
-    return `Global cap: ${cap} each<br>${waiting} waiting in buildings`;
+    const reserve = S.buildings.filter(isProducerOperational).reduce((a, b) => a + Math.floor(b.pending || 0), 0);
+    return `Passive storage cap: ${cap} each<br>${reserve} in reserve overflow`;
   }
   const slots = Array.from({ length: 25 }, (_, i) => ({ x: (i % 5) * 105 + (Math.floor(i / 5) % 2) * 52, y: Math.floor(i / 5) * 68 }));
   function renderTop() {
@@ -12865,16 +12958,14 @@ body:has(.modal.open) #toast.toast.show {
     const status = $('#productionStatus');
     const plan = buildCollectionPlan();
     const readyParts = plan.resourceOrder.filter(r => plan.collectibleByResource[r] > 0).map(r => `${costsEmoji[r]}${plan.collectibleByResource[r]}`);
-    const blockedParts = plan.resourceOrder.filter(r => plan.blockedByResource[r] > 0).map(r => `${costsEmoji[r]}${plan.blockedByResource[r]}`);
-    const readyText = plan.total > 0 ? `📥 ${readyParts.join(' · ')}` : (plan.hasPending ? '🔒 No storage room' : '📦 Nothing ready');
-    const blockedText = blockedParts.length ? `Storage-limited: ${blockedParts.join(' · ')}` : '';
+    const readyText = plan.total > 0 ? `Reserve ready: ${readyParts.join(' · ')}` : 'No reserve ready; production is automatic.';
     const readyDetail = collectionPlanText(plan);
     if (status) {
-      const isCollapsed = status.classList.contains('collapsed');
-      status.innerHTML = `<button class="economyToggle" type="button" aria-label="${isCollapsed ? 'Show resource production details' : 'Minimize resource production details'}" title="${isCollapsed ? 'Show resource production details' : 'Minimize resource production details'}">${isCollapsed ? '▣' : '◫'}</button><div class="economyHeadline"><span>STORAGE</span><b>${used.toLocaleString()} / ${totalCap.toLocaleString()}</b><small><span class="economyCapText">Cap ${cap.toLocaleString()}</span><button class="economyDetailsButton" type="button" data-open-production-dashboard aria-haspopup="dialog" aria-controls="productionDashboardModal">Details ↗</button></small></div><div class="economyMeta"><span>🏯 Lv${palaceLevel()} · ${unlockedPlotCount()}/25 plots</span><span class="economyReadySummary"><span class="economyReadyNow">${readyText}</span>${blockedText ? `<small class="economyBlockedSummary">${blockedText}</small>` : ''}</span></div><div class="economyRates"><span title="Food production per minute">🌾 +${rates.food.toFixed(1)}/m</span><span title="Wood production per minute">🪵 +${rates.wood.toFixed(1)}/m</span><span title="Iron production per minute">⛓️ +${rates.iron.toFixed(1)}/m</span><span title="Coin production per minute">🪙 +${rates.coins.toFixed(1)}/m</span></div>`;
-      status.setAttribute('aria-label', `Storage ${used} of ${totalCap}. ${readyDetail} Food production ${rates.food.toFixed(1)} per minute, wood ${rates.wood.toFixed(1)}, iron ${rates.iron.toFixed(1)}, coins ${rates.coins.toFixed(1)}.`);
-      const readyNode = status.querySelector('.economyReadySummary');
-      if (readyNode) readyNode.title = readyDetail;
+      const reserveTypes = plan.resourceOrder.filter(r => Number(plan.collectibleByResource[r] || 0) > 0).length;
+      status.classList.add('economyLaunchOnly');
+      status.classList.remove('collapsed', 'interactionCompact');
+      status.innerHTML = `<button class="economyLauncher" type="button" data-open-production-dashboard aria-haspopup="dialog" aria-controls="productionDashboardModal" aria-label="Open economy details. Storage ${used} of ${totalCap}. ${readyDetail}" title="Open economy details"><span class="economyLauncherIcon" aria-hidden="true">📦</span><span class="economyLauncherLabel">Economy</span>${reserveTypes ? `<b class="economyLauncherBadge" aria-label="${reserveTypes} resource types with reserve">${reserveTypes}</b>` : ''}</button>`;
+      status.setAttribute('aria-label', `Economy details. Total stock ${used} of ${totalCap}; per-resource cap ${cap}. ${readyText} Food ${rates.food.toFixed(1)} per minute, wood ${rates.wood.toFixed(1)}, iron ${rates.iron.toFixed(1)}, coins ${rates.coins.toFixed(1)}.`);
     }
     $('#cityLevel').textContent = S.level;
     $('#factionCrest').textContent = S.faction === 'Wei' ? '🐉' : S.faction === 'Shu' ? '🦚' : S.faction === 'Wu' ? '🐅' : '⚔️';
@@ -12899,7 +12990,7 @@ body:has(.modal.open) #toast.toast.show {
   }
   function showBuildingName(b) {
     const el = $('#tapName');
-    el.textContent = `${DB[b.type].icon} ${b.type} · Level ${b.level}`;
+    el.textContent = `${DB[b.type].icon} ${displayBuildingName(b.type)} · Lv${b.level}`;
     el.classList.add('show');
     clearTimeout(showBuildingName.timer);
     showBuildingName.timer = setTimeout(() => el.classList.remove('show'), 1200)
@@ -12936,7 +13027,7 @@ body:has(.modal.open) #toast.toast.show {
       if (b) {
         const structure = document.createElement('span');
         structure.className = 'structure' + (isCoreArt(b.type) ? ' coreArt' : '') + ((b.constructing || b.upgrading) ? ' constructing' : '');
-        structure.innerHTML = `${buildingArt(b.type, b.level)}<span class="structureName">${b.type} · Lv${b.level}</span>${isCoreArt(b.type) ? '' : `<span class="plotDecor">${DECOR[b.type] || ''}</span>`}`;
+        structure.innerHTML = `${buildingArt(b.type, b.level)}<span class="structureName" title="${b.type}">${displayBuildingName(b.type)} · Lv${b.level}</span>${isCoreArt(b.type) ? '' : `<span class="plotDecor">${DECOR[b.type] || ''}</span>`}`;
         main.appendChild(structure);
         if (b.constructing || b.upgrading) {
           const frame = document.createElement('span');
@@ -12953,7 +13044,7 @@ body:has(.modal.open) #toast.toast.show {
           const timer = document.createElement('span');
           timer.className = 'plotStatus';
           timer.dataset.timerSlot = b.slot;
-          timer.innerHTML = `<span class="plotStatusTop"><strong>${b.constructing ? 'Constructing' : 'Upgrading'} ${b.type}</strong><span class="plotStatusTime">Starting...</span></span><span class="plotStatusBar"><i></i></span><span class="plotStatusPct">0% complete</span>`;
+          timer.innerHTML = `<span class="plotStatusTop"><strong>${b.constructing ? 'Building' : 'Upgrading'} ${displayBuildingName(b.type)}</strong><span class="plotStatusTime">Starting...</span></span><span class="plotStatusBar"><i></i></span><span class="plotStatusPct">0% complete</span>`;
           wrap.appendChild(timer)
         }
         const badge = document.createElement('span');
@@ -12984,7 +13075,7 @@ body:has(.modal.open) #toast.toast.show {
     const names = Object.keys(DB).filter(n => n !== 'Palace' && (buildFilter === 'All' || BUILD_CATEGORY[n] === buildFilter));
     $('#buildList').innerHTML = names.map(n => {
       const need = BUILD_LEVEL[n] || 1, open = isBuildingUnlocked(n);
-      return `<button class="buildItem ${selected === n ? 'active' : ''} ${open ? '' : 'locked'}" data-build="${n}" data-locked="${open ? 'false' : 'true'}" aria-disabled="${open ? 'false' : 'true'}"><b>${open ? DB[n].icon : '🔒'}</b>${n}${open ? `<span class="costMini">${costText(DB[n].cost)}</span>` : `<span class="lockRibbon">Unlocks at Palace Lv${need}</span>`}</button>`
+      return `<button class="buildItem ${selected === n ? 'active' : ''} ${open ? '' : 'locked'}" data-build="${n}" data-locked="${open ? 'false' : 'true'}" aria-disabled="${open ? 'false' : 'true'}" aria-label="${n}" title="${n}"><b>${open ? DB[n].icon : '🔒'}</b><span class="buildItemName">${displayBuildingName(n)}</span>${open ? `<span class="costMini">${costText(DB[n].cost)}</span>` : `<span class="lockRibbon">Lv${need}</span>`}</button>`
     }).join('');
     $('#buildList').querySelectorAll('[data-build]').forEach(btn => btn.addEventListener('click', ev => {
       ev.stopPropagation();
@@ -12998,7 +13089,7 @@ body:has(.modal.open) #toast.toast.show {
       selected = selected === type ? null : type;
       const tip = $('#cityTip'), info = $('#buildInfo');
       tip.classList.toggle('idle', !selected);
-      tip.textContent = selected ? `${selected} selected · Tap a highlighted plot or Cancel. Cost: ${costText(DB[selected].cost)} · Estimated build time: ${fmtTime(buildDuration(palaceLevel()))}` : '';
+      tip.textContent = selected ? `${displayBuildingName(selected)} selected · Tap a highlighted plot or Cancel. Cost: ${costText(DB[selected].cost)} · Build time: ${fmtTime(buildDuration(selected))}` : '';
       if (selected && info) info.classList.add('hidden');
       renderCity()
     }));
@@ -13061,9 +13152,9 @@ body:has(.modal.open) #toast.toast.show {
     const n = Math.max(0, Math.ceil(ms / 1000)), m = Math.floor(n / 60), sec = String(n % 60).padStart(2, '0');
     return m ? `${m}:${sec}` : `0:${sec}`
   }
-  // Stage F pacing: longer actions support planning, while production/army management remain available.
-  function buildDuration(level) {
-    return (P1.buildBaseSeconds + (Math.max(1, level) - 1) * P1.buildStepSeconds) * 1000
+  // Construction duration is fixed by building type; upgrade duration scales by target level.
+  function buildDuration(type) {
+    return Math.max(5, Number(BUILD_CONSTRUCTION_SECONDS[type]) || 30) * 1000
   }
   function upgradeDuration(targetLevel) {
     return Math.round(P1.upgradeBaseMs * Math.pow(P1.upgradeTimeGrowth, Math.max(0, targetLevel - 2)))
@@ -13163,20 +13254,25 @@ body:has(.modal.open) #toast.toast.show {
     const bonus = researchEffect('raidDefense');
     const adjusted = Math.round(raw * (1 + bonus));
     const damage = Math.max(0, Number(S.defenseDamage) || 0);
+    const palaceHp = palaceCondition();
+    const palaceLevelNow = palaceLevel();
+    const palaceBaseDamage = palaceVolleyBase(palaceLevelNow);
     const current = defenseRating();
     const threatMin = 35 + (S.campaignCycle || 0) * 18;
     const threatMax = threatMin + 35;
+    const effectiveThreatMin = calculatePalaceVolley(threatMin, palaceLevelNow, palaceHp).effectiveThreat;
+    const effectiveThreatMax = calculatePalaceVolley(threatMax, palaceLevelNow, palaceHp).effectiveThreat;
     const untilRaid = Math.max(0, Number(S.nextRaidAt || 0) - Date.now());
     const lastRaid = (S.reports || []).find(report => /raid (repelled|breached)|raid damage/i.test(String(report))) || '';
     let status = 'VARIABLE OUTCOME', statusClass = 'variable';
-    if (!operational.length) { status = buildingRecords.length ? 'DEFENSES BUILDING' : 'UNDEFENDED'; statusClass = 'weak'; }
-    else if (current >= threatMax) { status = 'LIKELY TO REPEL'; statusClass = 'strong'; }
-    else if (current < threatMin) { status = 'AT RISK'; statusClass = 'weak'; }
+    if (!operational.length) { status = buildingRecords.length ? 'PALACE ONLY · DEFENSES BUILDING' : (palaceHp > 0 ? 'PALACE ONLY' : 'PALACE DAMAGED'); statusClass = 'weak'; }
+    else if (current >= effectiveThreatMax) { status = 'LIKELY TO REPEL'; statusClass = 'strong'; }
+    else if (current < effectiveThreatMin) { status = 'AT RISK'; statusClass = 'weak'; }
     const rows = buildingRecords.length ? buildingRecords.map(building => {
       const points = DEFENSE_BUILDING_VALUES[building.type] * building.level;
       const online = !building.constructing;
       return `<div class="defenseBuildingRow"><span class="defenseBuildingIcon">${DB[building.type]?.icon || '🛡️'}</span><div class="defenseBuildingInfo"><b>${escapeDefenseText(building.type)} · Lv ${building.level}</b><small>${online ? 'Contributing to defense' : 'Under construction · not counted yet'}</small></div><strong class="${online ? 'defensePoints' : 'defensePoints inactive'}">${online ? '+' + points : '—'}</strong></div>`;
-    }).join('') : '<div class="defenseNoBuildings">No Watchtower, Walls or Gate built yet. Raids can still steal resources, but undefended raids do not add defense damage.</div>';
+    }).join('') : '<div class="defenseNoBuildings">No Watchtower, Walls or Gate built yet. The Palace still counterattacks, but a successful breach can damage the Palace and steal resources.</div>';
     const latest = lastRaid ? `<div class="defenseLastRaid"><small>Latest raid result</small><span>${escapeDefenseText(lastRaid)}</span></div>` : '<div class="defenseLastRaid"><small>Latest raid result</small><span>No raid resolved this campaign yet.</span></div>';
     return `<details class="defenseSummaryCard" ${expanded ? 'open' : ''}>
       <summary class="defenseSummaryTrigger">
@@ -13186,17 +13282,20 @@ body:has(.modal.open) #toast.toast.show {
       </summary>
       <div class="defenseSummaryBody">
         <div class="defenseCoreStats">
-          <div><small>Effective defense</small><b>${current}</b></div>
-          <div><small>Raid threat range</small><b>${threatMin}–${threatMax}</b></div>
-          <div><small>Research bonus</small><b>+${Math.round(bonus * 100)}%</b></div>
-          <div><small>Damage penalty</small><b>${damage ? '−' + damage : '0'}</b></div>
+          <div><small>Effective city defense</small><b>${current}</b></div>
+          <div><small>Palace condition</small><b>${palaceHp}/100</b></div>
+          <div><small>Palace base volley</small><b>${palaceBaseDamage} damage</b></div>
+          <div><small>Raw raid threat</small><b>${threatMin}–${threatMax}</b></div>
+          <div><small>Threat after volley</small><b>${effectiveThreatMin}–${effectiveThreatMax}</b></div>
+          <div><small>Research / damage penalty</small><b>+${Math.round(bonus * 100)}% / −${damage}</b></div>
         </div>
+        <div class="defenseFormula"><span>Palace counterattack</span><b>Condition ${palaceHp}% · ${palaceVolleyBase(palaceLevelNow)} base damage · up to 35% of incoming threat reduced each raid. Condition below 80% weakens the volley.</b></div>
         <div class="defenseFormula"><span>Defense breakdown</span><b>max(0, ${adjusted} − ${damage}) = ${current} effective</b></div>
         <div class="defenseBuildingsHeading"><b>Defensive structures</b><small>${operational.length} operational · ${buildingRecords.length - operational.length} under construction</small></div>
         <div class="defenseBuildingsList">${rows}</div>
-        <div class="defenseDamageSummary ${damage ? 'damaged' : ''}"><span>${damage ? '🔧 Damage recorded' : '✅ No defense damage'}</span><small>${damage ? `Repair all damage to restore ${damage} defense points.` : 'Repairs are not currently required.'}</small></div>
+        <div class="defenseDamageSummary ${damage ? 'damaged' : ''}"><span>${damage ? '🔧 City defense damage recorded' : '✅ City defenses intact'}</span><small>${damage ? `${damage} defense points lost. Repair from the Palace to restore city and Palace condition together.` : 'City-defense rating has no damage penalty. Palace condition is tracked separately above.'}</small></div>
         <div class="defenseRepairArea"></div>
-        <div class="defenseRaidRisk"><b>When a raid breaches</b><small>Resource loss scales with the threat gap (2–12% before protection research). Protected Storehouses reduce that loss by ${Math.round(researchEffect('raidProtection') * 100)}%.</small></div>
+        <div class="defenseRaidRisk"><b>When a raid breaches</b><small>The Palace loses 5–15 condition points depending on the threat gap. If present, Watchtowers, Walls and the Gate also take city-defense damage. Resource loss scales with the post-volley threat gap (2–12% before protection research); Protected Storehouses reduce that loss by ${Math.round(researchEffect('raidProtection') * 100)}%.</small></div>
         ${latest}
       </div>
     </details>`;
@@ -13392,7 +13491,7 @@ body:has(.modal.open) #toast.toast.show {
             S.quests.lumber = true;
             advanceTutorial(2)
           }
-          toast(`${b.type} construction complete`)
+          // The completion banner is the single user-facing completion notification.
         } else {
           completedPlots.set(b.slot, Date.now() + 1400);
           b.upgrading = false;
@@ -13404,7 +13503,7 @@ body:has(.modal.open) #toast.toast.show {
             S.quests.palace = true;
             advanceTutorial(3)
           }
-          toast(`${b.type} reached Level ${b.level}`)
+          // The completion banner is the single user-facing completion notification.
         }
         delete b.finishAt;
         delete b.startedAt;
@@ -13420,7 +13519,7 @@ body:has(.modal.open) #toast.toast.show {
         S.quests.train = true;
         advanceTutorial(4)
       }
-      toast(`${job.qty} ${job.unit} trained`);
+      // The completion banner is the single user-facing completion notification.
       changed = true;
       if (S.trainingQueue.length) {
         const next = S.trainingQueue[0], dur = trainingDuration(next.unit, next.qty);
@@ -13462,18 +13561,20 @@ body:has(.modal.open) #toast.toast.show {
     renderTop();
     updateBuildModeActions();
     const plan = buildCollectionPlan(), collectBtn = $('#collectAllBtn'), readyCount = $('#collectionReadyCount');
-    if (readyCount) readyCount.textContent = plan.total.toLocaleString();
+    if (readyCount) readyCount.textContent = String(plan.resourceOrder.filter(r => Number(plan.collectibleByResource[r] || 0) > 0).length);
     if (collectBtn) {
       collectBtn.classList.remove('hidden');
       collectBtn.disabled = plan.total < 1;
       collectBtn.classList.toggle('empty', plan.total < 1);
       const detail = collectionPlanText(plan);
-      collectBtn.setAttribute('aria-label', plan.total ? `Collect All. ${detail}` : plan.hasPending ? `Collect All unavailable because storage is full. ${detail}` : 'Collect All: no resources are ready yet.');
+      const collectionState = plan.total > 0 ? 'ready' : 'waiting';
+      collectBtn.dataset.collectState = collectionState;
+      collectBtn.setAttribute('aria-label', plan.total ? `Claim reserve overflow. ${detail}` : 'Reserve empty; resources are being added to regular storage automatically.');
       collectBtn.setAttribute('title', detail);
       const label = collectBtn.querySelector('span');
-      if (label) label.textContent = 'Collect All';
+      if (label) label.textContent = plan.total > 0 ? 'Claim' : 'Empty';
     }
-    const collectibleBySlot = new Map(plan.allocations.map(a => [a.building.slot, a.amount]));
+    const collectibleBySlot = new Map(S.buildings.map(b => [b.slot, Math.max(0, Math.floor(Number(b.pending) || 0))]));
     S.buildings.forEach(b => {
       const resource = DB[b.type]?.prod;
       if (!resource) return;
@@ -13484,26 +13585,22 @@ body:has(.modal.open) #toast.toast.show {
       const limit = pendingResourceCap(resource);
       const sharedPending = Math.max(0, Math.floor(Number(plan.pendingByResource[resource]) || 0));
       const producerFull = sharedPending >= Math.floor(limit);
-      const blocked = pending > 0 && amount === 0;
-      bubble.textContent = amount > 0 ? `${costsEmoji[resource]} ${amount}` : blocked ? 'CAP' : producerFull ? 'FULL' : `${costsEmoji[resource]} 0`;
+      bubble.textContent = amount > 0 ? `${costsEmoji[resource]} ${amount}` : producerFull ? 'FULL' : `${costsEmoji[resource]} 0`;
       bubble.title = amount > 0
-        ? `${amount} collectible now; ${pending} pending here; ${Math.max(0, pending - amount)} blocked by storage. Shared ${readyNamesForResource(resource)} buffer: ${sharedPending}/${limit}.`
-        : blocked
-          ? `${pending} pending here; ${plan.collectibleByResource[resource]} of ${plan.pendingByResource[resource]} ${readyNamesForResource(resource)} units currently fit in storage across all producers.`
-          : `${sharedPending}/${limit} shared ${readyNamesForResource(resource)} buffer used across all producers.`;
+        ? `${amount} reserve ready to claim from this ${resource} producer. Reserve ${sharedPending}/${limit} shared across producers. Claiming reserve may take stock above the passive storage cap.`
+        : `${sharedPending}/${limit} shared ${readyNamesForResource(resource)} reserve used across all producers.`;
       bubble.classList.toggle('hidden', pending < 1);
       const prev = bubbleState.get(b.slot) || { ready: false, full: false };
       bubble.classList.toggle('justReady', amount > 0 && !prev.ready);
-      bubble.classList.toggle('justFull', (producerFull || plan.blockedByResource[resource] > 0) && !prev.full);
-      bubbleState.set(b.slot, { ready: amount > 0, full: producerFull || plan.blockedByResource[resource] > 0 });
+      bubble.classList.toggle('justFull', producerFull && !prev.full);
+      bubbleState.set(b.slot, { ready: amount > 0, full: producerFull });
       if (pending < 1) bubbleState.set(b.slot, { ready: false, full: false });
     });
   }
   function readyNamesForResource(r) {
     return ({ food: 'Food', wood: 'Wood', iron: 'Iron', coins: 'Coins' })[r] || r
   }
-  // Read-only resource dashboard snapshot. Uses the same storage-aware collection plan
-  // as Collect All so the dashboard never overstates what can actually be collected.
+  // Read-only resource dashboard snapshot. Uses the same reserve-claim plan as Collect All.
   function productionDashboardSnapshot() {
     updateProduction();
     const cap = storageCap();
@@ -13518,7 +13615,7 @@ body:has(.modal.open) #toast.toast.show {
       const pending = Math.max(0, Math.floor(plan.pendingByResource[resource] || 0));
       const bufferCap = pendingResourceCap(resource);
       const bufferRoom = Math.max(0, bufferCap - pending);
-      const bufferEtaMinutes = ratePerMinute > 0 ? (bufferRoom > 0 ? bufferRoom / ratePerMinute : 0) : null;
+      const bufferEtaMinutes = ratePerMinute > 0 ? (room + bufferRoom) / ratePerMinute : null;
       const producers = producerBuildings.map(b => {
         const active = isProducerOperational(b);
         const status = b.constructing
@@ -13537,7 +13634,7 @@ body:has(.modal.open) #toast.toast.show {
         current: Math.floor(current), cap, room, storagePercent: cap > 0 ? Math.max(0, Math.min(100, current / cap * 100)) : 0,
         ratePerMinute, pending, bufferCap, bufferRoom, bufferPercent: bufferCap > 0 ? Math.max(0, Math.min(100, pending / bufferCap * 100)) : 0,
         collectible: Math.max(0, Math.floor(plan.collectibleByResource[resource] || 0)),
-        blocked: Math.max(0, Math.floor(plan.blockedByResource[resource] || 0)),
+        blocked: 0,
         bufferEtaMinutes, producerCount: producerBuildings.length, activeProducerCount: operational.length, producers
       };
     });
@@ -13565,7 +13662,7 @@ body:has(.modal.open) #toast.toast.show {
       toast('Not enough resources · Collect ready resources or tap Cancel');
       return;
     }
-    const now = Date.now(), dur = buildDuration(palaceLevel());
+    const now = Date.now(), dur = buildDuration(selected);
     S.buildings.push({ type: selected, level: 1, slot, pending: 0, constructing: true, startedAt: now, finishAt: now + dur, productionUpdatedAt: now });
     const name = selected;
     selected = null;
@@ -13591,7 +13688,7 @@ body:has(.modal.open) #toast.toast.show {
     updateProduction();
     const plan = buildCollectionPlan();
     if (plan.total < 1) {
-      toast(plan.hasPending ? 'Storage is full. Spend resources or upgrade storage, then collect again.' : 'No resources ready to collect yet.');
+      toast('No reserve to claim. Resources are filling regular storage automatically.');
       updateProductionUI();
       updateBuildModeActions();
       return;
@@ -13600,19 +13697,27 @@ body:has(.modal.open) #toast.toast.show {
     for (const item of plan.allocations) {
       const { building, resource, amount } = item;
       const currentPending = Math.max(0, Number(building.pending) || 0);
-      const safeAmount = Math.min(amount, Math.floor(currentPending), Math.max(0, Math.floor(plan.cap - (Number(S.r[resource]) || 0))));
-      if (safeAmount < 1) continue;
-      S.r[resource] = (Number(S.r[resource]) || 0) + safeAmount;
-      building.pending = Math.max(0, currentPending - safeAmount);
+      const safeAmount = Math.min(amount, currentPending);
+      if (safeAmount <= 1e-9) continue;
+      // Fractional amounts from multiple producers are valid parts of a shared claim.
+      // Subtract the actual allocation, then clean up insignificant floating-point dust.
+      const remainingPending = Math.max(0, currentPending - safeAmount);
+      building.pending = remainingPending < 1e-9 ? 0 : remainingPending;
       byResource[resource] += safeAmount;
+    }
+    // Round aggregate fractional contributions once per resource so a claim of an
+    // integer reserve amount cannot fall one unit short due to floating-point math.
+    for (const resource of Object.keys(byResource)) {
+      byResource[resource] = Math.min(
+        Math.max(0, Number(plan.collectibleByResource[resource]) || 0),
+        Math.round(byResource[resource] * 1e6) / 1e6
+      );
+      if (byResource[resource] > 0) S.r[resource] = (Number(S.r[resource]) || 0) + byResource[resource];
     }
     const total = Object.values(byResource).reduce((sum, n) => sum + n, 0);
     if (total > 0) {
-      if (byResource.food > 0) {
-        S.quests.collect = true;
-        advanceTutorial(1)
-      }
-      GameEvents.emit('resource:collected', { amount: total, byResource, buildings: plan.sourceCount, source: 'collect-all' }, `all-${Math.floor(Date.now() / 50)}`);
+      if (byResource.food > 0) S.quests.collect = true;
+      GameEvents.emit('resource:collected', { amount: total, byResource, buildings: plan.sourceCount, source: 'reserve-claim' }, `all-${Math.floor(Date.now() / 50)}`);
     }
     save();
     renderAll();
@@ -13623,12 +13728,44 @@ body:has(.modal.open) #toast.toast.show {
       btn._ackTimer = setTimeout(() => btn.classList.remove('collectAck'), 700)
     }
   }
+  function palaceRepairMarkup() {
+    const condition = palaceCondition();
+    const conditionMissing = PALACE_MAX_CONDITION - condition;
+    const defenseDamage = Math.max(0, Math.round(Number(S.defenseDamage) || 0));
+    const needsRepair = conditionMissing > 0 || defenseDamage > 0;
+    if (!needsRepair) {
+      return `<section class="palaceConditionPanel"><div class="palaceConditionHeader"><span>🛡️ Palace condition</span><strong>100/100</strong></div><div class="palaceConditionTrack"><i style="width:100%"></i></div><div class="palaceConditionIntact">Palace fully operational · City-defense rating has no recorded damage penalty.</div></section>`
+    }
+    const c = palaceAndDefenseRepairCost();
+    const affordable = canPay(c);
+    const currentVolley = calculatePalaceVolley(100, palaceLevel(), condition);
+    const shortage = affordable ? '' : `<small class="palaceRepairNote shortage">Missing ${escapeDefenseText(missingCost(c))}. Gather or produce more resources before repairing.</small>`;
+    return `<section class="palaceConditionPanel"><div class="palaceConditionHeader"><span>🛡️ Palace condition</span><strong>${condition}/100</strong></div><div class="palaceConditionTrack ${condition < 80 ? 'damaged' : ''}" role="progressbar" aria-label="Palace condition" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${condition}"><i style="width:${condition}%"></i></div><div class="palaceConditionMeta"><div><small>Counterattack now</small><b>${currentVolley.conditionScaledDamage} damage before 35% cap</b></div><div><small>City-defense damage</small><b>${defenseDamage} points</b></div><div><small>Palace condition to restore</small><b>${conditionMissing} points</b></div><div><small>Repair discount</small><b>${Math.round(Math.min(.35, researchEffect('repairDiscount')) * 100)}%</b></div></div><div class="palaceRepairCost"><span>Unified repair cost</span><b>${costText(c)}</b></div><button type="button" class="primary palaceRepairButton" id="repairPalaceAndDefenses" ${affordable ? '' : 'disabled'} aria-label="Repair Palace and Defenses">🔧 Repair</button>${shortage}<small class="palaceRepairNote">Restores Palace condition to 100 and clears the current city-defense damage penalty. Costs 2 Wood + 1 Iron per missing Palace condition point, plus the existing city-defense repair costs.</small></section>`
+  }
+  function palaceEconomyMarkup() {
+    const cap = storageCap();
+    const resources = [
+      { key: 'food', name: 'Food', icon: '🌾' },
+      { key: 'wood', name: 'Wood', icon: '🪵' },
+      { key: 'iron', name: 'Iron', icon: '⛓️' },
+      { key: 'coins', name: 'Coins', icon: '🪙' }
+    ];
+    const rows = resources.map(r => {
+      const stock = Math.max(0, Number(S.r[r.key]) || 0);
+      const reserve = S.buildings.filter(b => DB[b.type]?.prod === r.key).reduce((sum, b) => sum + Math.max(0, Number(b.pending) || 0), 0);
+      const rate = S.buildings.filter(b => DB[b.type]?.prod === r.key && !b.constructing).reduce((sum, b) => sum + ratePerSecond(b) * 60, 0);
+      const overCap = Math.max(0, Math.floor(stock - cap));
+      return `<div class="palaceTreasuryRow"><div class="palaceTreasuryMain"><span aria-hidden="true">${r.icon}</span><b>${r.name}</b><strong>${Math.floor(stock).toLocaleString()} <small>/ ${cap.toLocaleString()}</small>${overCap ? `<small style="display:block;color:#ffc878;font-weight:900">OVER CAP +${overCap.toLocaleString()}</small>` : ''}</strong></div><div class="palaceTreasuryMeta"><span>+${rate.toFixed(1)}/min</span><span>Reserve ${Math.floor(reserve).toLocaleString()}</span></div></div>`;
+    }).join('');
+    return `<section class="palaceTreasuryPanel"><header><div><b>🏯 Treasury</b><small>Stock / cap · Rate · Reserve</small></div><button type="button" class="secondary palaceTreasuryDetails" data-open-production-dashboard aria-haspopup="dialog" aria-controls="productionDashboardModal">Details</button></header><div class="palaceTreasuryRows">${rows}</div></section>`;
+  }
   function openBuilding(b) {
-    if (b.type === 'Academy' && !b.constructing && !b.upgrading) return openResearchCenter();
-    if (b.constructing) return toast(`${b.type} is still under construction`);
+    if (b.constructing) return toast(`${displayBuildingName(b.type)} is still under construction`);
     if (b.upgrading) return toast(`${b.type} upgrade has ${fmtTime(b.finishAt - Date.now())} remaining`);
-    const next = b.level + 1, c = upgradeCost(b);
-    if (b.level >= P1.maxBuildingLevel) return toast(`${b.type} has reached the Level ${P1.maxBuildingLevel} cap`);
+    if (b.type === 'Palace' && S.tutorial === 0) advanceTutorial(1);
+    const atMax = b.level >= P1.maxBuildingLevel;
+    if (atMax && !['Academy', 'Palace'].includes(b.type)) return toast(`${b.type} has reached the Level ${P1.maxBuildingLevel} cap`);
+    const next = atMax ? b.level : b.level + 1, c = atMax ? {} : upgradeCost(b);
     let current = '', future = '', unlockHTML = '';
     if (DB[b.type].prod) {
       current = `${(ratePerSecond(b) * 60).toFixed(1)}/min<br>Shared buffer cap ${pendingLimit(b)}`;
@@ -13636,17 +13773,22 @@ body:has(.modal.open) #toast.toast.show {
       future = `${(ratePerSecond(fake) * 60).toFixed(1)}/min<br>Shared buffer cap ${pendingLimit(fake)}`
     }
     else if (b.type === 'Palace') {
-      current = `Storage ${storageCap()}<br>${unlockedPlotCount()} plots`;
+      current = `Storage ${storageCap()}<br>${unlockedPlotCount()} plots<br>Base counterattack ${palaceVolleyBase(b.level)} damage`;
       const currentL = b.level;
       b.level = next;
-      future = `Storage ${storageCap()}<br>${unlockedPlotCount()} plots`;
+      future = `Storage ${storageCap()}<br>${unlockedPlotCount()} plots<br>Base counterattack ${palaceVolleyBase(next)} damage`;
       b.level = currentL;
-      const unlocks = unlocksAt(next);
-      if (unlocks.length) unlockHTML = `<div class="unlockBanner"><b>Unlocks at Palace Level ${next}</b><br>${unlocks.map(x => `<span class="unlockTag">${DB[x].icon} ${x}</span>`).join('')}</div>`
+      const unlocks = atMax ? [] : unlocksAt(next);
+      if (unlocks.length) unlockHTML = `<div class="unlockBanner"><b>Unlocks at Palace Level ${next}</b><br>${unlocks.map(x => `<span class="unlockTag" title="${x}">${DB[x].icon} ${displayBuildingName(x)}</span>`).join('')}</div>`
     }
     else if (b.type === 'Warehouse') {
-      current = `Storage ${storageCap()}`;
-      future = `Storage ${storageCap() + 700}`
+      const currentStorage = storageCap();
+      const currentWarehouseLevel = b.level;
+      b.level = next;
+      const futureStorage = storageCap();
+      b.level = currentWarehouseLevel;
+      current = `Storage ${currentStorage}`;
+      future = `Storage ${futureStorage} (+${futureStorage - currentStorage})`;
     }
     else if (b.type === 'Barracks') {
       current = `Infantry & Spearmen train ${b.level > 1 ? (b.level - 1) * 16 + '% faster' : 'at base speed'}`;
@@ -13669,11 +13811,28 @@ body:has(.modal.open) #toast.toast.show {
         future = `Fortification Lv${next}`
       }
     }
-    $('#detailDialog').innerHTML = `<div class="row spread"><h2>${DB[b.type].icon} ${b.type}</h2><button class="secondary closeDetailAction">Close</button></div><p>${BUILD_DESCRIPTIONS[b.type] || 'Develops the city and supports progression.'}</p><div class="upgradeCompare"><div class="upgradeStat"><small>LEVEL ${b.level}</small><br>${current}</div><div class="upgradeArrow">➜</div><div class="upgradeStat"><small>LEVEL ${next}</small><br>${future}</div></div>${unlockHTML}<div class="upgradeTime"><strong>Upgrade time required: ${fmtTime(upgradeDuration(next))}</strong><small>The building remains unavailable while the upgrade is in progress.</small></div><button class="primary" id="upgradeBuilding" ${canPay(c) ? '' : 'disabled'}>Upgrade to Level ${next}<br><small>${costText(c)}</small>${canPay(c) ? '' : `<em class="missingCost">Missing ${missingCost(c)}</em>`}<span class="upgradeButtonTime">⏱ ${fmtTime(upgradeDuration(next))}</span></button>`;
+    const academyResearchAction = b.type === 'Academy' ? '<button type="button" class="secondary academyResearchAction" id="openAcademyResearch" style="width:100%;margin:0 0 8px" aria-label="Open Research Centre">📚 Research</button>' : '';
+    const palaceRepairPanel = b.type === 'Palace' ? palaceRepairMarkup() : '';
+    const palaceTreasuryPanel = b.type === 'Palace' ? palaceEconomyMarkup() : '';
+    const upgradeTimePanel = atMax
+      ? `<div class="upgradeTime"><strong>Maximum level reached</strong><small>This ${b.type} cannot be upgraded further.</small></div>`
+      : `<div class="upgradeTime"><strong>Upgrade time required: ${fmtTime(upgradeDuration(next))}</strong><small>The building remains operational at its current level during the upgrade; new-level benefits apply when it completes.</small></div>`;
+    const upgradeButtonHTML = atMax
+      ? '<button class="primary" id="upgradeBuilding" disabled>MAX LEVEL</button>'
+      : `<button class="primary" id="upgradeBuilding" ${canPay(c) ? '' : 'disabled'}>Upgrade to Level ${next}<br><small>${costText(c)}</small>${canPay(c) ? '' : `<em class="missingCost">Missing ${missingCost(c)}</em>`}<span class="upgradeButtonTime">⏱ ${fmtTime(upgradeDuration(next))}</span></button>`;
+    $('#detailDialog').innerHTML = `<div class="row spread"><h2>${DB[b.type].icon} ${displayBuildingName(b.type)}</h2><button class="secondary closeDetailAction">Close</button></div><p>${BUILD_DESCRIPTIONS[b.type] || (b.type === 'Palace' ? 'The heart of your city: unlocks development, stores resources, and leads the defense against raids.' : 'Develops the city and supports progression.')}</p><div class="upgradeCompare"><div class="upgradeStat"><small>LEVEL ${b.level}</small><br>${current}</div><div class="upgradeArrow">➜</div><div class="upgradeStat"><small>${atMax ? 'MAX LEVEL' : `LEVEL ${next}`}</small><br>${atMax ? 'Maximum level reached' : future}</div></div>${unlockHTML}${palaceTreasuryPanel}${palaceRepairPanel}${upgradeTimePanel}${academyResearchAction}${upgradeButtonHTML}`;
     $('#detailModal').classList.add('open');
     renderMotionState();
     $('#detailDialog .closeDetailAction').onclick = closeDetail;
-    $('#upgradeBuilding').onclick = () => {
+    const palaceRepairButton = $('#repairPalaceAndDefenses');
+    if (palaceRepairButton) palaceRepairButton.onclick = repairPalaceAndDefenses;
+    const academyResearchButton = $('#openAcademyResearch');
+    if (academyResearchButton) academyResearchButton.onclick = () => {
+      closeDetail();
+      openResearchCenter();
+    };
+    const upgradeButton = $('#upgradeBuilding');
+    if (upgradeButton && !atMax) upgradeButton.onclick = () => {
       if (!pay(c)) return;
       const now = Date.now(), dur = upgradeDuration(next);
       b.upgrading = true;
@@ -13989,7 +14148,7 @@ body:has(.modal.open) #toast.toast.show {
     const difficulty = forecast.chance >= 75 ? 'easy' : forecast.chance >= 45 ? 'moderate' : 'hard';
     const reward = { food: 80 + i * 30, wood: 70 + i * 25, iron: 35 + i * 15, coins: 90 + i * 35 };
     const supply = deploymentCost(i);
-    const cappedReward = Object.fromEntries(Object.entries(reward).map(([key, amount]) => [key, Math.max(0, Math.min(amount, storageCap() - (S.r[key] || 0)))]));
+    const cappedReward = Object.fromEntries(Object.entries(reward).map(([key, amount]) => [key, Math.max(0, Math.min(amount, storageCap() - Math.max(0, Number(S.r[key]) || 0)))]));
     const rewardable = Object.fromEntries(Object.entries(cappedReward).filter(([, amount]) => amount > 0));
     const rewardText = Object.keys(rewardable).length ? `${costText(rewardable)}${Object.entries(reward).some(([key, amount]) => cappedReward[key] < amount) ? ' · some rewards limited by storage' : ''}` : 'Storage is full; no immediate resources will be added.';
     const loss = forecast.noArmy || forecast.losses === null ? 'Unavailable' : forecast.losses <= 12 ? 'Low' : forecast.losses <= 28 ? 'Moderate' : 'High';
@@ -14176,7 +14335,7 @@ body:has(.modal.open) #toast.toast.show {
     if (win) {
       const r = { food: 80 + i * 30, wood: 70 + i * 25, iron: 35 + i * 15, coins: 90 + i * 35 };
       const actualRewards = {};
-      Object.entries(r).forEach(([k, v]) => { const before = S.r[k] || 0; S.r[k] = Math.min(storageCap(), before + v); actualRewards[k] = S.r[k] - before; });
+      Object.entries(r).forEach(([k, v]) => { actualRewards[k] = grantResourceWithinStorage(k, v); });
       const casualtyRate = Math.max(.02, (.08 + Math.random() * .04) - researchEffect('casualtyReduction'));
       const playerStacks = battle.units.filter(u => u.side === 'player').map(u => ({ type: u.type, count: Math.max(0, Math.floor(u.q)) }));
       const aliveBeforeAttrition = playerStacks.reduce((sum, row) => sum + row.count, 0);
@@ -14235,6 +14394,34 @@ body:has(.modal.open) #toast.toast.show {
     // exists but is still being constructed.
     if (!defenseBuildingRecords().length) S.defenseDamage = 0
   }
+  const PALACE_MAX_CONDITION = 100;
+  function palaceCondition() {
+    const value = Number(S?.palaceCondition);
+    return Number.isFinite(value) ? Math.max(0, Math.min(PALACE_MAX_CONDITION, Math.round(value))) : PALACE_MAX_CONDITION
+  }
+  function palaceVolleyBase(level = palaceLevel()) {
+    const lv = Math.max(1, Math.min(P1.maxBuildingLevel, Math.floor(Number(level) || 1)));
+    return 6 + 2 * (lv - 1)
+  }
+  function palaceConditionVolleyMultiplier(condition = palaceCondition()) {
+    const c = Math.max(0, Math.min(PALACE_MAX_CONDITION, Number(condition) || 0));
+    if (c >= 80) return 1;
+    if (c >= 50) return .75;
+    if (c > 0) return .5;
+    return 0
+  }
+  function calculatePalaceVolley(rawThreat, level = palaceLevel(), condition = palaceCondition()) {
+    const threat = Math.max(1, Math.floor(Number(rawThreat) || 1));
+    const baseDamage = palaceVolleyBase(level);
+    const conditionScaledDamage = Math.floor(baseDamage * palaceConditionVolleyMultiplier(condition));
+    // Counterattack may reduce raid threat, but is capped at 35% of the incoming threat.
+    const appliedDamage = Math.min(conditionScaledDamage, Math.floor(threat * .35));
+    return {
+      baseDamage, conditionScaledDamage, appliedDamage,
+      effectiveThreat: Math.max(1, threat - appliedDamage),
+      reductionPct: appliedDamage / threat
+    }
+  }
   function defenseRating() {
     const defenders = operationalDefenseBuildings();
     if (!defenders.length) return 0;
@@ -14256,40 +14443,81 @@ body:has(.modal.open) #toast.toast.show {
     renderAll();
     toast('City defenses fully repaired')
   }
+  function palaceAndDefenseRepairCost() {
+    const conditionMissing = PALACE_MAX_CONDITION - palaceCondition();
+    const defenseDamage = Math.max(0, Math.round(Number(S.defenseDamage) || 0));
+    const discount = Math.max(0, Math.min(.35, researchEffect('repairDiscount')));
+    const multiplier = 1 - discount;
+    // Palace restoration costs 2 Wood + 1 Iron per condition point; existing city-defense repair rates remain 5 Wood + 2 Iron per damage point.
+    return {
+      wood: Math.ceil((conditionMissing * 2 + defenseDamage * P1.repairWoodPerDamage) * multiplier),
+      iron: Math.ceil((conditionMissing + defenseDamage * P1.repairIronPerDamage) * multiplier)
+    }
+  }
+  function repairPalaceAndDefenses() {
+    const conditionBefore = palaceCondition();
+    const defenseDamage = Math.max(0, Math.round(Number(S.defenseDamage) || 0));
+    if (conditionBefore >= PALACE_MAX_CONDITION && defenseDamage <= 0) {
+      toast('Palace and city defenses are already fully repaired');
+      return false
+    }
+    const c = palaceAndDefenseRepairCost();
+    if (!canPay(c)) {
+      toast(`Repair needs ${costText(c)} · Missing ${missingCost(c)}`);
+      return false
+    }
+    pay(c);
+    S.palaceCondition = PALACE_MAX_CONDITION;
+    S.defenseDamage = 0;
+    GameEvents.emit('palace:repaired', { conditionBefore, conditionAfter: PALACE_MAX_CONDITION, defenseDamageRestored: defenseDamage }, `palace-repair-${Date.now()}`);
+    save();
+    closeDetail();
+    renderAll();
+    toast('Palace and city defenses fully repaired');
+    return true
+  }
   function processRaid() {
     const now = Date.now();
     S.nextRaidAt = S.nextRaidAt || now + 1200000;
     if (now < S.nextRaidAt) return;
     const raidKey = S.nextRaidAt;
     const defenders = operationalDefenseBuildings();
-    const defense = defenseRating(), threat = 35 + (S.campaignCycle || 0) * 18 + Math.floor(Math.random() * 36), repelled = defense >= threat;
+    const defense = defenseRating();
+    const rawThreat = 35 + (S.campaignCycle || 0) * 18 + Math.floor(Math.random() * 36);
+    const palaceVolley = calculatePalaceVolley(rawThreat);
+    const threat = palaceVolley.effectiveThreat;
+    const repelled = defense >= threat;
     if (repelled) {
-      S.reports.unshift(`Raid repelled · Defense ${defense} vs threat ${threat}`);
-      toast('Raid repelled by city defenses')
+      S.reports.unshift(`Raid repelled · Palace volley ${palaceVolley.appliedDamage} (${rawThreat}→${threat} threat) · Defense ${defense} vs threat ${threat}`);
+      toast(`Raid repelled · Palace volley −${palaceVolley.appliedDamage} threat`)
     } else {
-      const pct = Math.max(.02, Math.min(.12, (threat - defense) / 400) * (1 - researchEffect('raidProtection')));
+      const threatGap = Math.max(0, threat - defense);
+      const pct = Math.max(.02, Math.min(.12, threatGap / 400) * (1 - researchEffect('raidProtection')));
       let lost = 0;
       Object.keys(S.r).forEach(k => {
         const n = Math.floor(S.r[k] * pct);
         S.r[k] -= n;
         lost += n
       });
+      const conditionBefore = palaceCondition();
+      const requestedPalaceDamage = Math.max(5, Math.min(15, Math.round(threatGap / 8)));
+      const palaceDamageTaken = Math.min(conditionBefore, requestedPalaceDamage);
+      S.palaceCondition = Math.max(0, conditionBefore - palaceDamageTaken);
       if (defenders.length) {
-        const damageAdded = Math.max(5, Math.round((threat - defense) / 3));
+        const damageAdded = Math.max(5, Math.round(threatGap / 3));
         S.defenseDamage = Math.min(80, (S.defenseDamage || 0) + damageAdded);
-        S.reports.unshift(`Raid breached the city · ${lost} resources lost · ${S.defenseDamage} defense damage`);
-        toast(`Raid damage · ${lost} resources lost · repairs required`)
+        S.reports.unshift(`Raid breached · Palace volley ${palaceVolley.appliedDamage} (${rawThreat}→${threat} threat) · ${lost} resources lost · Palace condition ${conditionBefore}→${S.palaceCondition}/100 (-${palaceDamageTaken}) · ${S.defenseDamage} city defense damage`);
+        toast(`Raid breach · Palace condition −${palaceDamageTaken} · ${lost} resources lost`)
       } else {
-        // An undefended raid may steal resources, but must not create a global
-        // defense penalty that weakens structures the player builds later.
+        // The Palace itself is damageable even before the player builds Watchtowers, Walls, or a Gate.
         S.defenseDamage = Math.max(0, Number(S.defenseDamage) || 0);
-        S.reports.unshift(`Raid breached the undefended city · ${lost} resources lost · no defensive structures damaged`);
-        toast(`Raid breached the city · ${lost} resources lost · no defenses damaged`)
+        S.reports.unshift(`Raid breached · Palace volley ${palaceVolley.appliedDamage} (${rawThreat}→${threat} threat) · ${lost} resources lost · Palace condition ${conditionBefore}→${S.palaceCondition}/100 (-${palaceDamageTaken}) · no Watchtower/Walls/Gate damage`);
+        toast(`Raid breached · Palace condition −${palaceDamageTaken} · ${lost} resources lost`)
       }
     }
     S.nextRaidAt = now + (900 + Math.floor(Math.random() * 901) + researchLevel('intelligence') * 120) * 1000;
     S.reports = S.reports.slice(0, 10);
-    GameEvents.emit('raid:resolved', { repelled, defense, threat }, `raid-${raidKey}`);
+    GameEvents.emit('raid:resolved', { repelled, defense, rawThreat, threat, palaceVolley: palaceVolley.appliedDamage, palaceCondition: palaceCondition() }, `raid-${raidKey}`);
     save();
     renderAll()
   }
@@ -14316,23 +14544,23 @@ body:has(.modal.open) #toast.toast.show {
     };
     $('#closeEnding').onclick = closeDetail
   }
-  const qData = [['collect', 'Harvest Ready', 'Collect food from a farm'], ['lumber', 'Timber Supply', 'Build a Lumber Yard'], ['palace', 'Seat of Power', 'Upgrade the Palace'], ['train', 'Raise the Banners', 'Train Infantry'], ['general', 'A Hero Arrives', 'Recruit a general'], ['bandit', 'Secure the Road', 'Defeat the Bandit Camp']];
+  const qData = [['collect', 'Reserve Claim', 'Claim Food from reserve overflow when it is ready'], ['lumber', 'Timber Supply', 'Build a Lumber Yard'], ['palace', 'Seat of Power', 'Upgrade the Palace'], ['train', 'Raise the Banners', 'Train Infantry'], ['general', 'A Hero Arrives', 'Recruit a general'], ['bandit', 'Secure the Road', 'Defeat the Bandit Camp']];
   function renderQuests() {
     const done = qData.filter(q => S.quests[q[0]]).length;
     $('#questList').innerHTML = qData.map(q => `<div class="panel quest"><div class="questMark">${S.quests[q[0]] ? '✅' : '⭕'}</div><div><b>${q[1]}</b><div>${q[2]}</div></div></div>`).join('') + (done === qData.length && !S.quests.reward ? '<button class="primary" id="claimBtn">Claim Grand Reward · 600 🪙 + 300 🪵</button>' : '');
     $('#claimBtn')?.addEventListener('click', () => {
-      S.r.coins = Math.min(storageCap(), S.r.coins + 600);
-      S.r.wood = Math.min(storageCap(), S.r.wood + 300);
+      const grandReward = { coins: grantResourceWithinStorage('coins', 600), wood: grantResourceWithinStorage('wood', 300) };
+      const rewardLimited = grandReward.coins < 600 || grandReward.wood < 300;
       S.quests.reward = true;
       advanceTutorial(7);
       save();
       renderAll();
-      toast('Grand reward claimed')
+      toast(rewardLimited ? 'Grand reward claimed · some items limited by storage' : 'Grand reward claimed')
     });
     $('#reportList').innerHTML = S.reports.length ? S.reports.map(r => `<div class="darkPanel" style="margin-bottom:9px">${r}</div>`).join('') : '<div class="panel">No battles fought yet.</div>'
   }
   function renderTutorial() {
-    const steps = ['Wait about four seconds for the Farm counter, then tap it once to collect food.', 'Choose Lumber Yard, then tap an empty plot.', 'Upgrade the Palace to unlock more plots and buildings.', 'Open Army and train Infantry.', 'Open Generals and recruit a general.', 'Open Campaign and attack the Bandit Camp.', 'Open Quests and claim the reward.'];
+    const steps = ['Open the Palace to view your Treasury. Resources fill regular storage automatically; Claim is only needed for reserve overflow after storage fills.', 'Choose Lumber Yard, then tap an empty plot.', 'Upgrade the Palace to unlock more plots and buildings.', 'Open Army and train Infantry.', 'Open Generals and recruit a general.', 'Open Campaign and attack the Bandit Camp.', 'Open Quests and claim the reward.'];
     const el = $('#tutorial');
     if (S.tutorial >= steps.length) {
       el.classList.add('hidden');
@@ -14409,10 +14637,11 @@ body:has(.modal.open) #toast.toast.show {
     return Object.entries(r || {}).map(([k, v]) => `${costsEmoji[k] || ''} ${v}`).join(' ')
   }
   function p3Grant(r) {
-    const cap = storageCap();
+    const credited = {};
     Object.entries(r || {}).forEach(([k, v]) => {
-      if (S.r[k] != null) S.r[k] = Math.min(cap, S.r[k] + v)
-    })
+      if (S.r[k] != null) credited[k] = grantResourceWithinStorage(k, v);
+    });
+    return credited;
   }
   function p3Progress(event, amount = 1) {
     ensurePhase3();
@@ -14427,32 +14656,36 @@ body:has(.modal.open) #toast.toast.show {
     const o = S.phase3[scope][index];
     if (!o || o.claimed || o.progress < o.target) return;
     o.claimed = true;
-    p3Grant(o.reward);
+    const credited = p3Grant(o.reward);
+    const limited = Object.entries(o.reward || {}).some(([resource, amount]) => (credited[resource] || 0) < amount);
     save();
     renderAll();
-    toast(`${o.title} reward claimed`)
+    toast(limited ? `${o.title} claimed · some items limited by storage` : `${o.title} reward claimed`)
   }
   function p3ClaimLogin() {
     ensurePhase3();
     const p = S.phase3, day = p3DayKey();
     if (p.lastLoginClaim === day) return toast('Today’s tribute is already claimed');
     const reward = P3_LOGIN_REWARDS[p.loginStep];
-    p3Grant(reward);
+    const credited = p3Grant(reward);
+    const limited = Object.entries(reward || {}).some(([resource, amount]) => (credited[resource] || 0) < amount);
     p.lastLoginClaim = day;
     p.loginStep = (p.loginStep + 1) % 7;
     save();
     renderAll();
-    toast('Daily tribute claimed')
+    toast(limited ? 'Daily tribute claimed · some items limited by storage' : 'Daily tribute claimed')
   }
   function p3ClaimWeekly() {
     ensurePhase3();
     const p = S.phase3, done = p.weekly.filter(o => o.claimed).length;
     if (done < 3 || p.weeklyClaimed) return;
     p.weeklyClaimed = true;
-    p3Grant({ coins: 500, food: 350, wood: 250 });
+    const reward = { coins: 500, food: 350, wood: 250 };
+    const credited = p3Grant(reward);
+    const limited = Object.entries(reward).some(([resource, amount]) => (credited[resource] || 0) < amount);
     save();
     renderAll();
-    toast('Weekly command reward claimed')
+    toast(limited ? 'Weekly reward claimed · some items limited by storage' : 'Weekly command reward claimed')
   }
   function p3Reroll() {
     ensurePhase3();
@@ -14708,7 +14941,7 @@ body:has(.modal.open) #toast.toast.show {
     if (damage > 0 && operational) {
       const c = repairCost();
       const affordable = canPay(c);
-      box.innerHTML = `<div class="defenseRepairCost"><span>Repair cost</span><b>${costText(c)}</b></div><button class="secondary defenseRepairButton" id="repairDefenses" type="button" ${affordable ? '' : 'disabled'}>Repair defenses · Restore ${damage}</button>${affordable ? '<small class="defenseRepairNote">Repairs restore the full current damage penalty.</small>' : `<small class="defenseRepairNote shortage">Missing ${escapeDefenseText(missingCost(c))}. Collect or produce more resources first.</small>`}`;
+      box.innerHTML = `<div class="defenseRepairCost"><span>Repair cost</span><b>${costText(c)}</b></div><button class="secondary defenseRepairButton" id="repairDefenses" type="button" ${affordable ? '' : 'disabled'}>Repair city defenses only · Restore ${damage}</button>${affordable ? '<small class="defenseRepairNote">Clears the city-defense damage penalty only. Use the Palace repair command to restore Palace condition too.</small>' : `<small class="defenseRepairNote shortage">Missing ${escapeDefenseText(missingCost(c))}. Collect or produce more resources first.</small>`}`;
       const button = box.querySelector('#repairDefenses');
       if (button) button.onclick = repairDefenses;
     } else if (damage > 0) {
@@ -15499,7 +15732,7 @@ if (typeof addCityAmbience === 'function') {
       }
     });
     document.querySelectorAll('[title]').forEach(el => {
-      if (!el.matches('.res,.economyToggle,.collectBubble,.economyReadySummary,#collectAllBtn')) el.removeAttribute('title')
+      if (!el.matches('.res,.economyToggle,.economyLauncher,.buildItem,.collectBubble,.economyReadySummary,#collectAllBtn')) el.removeAttribute('title')
     })
   };
   clean();
@@ -15690,7 +15923,7 @@ html body .cityViewport #productionStatus .economyBlockedSummary {
   margin-top: 2px!important;
   text-align: right!important;
 }
-/*The persistent toolbar action is the single Collect All entry point; avoid duplicate buttons while placing.*/
+/*The persistent toolbar action is the single reserve-claim entry point; avoid duplicate buttons while placing.*/
 html body .cityViewport #buildModeActions #buildModeCollect {
   display: none!important;
   visibility: hidden!important;
@@ -15755,7 +15988,7 @@ html body .cityViewport #buildModeActions{z-index:95!important}
 html body .cityViewport #productionStatus .economyReadySummary{white-space:normal!important;line-height:1.15!important;display:block!important}
 html body .cityViewport #productionStatus .economyReadyNow{display:block!important;white-space:normal!important;line-height:1.15!important}
 html body .cityViewport #productionStatus .economyBlockedSummary{display:block!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.1!important;font-size:7.5px!important;font-weight:700!important;color:#e7be84!important;margin-top:2px!important;text-align:right!important}
-/* The persistent toolbar action is the single Collect All entry point; avoid duplicate buttons while placing. */
+/* The persistent toolbar action is the single reserve-claim entry point; avoid duplicate buttons while placing. */
 html body .cityViewport #buildModeActions #buildModeCollect{display:none!important;visibility:hidden!important;pointer-events:none!important}
 html body .cityViewport #buildModeActions .buildModeChoice{flex:1 1 auto!important}
 @media(max-width:520px){html body .cityViewport #productionStatus .economyBlockedSummary{font-size:7px!important}}
@@ -15881,7 +16114,7 @@ html:not(#_):not(#_):not(#_) body #buildInfo.lockedPanel .buildInfoMetric strong
 html:not(#_):not(#_):not(#_) body #buildInfo.lockedPanel .buildInfoClose{background:linear-gradient(#456b96,#27476e)!important;border:1px solid #f0d17a!important;color:#fff!important;}
 
 
-/* The single Collect All action must remain available even when the detail popup is open. */
+/* The single reserve-claim action must remain available even when the detail popup is open. */
 html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;}
 @media(max-width:680px){html:not(#_):not(#_):not(#_) body #collectAllBtn{visibility:visible!important;opacity:1!important;}}
 </style>
@@ -15899,8 +16132,8 @@ html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;v
     <header class="productionDashboardHeader">
       <div class="productionDashboardHeading">
         <small>IMPERIAL ECONOMY</small>
-        <h2 id="productionDashboardTitle">Production & Storage</h2>
-        <p>See what each resource produces, how much is waiting, and what Collect All can claim right now.</p>
+        <h2 id="productionDashboardTitle">Economy</h2>
+        <p>See automatic production rates and the overflow reserve available to claim after passive storage fills.</p>
       </div>
       <button class="productionDashboardClose" type="button" data-close-production-dashboard aria-label="Close production dashboard">×</button>
     </header>
@@ -15911,7 +16144,7 @@ html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;v
       <div class="productionDashboardFooterNote" id="productionDashboardCollectSummary">Amounts update while this panel is open.</div>
       <div class="productionDashboardFooterActions">
         <button class="secondary" type="button" data-close-production-dashboard>Close</button>
-        <button class="primary" type="button" id="productionDashboardCollectAll">Collect All Ready</button>
+        <button class="primary" type="button" id="productionDashboardCollectAll" aria-label="Claim resource reserve">Claim</button>
       </div>
     </footer>
   </section>
@@ -16308,31 +16541,33 @@ html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;v
     return `~${days}d ${hours % 24}h`;
   }
   function producerHtml(p, resource) {
-    const pendingText = `${nfmt(p.pending)} ${resource.name} pending`;
+    const pendingText = `${nfmt(p.pending)} ${resource.name} in reserve`;
     const rateText = p.active ? `+${Number(p.ratePerMinute || 0).toFixed(1)}/min` : p.status;
     return `<div class="productionProducerRow"><div class="productionProducerName">${resource.icon} ${p.type} · Lv${p.level}<small>${p.status}</small></div><div class="productionProducerAmount">${pendingText}<small>${rateText}</small></div></div>`;
   }
   function resourceCardHtml(r) {
     const storageWidth = `${Math.max(0, Math.min(100, Number(r.storagePercent) || 0)).toFixed(1)}%`;
+    const stockPercent = r.cap > 0 ? Math.round(Math.min(100, Number(r.current || 0) / r.cap * 100)) : 0;
+    const overCapAmount = Math.max(0, Number(r.current || 0) - r.cap);
+    const overCapText = overCapAmount > 0 ? ` · OVER CAP +${nfmt(overCapAmount)}` : '';
     const bufferWidth = `${Math.max(0, Math.min(100, Number(r.bufferPercent) || 0)).toFixed(1)}%`;
     const producers = r.producers.length ? r.producers.map(p => producerHtml(p, r)).join('') : '<div class="productionNoProducer">No building currently produces this resource. Build or unlock a suitable producer to begin production.</div>';
     const pendingText = `${nfmt(r.pending)} / ${nfmt(r.bufferCap)}`;
-    const claimClass = r.collectible > 0 ? 'good' : r.blocked > 0 ? 'warn' : '';
+    const claimClass = r.collectible > 0 ? 'good' : '';
     const claimText = r.collectible > 0 ? nfmt(r.collectible) : '0';
-    const blockedLabel = r.blocked > 0 ? nfmt(r.blocked) : '0';
     const eta = r.ratePerMinute > 0 ? fmtEta(r.bufferEtaMinutes) : (r.activeProducerCount ? 'Buffer full' : 'No active production');
     return `<article class="productionResourceCard">
       <header class="productionResourceHead"><div class="productionResourceIcon">${r.icon}</div><div class="productionResourceTitle"><h3>${r.name}</h3><small>${r.activeProducerCount} active · ${r.producerCount} total producer${r.producerCount === 1 ? '' : 's'}</small></div></header>
-      <div class="productionMetricRow"><span>Storage</span><strong>${nfmt(r.current)} / ${nfmt(r.cap)} · ${Math.round(r.storagePercent)}%</strong></div>
+      <div class="productionMetricRow"><span>Stock / passive cap</span><strong>${nfmt(r.current)} / ${nfmt(r.cap)} · ${stockPercent}%${overCapText}</strong></div>
       <div class="productionProgress" role="progressbar" aria-label="${r.name} storage used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(r.storagePercent)}"><i style="width:${storageWidth}"></i></div>
       <div class="productionMetricRow"><span>Room remaining</span><strong>${nfmt(r.room)}</strong></div>
       <div class="productionMetricRow"><span>Production rate</span><strong class="${r.ratePerMinute > 0 ? 'good' : ''}">${Number(r.ratePerMinute || 0) > 0 ? `+${Number(r.ratePerMinute).toFixed(1)} / min` : '0 / min'}</strong></div>
-      <div class="productionSectionLabel">Producer buffer</div>
-      <div class="productionMetricRow"><span>Pending / shared cap</span><strong>${pendingText}</strong></div>
-      <div class="productionProgress pending" role="progressbar" aria-label="${r.name} pending buffer used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(r.bufferPercent)}"><i style="width:${bufferWidth}"></i></div>
-      <div class="productionMetricRow"><span>Collectible now</span><strong class="${claimClass}">${claimText}</strong></div>
-      <div class="productionMetricRow"><span>Blocked by storage</span><strong class="${r.blocked > 0 ? 'warn' : ''}">${blockedLabel}</strong></div>
-      <div class="productionMetricRow"><span>Buffer-cap estimate</span><strong>${eta}</strong></div>
+      <div class="productionSectionLabel">Reserve overflow</div>
+      <div class="productionMetricRow"><span>Reserve / shared cap</span><strong>${pendingText}</strong></div>
+      <div class="productionProgress pending" role="progressbar" aria-label="${r.name} reserve used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(r.bufferPercent)}"><i style="width:${bufferWidth}"></i></div>
+      <div class="productionMetricRow"><span>Reserve ready to claim</span><strong class="${claimClass}">${claimText}</strong></div>
+      <div class="productionMetricRow"><span>Passive storage status</span><strong>${r.current > r.cap ? `Over cap by ${nfmt(r.current - r.cap)}` : r.current >= r.cap ? 'Full' : 'Auto-filling'}</strong></div>
+      <div class="productionMetricRow"><span>Reserve-cap estimate</span><strong>${eta}</strong></div>
       <div class="productionSectionLabel">Production buildings</div>
       <div class="productionProducerList">${producers}</div>
     </article>`;
@@ -16343,22 +16578,20 @@ html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;v
     const scrollTop = body.scrollTop;
     body.innerHTML = `<div class="productionDashboardIntro">
       <div class="productionDashStat"><span>Operational producers</span><strong>${nfmt(snapshot.operationalProducers)}</strong><small>${nfmt(snapshot.producerCount)} total producer buildings</small></div>
-      <div class="productionDashStat"><span>Resources ready</span><strong>${snapshot.readyResourceCount} / 4</strong><small>Resource types with room to collect</small></div>
-      <div class="productionDashStat"><span>Storage cap</span><strong>${nfmt(snapshot.cap)}</strong><small>Per resource · Palace Lv${snapshot.palaceLevel}</small></div>
+      <div class="productionDashStat"><span>Resources in reserve</span><strong>${snapshot.readyResourceCount} / 4</strong><small>Resource types with overflow ready to claim</small></div>
+      <div class="productionDashStat"><span>Passive storage cap</span><strong>${nfmt(snapshot.cap)}</strong><small>Per resource · Palace Lv${snapshot.palaceLevel}</small></div>
     </div>
-    <div class="productionDashboardNote" id="productionDashboardNote">Storage only increases when you collect resources. The ETA below estimates when each shared producer buffer may fill at the current production rate; it is not an automatic-storage timer. Pending production is limited by a shared cap for each resource.</div>
+    <div class="productionDashboardNote" id="productionDashboardNote">Production automatically fills regular stock up to the storage cap. Any excess production is held in the reserve buffer. Collect All claims reserve overflow and can temporarily raise stock above the passive storage cap; passive production resumes when stock drops below the cap. Reserve capacity is shared by all producers of each resource.</div>
     <div class="productionResourceGrid">${snapshot.resources.map(resourceCardHtml).join('')}</div>`;
     body.scrollTop = scrollTop;
     const readyParts = snapshot.readyByResource.map(r => `${r.icon} ${r.amount.toLocaleString()}`).join(' · ');
-    const blockedParts = snapshot.blockedByResource.map(r => `${r.icon} ${r.amount.toLocaleString()}`).join(' · ');
     summary.innerHTML = readyParts
-      ? `<strong>Ready by resource:</strong> ${readyParts}${blockedParts ? `<br><span>Still pending but storage-blocked: ${blockedParts}</span>` : ''}`
-      : snapshot.hasPending
-        ? `<strong>Nothing can be collected now.</strong>${blockedParts ? `<br><span>Pending but storage-blocked: ${blockedParts}</span>` : ''}`
-        : 'No resources are waiting to be collected yet.';
+      ? `<strong>Reserve ready to claim:</strong> ${readyParts}<br><span>Claiming reserve can temporarily exceed normal storage capacity.</span>`
+      : 'No reserve is waiting. Production is automatically filling regular storage.';
     collectButton.disabled = snapshot.readyResourceCount === 0;
-    collectButton.setAttribute('aria-label', snapshot.readyResourceCount ? `Collect ready resources by type: ${readyParts}` : 'Collect All unavailable: no pending resources fit in storage');
-    collectButton.title = snapshot.readyResourceCount ? `Collect: ${readyParts}` : 'No resources are currently collectible.';
+    collectButton.textContent = snapshot.readyResourceCount ? 'Claim' : 'Empty';
+    collectButton.setAttribute('aria-label', snapshot.readyResourceCount ? `Claim reserve overflow by resource: ${readyParts}` : 'Reserve empty; automatic production is filling regular storage.');
+    collectButton.title = snapshot.readyResourceCount ? `Claim reserve: ${readyParts}` : 'No reserve is currently available.';
   }
   function openDashboard() {
     previousFocus = document.activeElement;
@@ -17140,5 +17373,398 @@ html:not(#_):not(#_):not(#_) body:has(.modal.open) .completionBanner.show {
     scroll-behavior: auto !important;
   }
 }
+/* Collect All should communicate why it is unavailable instead of looking broken. */
+#collectAllBtn[data-collect-state="waiting"] span { letter-spacing: .01em; }
+#collectAllBtn[data-collect-state="storage-full"] { filter: saturate(.65); }
+
+
+/* RESEARCH MODAL VISUAL CONSISTENCY FIX
+   Keep the Library/Research popup aligned with the shared dark lacquer-and-gold modal style.
+   Explicitly override broad legacy dialog-button sizing so the close control cannot become a full-width bar. */
+html:not(#_):not(#_):not(#_) body #researchModal.modal.open > .researchDialog {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  width: min(900px, calc(100vw - 20px)) !important;
+  height: min(760px, calc(100dvh - 24px)) !important;
+  max-width: calc(100vw - 20px) !important;
+  max-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 20px) !important;
+  padding: 14px !important;
+  color: var(--wd-message-text, #f6e7bf) !important;
+  background: var(--wd-message-bg, linear-gradient(145deg, #112640f8, #1a3551f8)) !important;
+  border: 1px solid var(--wd-message-border, #e3c36d) !important;
+  border-radius: var(--wd-message-radius, 16px) !important;
+  box-shadow: var(--wd-message-shadow, 0 14px 36px #000a, inset 0 0 0 1px #ffffff0d) !important;
+}
+html:not(#_):not(#_):not(#_) body #researchModal #closeResearch,
+html:not(#_):not(#_):not(#_) body #researchModal .modalClose {
+  position: absolute !important;
+  top: 10px !important;
+  right: 10px !important;
+  z-index: 5 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 36px !important;
+  min-width: 36px !important;
+  max-width: 36px !important;
+  height: 36px !important;
+  min-height: 36px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: linear-gradient(155deg, #304a3a, #1a2e24) !important;
+  border: 1px solid #d9be78 !important;
+  border-radius: 10px !important;
+  color: #f6e7bf !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  box-shadow: inset 0 1px #ffffff14, 0 3px 8px #0005 !important;
+}
+#researchModal .researchHeader {
+  flex: 0 0 auto;
+  padding-right: 44px !important;
+  align-items: center;
+  border-bottom-color: rgba(217, 190, 120, .55) !important;
+}
+#researchModal .researchHeader h2 {
+  margin: 2px 0 !important;
+  color: var(--wd-stage-e-gold, #e9d69a) !important;
+}
+#researchModal .researchSummary {
+  color: var(--wd-message-muted, #c3d0c5) !important;
+  line-height: 1.45;
+}
+#researchModal .researchCurrent {
+  flex: 0 0 auto;
+  background: linear-gradient(155deg, #263b2e, #192920) !important;
+  border: 1px solid rgba(217, 190, 120, .55) !important;
+  border-radius: 12px !important;
+  color: #edf1e6 !important;
+}
+#researchModal .researchTabs {
+  flex: 0 0 auto;
+  gap: 6px !important;
+  padding: 10px 0 !important;
+}
+#researchModal .researchTabs button {
+  flex: 1 1 0 !important;
+  width: auto !important;
+  min-width: 0;
+  min-height: 40px !important;
+  margin: 0 !important;
+  padding: 8px 10px !important;
+  background: linear-gradient(180deg, #304b3a, #1d3127) !important;
+  border: 1px solid rgba(159, 181, 154, .48) !important;
+  border-radius: 10px !important;
+  color: #e7eddf !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.08), 0 3px 7px rgba(0,0,0,.2) !important;
+}
+#researchModal .researchTabs button.active {
+  background: linear-gradient(180deg, #54866b, #315d49) !important;
+  border-color: #d9be78 !important;
+  color: #fff7df !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.15), 0 3px 8px rgba(0,0,0,.25) !important;
+}
+#researchModal .researchGrid {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  align-content: start;
+  overscroll-behavior: contain;
+  padding: 2px 3px 14px !important;
+}
+#researchModal .researchCard,
+#researchModal .unitResearchCard {
+  background: linear-gradient(155deg, #293a30, #1a2921) !important;
+  color: #f0f2e9 !important;
+  border: 1px solid rgba(159,181,154,.42) !important;
+  border-radius: 13px !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.045), 0 5px 12px rgba(0,0,0,.2) !important;
+}
+#researchModal .researchCard h3,
+#researchModal .unitResearchCard h3,
+#researchModal .unitResearchCard b {
+  color: #e9d69a !important;
+}
+#researchModal .researchCard p,
+#researchModal .researchCard small,
+#researchModal .unitResearchCard small {
+  color: #c3d0c5 !important;
+}
+#researchModal .researchCard > button,
+#researchModal .unitUpgradeRow button {
+  width: auto !important;
+  min-width: 100px;
+  min-height: 40px !important;
+  max-width: 150px;
+  margin: 0 !important;
+  padding: 8px 10px !important;
+  background: linear-gradient(180deg, #54866b, #315d49) !important;
+  border: 1px solid #91b397 !important;
+  border-radius: 10px !important;
+  color: #fff7df !important;
+  font-weight: 800 !important;
+  line-height: 1.2;
+  white-space: normal;
+  box-shadow: inset 0 1px rgba(255,255,255,.15), 0 3px 7px rgba(0,0,0,.25) !important;
+}
+#researchModal .researchCard > button:disabled,
+#researchModal .unitUpgradeRow button:disabled {
+  background: linear-gradient(180deg, #344338, #263329) !important;
+  border-color: rgba(159,181,154,.3) !important;
+  color: #aab8a8 !important;
+  opacity: .72 !important;
+  box-shadow: none !important;
+}
+@media (max-width: 620px) {
+  html:not(#_):not(#_):not(#_) body #researchModal.modal.open > .researchDialog {
+    width: calc(100vw - 20px) !important;
+    height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 20px) !important;
+    padding: 10px !important;
+  }
+  #researchModal .researchHeader {
+    align-items: flex-start;
+    padding-right: 40px !important;
+    gap: 8px;
+  }
+  #researchModal .researchHeader h2 {
+    font-size: 20px !important;
+    line-height: 1.15 !important;
+  }
+  #researchModal .researchSummary {
+    max-width: 92px;
+    font-size: 10px;
+  }
+  #researchModal .researchTabs {
+    gap: 4px !important;
+  }
+  #researchModal .researchTabs button {
+    min-width: 0 !important;
+    padding: 7px 4px !important;
+    font-size: 10px !important;
+  }
+  #researchModal .researchGrid {
+    grid-template-columns: 1fr !important;
+  }
+  #researchModal .researchCard {
+    grid-template-columns: 36px minmax(0, 1fr) !important;
+  }
+  #researchModal .researchCard > button {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+  #researchModal .unitUpgradeRow {
+    grid-template-columns: minmax(0, 1fr) 112px;
+  }
+  #researchModal .unitUpgradeRow button {
+    min-width: 0;
+    width: 100% !important;
+  }
+}
+</style>
+
+<style id="wd-mobile-ui-naming-economy-polish">
+  /* Keep canonical building IDs in the game model; compact single-word aliases are presentation-only. */
+  html body .cityViewport .buildItem .buildItemName {
+    display: block !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    line-height: 1.1 !important;
+    font-size: 8.5px !important;
+  }
+  html body .cityViewport .buildItem {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 1px !important;
+    width: 52px !important;
+    min-width: 49px !important;
+    max-width: 58px !important;
+    flex: 0 0 52px !important;
+    padding: 3px 2px !important;
+  }
+  html body .cityViewport .structureName {
+    white-space: nowrap !important;
+    max-width: 116px !important;
+    font-size: 9px !important;
+    line-height: 1.1 !important;
+  }
+  /* Replace the dense map-corner economy card with a single, accessible launcher. */
+  html:not(#_):not(#_):not(#_) body .cityViewport #productionStatus.productionStatus.economyLaunchOnly {
+    position: absolute !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 100 !important;
+    top: 7px !important;
+    right: 7px !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+  html:not(#_):not(#_):not(#_) body .cityViewport #productionStatus.economyLaunchOnly > :not(.economyLauncher) {
+    display: none !important;
+  }
+  html:not(#_):not(#_):not(#_) body .cityViewport #productionStatus .economyLauncher {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    width: auto !important;
+    min-width: 88px !important;
+    max-width: 112px !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    margin: 0 !important;
+    padding: 5px 9px !important;
+    border: 1px solid #d6b867 !important;
+    border-radius: 11px !important;
+    color: #ffe7a3 !important;
+    background: linear-gradient(145deg, #233e54, #11273d) !important;
+    box-shadow: 0 3px 10px #0008, inset 0 1px #ffffff1a !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+    white-space: nowrap !important;
+    touch-action: manipulation !important;
+  }
+  html:not(#_):not(#_):not(#_) body .cityViewport #productionStatus .economyLauncherIcon {
+    font-size: 15px !important;
+    line-height: 1 !important;
+  }
+  html:not(#_):not(#_):not(#_) body .cityViewport #productionStatus .economyLauncherBadge {
+    display: inline-grid !important;
+    place-items: center !important;
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px !important;
+    margin: 0 !important;
+    border: 1px solid #ffe6a1 !important;
+    border-radius: 50% !important;
+    color: #23190b !important;
+    background: #f4bd52 !important;
+    font-size: 9px !important;
+    line-height: 1 !important;
+  }
+  /* The bottom button is a reserve claim, not a manual production collector. */
+  html:not(#_):not(#_):not(#_) body .cityViewport .buildDock .buildArea #buildFilters #collectAllBtn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    width: auto !important;
+    min-width: 68px !important;
+    max-width: 82px !important;
+    padding: 4px 7px !important;
+    white-space: nowrap !important;
+  }
+  html:not(#_):not(#_):not(#_) body .cityViewport #collectAllBtn span {
+    display: inline !important;
+    white-space: nowrap !important;
+    font-size: 10px !important;
+  }
+  html:not(#_):not(#_):not(#_) body .cityViewport #collectAllBtn.empty #collectionReadyCount {
+    display: none !important;
+  }
+  html:not(#_):not(#_):not(#_) body .cityViewport #collectAllBtn #collectionReadyCount {
+    display: inline-grid !important;
+    place-items: center !important;
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    color: #2e210c !important;
+    background: #f4d16f !important;
+    font-size: 9px !important;
+    line-height: 1 !important;
+  }
+  /* The detailed economy view is shown in the Palace and in the dedicated dashboard. */
+  .palaceTreasuryPanel {
+    margin: 12px 0 !important;
+    padding: 11px !important;
+    border: 1px solid #b9974b88 !important;
+    border-radius: 13px !important;
+    color: #f4e8c8 !important;
+    background: linear-gradient(145deg, #172f47, #102338) !important;
+    box-shadow: inset 0 1px #ffffff0d !important;
+  }
+  .palaceTreasuryPanel > header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+  }
+  .palaceTreasuryPanel > header b {
+    display: block !important;
+    color: #ffe3a0 !important;
+    font-size: 14px !important;
+  }
+  .palaceTreasuryPanel > header small {
+    display: block !important;
+    margin-top: 3px !important;
+    color: #afc1d2 !important;
+    font-size: 9px !important;
+    white-space: nowrap !important;
+  }
+  .palaceTreasuryPanel .palaceTreasuryDetails {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 68px !important;
+    min-height: 32px !important;
+    margin: 0 !important;
+    padding: 5px 9px !important;
+    font-size: 10px !important;
+    white-space: nowrap !important;
+  }
+  .palaceTreasuryRows { display: grid !important; gap: 5px !important; }
+  .palaceTreasuryRow {
+    min-width: 0 !important;
+    padding: 7px 8px !important;
+    border: 1px solid #7186a044 !important;
+    border-radius: 9px !important;
+    background: #0b1c2d88 !important;
+  }
+  .palaceTreasuryMain, .palaceTreasuryMeta {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+  }
+  .palaceTreasuryMain > span { flex: 0 0 auto !important; font-size: 13px !important; }
+  .palaceTreasuryMain > b { flex: 1 1 auto !important; color: #e2d5b7 !important; font-size: 11px !important; white-space: nowrap !important; }
+  .palaceTreasuryMain > strong { flex: 0 0 auto !important; color: #ffe4a1 !important; font-size: 11px !important; font-variant-numeric: tabular-nums !important; white-space: nowrap !important; }
+  .palaceTreasuryMain > strong small { color: #aabed2 !important; font-size: 9px !important; }
+  .palaceTreasuryMeta { margin-top: 3px !important; padding-left: 22px !important; color: #aebfd0 !important; font-size: 9px !important; }
+  .palaceTreasuryMeta span { white-space: nowrap !important; }
+  @media (max-width: 350px) {
+    html:not(#_):not(#_):not(#_) body .cityViewport #productionStatus .economyLauncher { min-width: 80px !important; padding: 4px 6px !important; }
+    .palaceTreasuryPanel { padding: 8px !important; }
+    .palaceTreasuryMain > b, .palaceTreasuryMain > strong { font-size: 10px !important; }
+  }
 </style>
 </body></html>
