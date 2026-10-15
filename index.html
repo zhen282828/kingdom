@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion — Mobile UI Polish</title>
 <meta name="application-name" content="Three Kingdoms: Warlord Dominion">
-<meta name="wd-build" content="P1.4-F5.3">
+<meta name="wd-build" content="P1.4-F5.5">
 <meta name="wd-save-schema" content="4">
 <meta name="theme-color" content="#142641"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="format-detection" content="telephone=no">
 
@@ -12255,7 +12255,7 @@ body:has(.modal.open) #toast.toast.show {
 (() => {
   'use strict';
   const $ = q => document.querySelector(q), $$ = q => Array.from(document.querySelectorAll(q));
-  const BUILD_VERSION = 'P1.4-F5.3', SAVE_SCHEMA = 4;
+  const BUILD_VERSION = 'P1.4-F5.5', SAVE_SCHEMA = 4;
   const GameEvents = (() => {
     const listeners = new Map(), seen = new Map();
     return {
@@ -12284,7 +12284,7 @@ body:has(.modal.open) #toast.toast.show {
   window.WDGame = { version: BUILD_VERSION, schema: SAVE_SCHEMA, events: GameEvents };
   // Read-only Palace diagnostics allow targeted balance/regression checks.
   window.WDPalaceDefense = Object.freeze({ previewVolley: (threat, level, condition) => calculatePalaceVolley(threat, level, condition), baseVolley: level => palaceVolleyBase(level), snapshot: () => Object.freeze({ condition: palaceCondition(), level: palaceLevel(), baseVolley: palaceVolleyBase(), defenseDamage: Math.max(0, Number(S.defenseDamage) || 0) }) });
-  const P1 = { maxBuildingLevel: 15, costGrowth: 1.25, productionGrowth: 1.15, timeGrowth: 1.22, deploymentFoodPerPower: .06, deploymentCoinsPerPower: .018, repairWoodPerDamage: 5, repairIronPerDamage: 2, startResources: { food: 500, wood: 500, iron: 220, coins: 500 }, upgradeBaseMs: 45000, upgradeTimeGrowth: 1.18, researchTimeMultiplier: 4, trainingBaseSeconds: 18, trainingStepSeconds: 3, defeatArmyLoss: .15, enemyThreatPowerRatio: .40, lateNodeThreatRatio: .30, finalNodeThreatRatio: .24, introEnemyDamageMultiplier: .40 };
+  const P1 = { maxBuildingLevel: 15, costGrowth: 1.25, productionGrowth: 1.15, timeGrowth: 1.22, deploymentFoodPerPower: .06, deploymentCoinsPerPower: .018, repairWoodPerDamage: 5, repairIronPerDamage: 2, startResources: { food: 500, wood: 500, iron: 220, coins: 500 }, upgradeBaseMs: 45000, upgradeTimeGrowth: 1.18, researchTimeMultiplier: 4, trainingBaseSeconds: 18, trainingStepSeconds: 3, defeatArmyLoss: .15, enemyThreatPowerRatio: .30, lateNodeThreatRatio: .23, finalNodeThreatRatio: .18, campaignCycleGrowth: .35, introEnemyDamageMultiplier: .40 };
   // Stage F.8 role-specific upgrade economy.
   // Economy producers use 20% growth, storage and defense 18%, and military/core progression 22%.
   // Each building has a distinct resource recipe; initial construction costs are not changed.
@@ -12450,7 +12450,7 @@ body:has(.modal.open) #toast.toast.show {
       }
     }
   })();
-  const fresh = () => ({ faction: null, r: { ...P1.startResources }, level: 1, buildings: [{ type: 'Palace', level: 1, slot: 12, pending: 0 }, { type: 'Farm', level: 1, slot: 7, pending: 0 }], units: { Infantry: 0, Spearmen: 0, Archers: 0, Cavalry: 0, 'Siege Engineers': 0 }, generals: [], assigned: null, territory: 0, quests: { collect: false, lumber: false, palace: false, train: false, general: false, bandit: false, reward: false }, tutorial: 0, reports: [], sound: true, reducedMotion: false, trainingQueue: [], lastProduction: Date.now(), lastSeen: Date.now(), nextRaidAt: Date.now() + 1200000, campaignCycle: 0, palaceCondition: 100, endSeen: false });
+  const fresh = () => ({ faction: null, r: { ...P1.startResources }, level: 1, buildings: [{ type: 'Palace', level: 1, slot: 12, pending: 0 }, { type: 'Farm', level: 1, slot: 7, pending: 0 }], units: { Infantry: 0, Spearmen: 0, Archers: 0, Cavalry: 0, 'Siege Engineers': 0 }, generals: [], assigned: null, territory: 0, quests: { collect: false, lumber: false, palace: false, train: false, general: false, bandit: false, reward: false }, tutorial: 0, reports: [], sound: true, reducedMotion: false, trainingQueue: [], lastProduction: Date.now(), lastSeen: Date.now(), nextRaidAt: Date.now() + 1200000, campaignCycle: 0, palaceCondition: 100, productionDiscardedReserve: { food: 0, wood: 0, iron: 0, coins: 0 }, productionDiscardedOffline: { food: 0, wood: 0, iron: 0, coins: 0 }, endSeen: false });
   const RESEARCH = {
     food: { name: 'Agricultural Methods', branch: 'Economy', icon: '🌾', desc: '+8% Food production per level', cost: { coins: 160, wood: 80 }, time: 18000, max: 3 },
     wood: { name: 'Timber Administration', branch: 'Economy', icon: '🪵', desc: '+8% Wood production per level', cost: { coins: 160, food: 100 }, time: 18000, max: 3 },
@@ -12609,6 +12609,12 @@ body:has(.modal.open) #toast.toast.show {
   if (!S || typeof S !== 'object') S = fresh();
   S.saveSchema = Number(S.saveSchema) || 0;
   S.r = Object.assign({ food: 0, wood: 0, iron: 0, coins: 0 }, S.r || {});
+  const normalizeProductionLossTotals = raw => Object.fromEntries(['food', 'wood', 'iron', 'coins'].map(resource => {
+    const value = Number(raw && raw[resource]);
+    return [resource, Number.isFinite(value) ? Math.max(0, value) : 0];
+  }));
+  S.productionDiscardedReserve = normalizeProductionLossTotals(S.productionDiscardedReserve);
+  S.productionDiscardedOffline = normalizeProductionLossTotals(S.productionDiscardedOffline);
   S.buildings = Array.isArray(S.buildings) ? S.buildings : fresh().buildings;
   S.units = Object.assign(fresh().units, S.units || {});
   S.generals = Array.isArray(S.generals) ? S.generals : [];
@@ -12827,24 +12833,34 @@ body:has(.modal.open) #toast.toast.show {
     const lateLevels = Math.max(0, lv - 10);
     return earlyLevels * 200 + midLevels * 300 + lateLevels * 400;
   }
-  function storageCap() {
+  function storageCap(now = Date.now()) {
+    const upgradeComplete = b => !!(b && b.upgrading && Number(b.finishAt) > 0 && Number(b.finishAt) <= now);
+    const constructionComplete = b => !!(b && b.constructing && Number(b.finishAt) > 0 && Number(b.finishAt) <= now);
     const palace = S.buildings.find(b => b.type === 'Palace');
-    const palaceLevel = palace ? palace.level : 1;
-    const warehouseBonus = S.buildings.filter(b => b.type === 'Warehouse').reduce((sum, b) => sum + warehouseCapacityAtLevel(b.level), 0);
+    const palaceLevel = palace ? (upgradeComplete(palace) ? Number(palace.targetLevel) || palace.level : palace.level) : 1;
+    const warehouseBonus = S.buildings
+      .filter(b => b.type === 'Warehouse' && (!b.constructing || constructionComplete(b)))
+      .reduce((sum, b) => sum + warehouseCapacityAtLevel(upgradeComplete(b) ? Number(b.targetLevel) || b.level : b.level), 0);
     return Math.round((1200 + (palaceLevel - 1) * 500 + warehouseBonus) * (1 + researchLevel('storage') * .06));
   }
-  // Rewards may fill available storage, but must never reduce existing stock when
-  // reserve claims have temporarily put inventory above the passive storage cap.
-  function grantResourceWithinStorage(resource, amount) {
+  // Rewards are granted in full, even when they temporarily take stock above
+  // the passive cap. This matches reserve claims and prevents claimed rewards
+  // from being silently forfeited when storage is full.
+  function grantResourceReward(resource, amount) {
     if (!Object.prototype.hasOwnProperty.call(S.r, resource)) return 0;
     const rawCurrent = Number(S.r[resource]);
     const current = Number.isFinite(rawCurrent) ? Math.max(0, rawCurrent) : 0;
     const rawRequested = Number(amount);
     const requested = Number.isFinite(rawRequested) ? Math.max(0, rawRequested) : 0;
-    const room = Math.max(0, storageCap() - current);
-    const credited = Math.min(requested, room);
-    S.r[resource] = current + credited;
-    return credited;
+    S.r[resource] = current + requested;
+    return requested;
+  }
+  function rewardWouldExceedStorage(reward) {
+    const cap = Math.max(0, Number(storageCap()) || 0);
+    return Object.entries(reward || {}).some(([resource, amount]) =>
+      Object.prototype.hasOwnProperty.call(S.r, resource) &&
+      Math.max(0, Number(S.r[resource]) || 0) + Math.max(0, Number(amount) || 0) > cap
+    );
   }
   function ratePerSecond(b) {
     if (!DB[b.type].prod) return 0;
@@ -12853,16 +12869,18 @@ body:has(.modal.open) #toast.toast.show {
     const boost = (S.faction === 'Shu' && r === 'food') || (S.faction === 'Wei' && r === 'iron') || (S.faction === 'Wu' && r === 'coins') ? 1.15 : 1;
     return base * boost * (1 + researchEffect('production', r));
   }
-  function offlineCapSeconds() {
-    const warehouses = S.buildings.filter(b => b.type === 'Warehouse').reduce((sum, b) => sum + b.level, 0);
-    // Start at two hours; Warehouse levels and offline-production research raise this to eight hours.
+  function offlineCapSeconds(now = Date.now()) {
+    const warehouses = S.buildings
+      .filter(b => b.type === 'Warehouse' && (!b.constructing || (Number(b.finishAt) > 0 && Number(b.finishAt) <= now)))
+      .reduce((sum, b) => sum + (b.upgrading && Number(b.finishAt) > 0 && Number(b.finishAt) <= now ? Number(b.targetLevel) || b.level : b.level), 0);
+    // Start at two hours; completed Warehouse levels and offline-production research raise this to eight hours.
     return Math.min(8 * 3600, 2 * 3600 + warehouses * 3600 + researchEffect('offlineSeconds'));
   }
   // Reserve overflow cap is shared per resource: 125% of passive storage, minimum 250.
   // At the base 1,200 storage cap this means 1,500 reserve units per resource.
-  function pendingResourceCap(resource) {
+  function pendingResourceCap(resource, now = Date.now()) {
     if (!resource) return 0;
-    return Math.max(250, Math.floor(storageCap() * 1.25));
+    return Math.max(250, Math.floor(storageCap(now) * 1.25));
   }
   function pendingLimit(b) {
     return pendingResourceCap(DB[b?.type]?.prod);
@@ -12871,26 +12889,66 @@ body:has(.modal.open) #toast.toast.show {
     return !!(b && DB[b.type]?.prod && !b.constructing);
   }
   function updateProduction(now = Date.now()) {
-    const legacyLast = Number(S.lastProduction) || now, capSeconds = offlineCapSeconds(), accruals = [];
+    const legacyLast = Number(S.lastProduction) || now, capSeconds = offlineCapSeconds(now), accruals = [];
     S.buildings.forEach(b => {
       const resource = DB[b.type]?.prod;
       if (!resource) return;
       b.pending = Number.isFinite(b.pending) ? Math.max(0, b.pending) : 0;
-      if (!isProducerOperational(b)) {
-        b.productionUpdatedAt = now;
-        return;
+      const last = Number(b.productionUpdatedAt) || legacyLast || now;
+      const rawElapsed = Math.max(0, (now - last) / 1000);
+      const eligibleSeconds = Math.min(capSeconds, rawElapsed);
+      const eligibleEnd = last + eligibleSeconds * 1000;
+      const finishAt = Number(b.finishAt) || 0;
+      let accruedAmount = 0, beyondOfflineLimit = 0;
+
+      if (b.constructing) {
+        // Construction produces nothing before its finish timestamp. If the game
+        // was backgrounded, accrue only the eligible interval after completion.
+        if (!finishAt || finishAt > now) {
+          b.productionUpdatedAt = now;
+          return;
+        }
+        const rate = ratePerSecond(b);
+        const activeStart = Math.max(last, finishAt);
+        const activeEnd = Math.min(now, eligibleEnd);
+        accruedAmount = rate * Math.max(0, (activeEnd - activeStart) / 1000);
+        const beyondStart = Math.max(eligibleEnd, finishAt);
+        beyondOfflineLimit = rate * Math.max(0, (now - beyondStart) / 1000);
+      } else if (b.upgrading && finishAt > 0) {
+        // A building remains operational at its old level through finishAt and
+        // uses its target level after that time, including when returning offline.
+        const oldRate = ratePerSecond(b);
+        const targetLevel = Math.max(1, Number(b.targetLevel) || Number(b.level) || 1);
+        const newRate = ratePerSecond({ ...b, level: targetLevel, upgrading: false });
+        const oldEnd = Math.min(eligibleEnd, finishAt);
+        const oldSeconds = Math.max(0, (oldEnd - last) / 1000);
+        const newStart = Math.max(last, finishAt);
+        const newSeconds = Math.max(0, (eligibleEnd - newStart) / 1000);
+        accruedAmount = oldRate * oldSeconds + newRate * newSeconds;
+        const lostOldEnd = Math.min(now, finishAt);
+        const lostOldSeconds = Math.max(0, (lostOldEnd - eligibleEnd) / 1000);
+        const lostNewStart = Math.max(eligibleEnd, finishAt);
+        const lostNewSeconds = Math.max(0, (now - lostNewStart) / 1000);
+        beyondOfflineLimit = oldRate * lostOldSeconds + newRate * lostNewSeconds;
+      } else {
+        const rate = ratePerSecond(b);
+        accruedAmount = rate * eligibleSeconds;
+        beyondOfflineLimit = rate * Math.max(0, rawElapsed - eligibleSeconds);
       }
-      const last = Number(b.productionUpdatedAt) || Math.max(legacyLast, Number(b.finishAt) || 0) || now;
-      const elapsed = Math.max(0, Math.min(capSeconds, (now - last) / 1000));
-      accruals.push({ building: b, resource, amount: elapsed > 0 ? ratePerSecond(b) * elapsed : 0 });
+
+      if (beyondOfflineLimit > 0) {
+        S.productionDiscardedOffline[resource] = Math.max(0, Number(S.productionDiscardedOffline[resource]) || 0) + beyondOfflineLimit;
+      }
+      if (accruedAmount > 0) accruals.push({ building: b, resource, amount: accruedAmount });
       b.productionUpdatedAt = now;
     });
+
     // Resources automatically fill regular storage. Only production that exceeds
     // the regular storage cap is held in the shared, manually claimable reserve.
-    const normalCap = Math.max(0, Math.floor(Number(storageCap()) || 0));
+    const normalCap = Math.max(0, Math.floor(Number(storageCap(now)) || 0));
     for (const resource of Object.keys(costsEmoji)) {
       const sources = S.buildings.filter(b => DB[b.type]?.prod === resource);
-      const bufferCap = pendingResourceCap(resource);
+      const bufferCap = pendingResourceCap(resource, now);
       const alreadyPending = sources.reduce((sum, b) => sum + Math.max(0, Number(b.pending) || 0), 0);
       // Preserve reserve earned by older saves even if it exceeds the newer shared cap.
       // The cap restricts future accrual; excess legacy reserve stays claimable instead
@@ -12907,16 +12965,22 @@ body:has(.modal.open) #toast.toast.show {
       const overflow = Math.max(0, requested - autoAdded);
       if (overflow <= 0) continue;
       const reserveRoom = Math.max(0, bufferCap - alreadyPending);
-      if (reserveRoom <= 0) continue; // Reserve is full; excess production is not retained.
-      const reserveRatio = Math.min(1, reserveRoom / overflow);
+      const reserveRatio = overflow > 0 ? Math.min(1, reserveRoom / overflow) : 0;
       const overflowRatio = overflow / requested;
-      candidates.forEach(a => {
+      let reserveAdded = 0;
+      if (reserveRoom > 0) candidates.forEach(a => {
         const reserveAmount = a.amount * overflowRatio * reserveRatio;
         a.building.pending = Math.max(0, Number(a.building.pending) || 0) + reserveAmount;
+        reserveAdded += reserveAmount;
       });
+      const notStored = Math.max(0, overflow - reserveAdded);
+      if (notStored > 1e-9) {
+        S.productionDiscardedReserve[resource] = Math.max(0, Number(S.productionDiscardedReserve[resource]) || 0) + notStored;
+      }
     }
     S.lastProduction = now;
   }
+
   function collectPending(b) {
     updateProduction();
     const r = DB[b.type].prod;
@@ -13634,6 +13698,8 @@ body:has(.modal.open) #toast.toast.show {
         current: Math.floor(current), cap, room, storagePercent: cap > 0 ? Math.max(0, Math.min(100, current / cap * 100)) : 0,
         ratePerMinute, pending, bufferCap, bufferRoom, bufferPercent: bufferCap > 0 ? Math.max(0, Math.min(100, pending / bufferCap * 100)) : 0,
         collectible: Math.max(0, Math.floor(plan.collectibleByResource[resource] || 0)),
+        discardedReserve: Math.max(0, Number(S.productionDiscardedReserve[resource]) || 0),
+        discardedOffline: Math.max(0, Number(S.productionDiscardedOffline[resource]) || 0),
         blocked: 0,
         bufferEtaMinutes, producerCount: producerBuildings.length, activeProducerCount: operational.length, producers
       };
@@ -13642,6 +13708,9 @@ body:has(.modal.open) #toast.toast.show {
       cap, palaceLevel: palaceLevel(), unlockedPlots: unlockedPlotCount(), resources,
       operationalProducers: resources.reduce((sum, r) => sum + r.activeProducerCount, 0),
       producerCount: resources.reduce((sum, r) => sum + r.producerCount, 0),
+      offlineCapHours: offlineCapSeconds() / 3600,
+      discardedReserveTotal: resources.reduce((sum, r) => sum + r.discardedReserve, 0),
+      discardedOfflineTotal: resources.reduce((sum, r) => sum + r.discardedOffline, 0),
       readyResourceCount: resources.filter(r => r.collectible > 0).length,
       hasPending: plan.hasPending,
       readyByResource: resources.filter(r => r.collectible > 0).map(r => ({ key: r.key, name: r.name, icon: r.icon, amount: r.collectible })),
@@ -13936,7 +14005,7 @@ body:has(.modal.open) #toast.toast.show {
     toast(`${GENERALS[i].name} joined your army`)
   }
   function nodePower(i) {
-    return Math.round(MAP[i].p * (1 + (.55 * (S.campaignCycle || 0))))
+    return Math.round(MAP[i].p * (1 + (P1.campaignCycleGrowth * (S.campaignCycle || 0))))
   }
   function renderMap() {
     const map = $('#campaignMap');
@@ -13953,9 +14022,10 @@ body:has(.modal.open) #toast.toast.show {
       map.appendChild(btn)
     })
   }
-  // Enemy power is scaled by territory threat and a progression-specific ratio.
-  // The introductory Bandit Camp is deliberately lighter; later encounters use
-  // compositions whose counters are available by the time those territories are reached.
+  // Phase 2 campaign tuning: enemy groups use a softer threat ratio and campaign-cycle growth.
+  // Cycle growth is linear (+35% of base threat per completed campaign), not the previous +55%,
+  // to preserve escalating replay difficulty without making enemy stacks compound too sharply.
+  // The introductory Bandit Camp remains deliberately lighter in Campaign 1.
   function enemyComposition(i) {
     const cycle = Math.max(0, S.campaignCycle || 0);
     if (i === 1 && cycle === 0) return [['Cavalry', 1], ['Infantry', 1]];
@@ -14148,9 +14218,8 @@ body:has(.modal.open) #toast.toast.show {
     const difficulty = forecast.chance >= 75 ? 'easy' : forecast.chance >= 45 ? 'moderate' : 'hard';
     const reward = { food: 80 + i * 30, wood: 70 + i * 25, iron: 35 + i * 15, coins: 90 + i * 35 };
     const supply = deploymentCost(i);
-    const cappedReward = Object.fromEntries(Object.entries(reward).map(([key, amount]) => [key, Math.max(0, Math.min(amount, storageCap() - Math.max(0, Number(S.r[key]) || 0)))]));
-    const rewardable = Object.fromEntries(Object.entries(cappedReward).filter(([, amount]) => amount > 0));
-    const rewardText = Object.keys(rewardable).length ? `${costText(rewardable)}${Object.entries(reward).some(([key, amount]) => cappedReward[key] < amount) ? ' · some rewards limited by storage' : ''}` : 'Storage is full; no immediate resources will be added.';
+    const rewardOverCap = rewardWouldExceedStorage(reward);
+    const rewardText = `${costText(reward)}${rewardOverCap ? ' · full reward; stock may exceed cap' : ''}`;
     const loss = forecast.noArmy || forecast.losses === null ? 'Unavailable' : forecast.losses <= 12 ? 'Low' : forecast.losses <= 28 ? 'Moderate' : 'High';
     const cappedNote = forecast.capped ? `<small class="forecastNote">${forecast.capped} simulation${forecast.capped === 1 ? '' : 's'} reached the safety limit; estimate is less certain.</small>` : '';
     $('#detailDialog').innerHTML = `<div class="row spread"><h2>Attack ${n.name}</h2><button class="secondary closeDetailAction">Close</button></div>
@@ -14163,7 +14232,7 @@ body:has(.modal.open) #toast.toast.show {
         <div class="forecastStats"><div><small>Casualties if victorious</small><strong>${forecast.noArmy || forecast.losses === null ? '— · No simulated victories' : `${forecast.losses}% · ${loss}`}</strong></div><div><small>Loss if defeated</small><strong>${forecast.noArmy ? '— · Unavailable' : `${forecast.defeatLossCount} troops · ${forecast.defeatLosses}%`}</strong></div><div><small>Deployment supply</small><strong>${costText(supply)}</strong></div></div>
         <p><b>Recommended counters:</b> ${recommend(enemy).join(', ') || 'Balanced force'}</p>
         <p><b>Battle tip:</b> Charge to break through, Shield Wall when your line is weak, or Focus Fire to finish a wounded enemy.</p>
-        <p><b>Estimated resources received if victorious:</b> ${rewardText}</p>
+        <p><b>Estimated resources received if victorious:</b> ${rewardText}</p><small class="forecastNote">Full victory rewards are granted even if your inventory temporarily exceeds normal storage capacity.</small>
         <small class="forecastNote">Victory casualties are averaged only across simulated wins. If defeated, the recovery penalty is 15% of the army, rounded down (minimum 1 troop lost when troops are deployed). Forecasts use standard tactics; active orders and general abilities can change the result.</small>
         ${cappedNote}
       </div>
@@ -14334,8 +14403,9 @@ body:has(.modal.open) #toast.toast.show {
     let rewardForSummary = null;
     if (win) {
       const r = { food: 80 + i * 30, wood: 70 + i * 25, iron: 35 + i * 15, coins: 90 + i * 35 };
+      const rewardOverCap = rewardWouldExceedStorage(r);
       const actualRewards = {};
-      Object.entries(r).forEach(([k, v]) => { actualRewards[k] = grantResourceWithinStorage(k, v); });
+      Object.entries(r).forEach(([k, v]) => { actualRewards[k] = grantResourceReward(k, v); });
       const casualtyRate = Math.max(.02, (.08 + Math.random() * .04) - researchEffect('casualtyReduction'));
       const playerStacks = battle.units.filter(u => u.side === 'player').map(u => ({ type: u.type, count: Math.max(0, Math.floor(u.q)) }));
       const aliveBeforeAttrition = playerStacks.reduce((sum, row) => sum + row.count, 0);
@@ -14347,11 +14417,10 @@ body:has(.modal.open) #toast.toast.show {
         S.quests.bandit = true;
         advanceTutorial(6)
       }
-      const receivedText = costText(Object.fromEntries(Object.entries(actualRewards).filter(([, amount]) => amount > 0))) || 'Storage full';
-      const rewardCapped = Object.entries(r).some(([key, amount]) => actualRewards[key] < amount);
-      S.reports.unshift(`Victory at ${MAP[i].name} · ${receivedText} received${rewardCapped ? ' · storage cap limited rewards' : ''}`);
+      const receivedText = costText(Object.fromEntries(Object.entries(actualRewards).filter(([, amount]) => amount > 0))) || 'No resources';
+      S.reports.unshift(`Victory at ${MAP[i].name} · ${receivedText} received${rewardOverCap ? ' · inventory may exceed passive storage cap' : ''}`);
       $('#battleStatus').textContent = 'VICTORY · Territory secured · casualties recorded';
-      rewardForSummary = { actual: actualRewards, nominal: r, capped: rewardCapped };
+      rewardForSummary = { actual: actualRewards, nominal: r, overCap: rewardOverCap };
       if (i === MAP.length - 1) setTimeout(showCampaignEnding, 500)
     } else {
       const defeatLoss = applyDefeatCasualties(S.units);
@@ -14365,7 +14434,7 @@ body:has(.modal.open) #toast.toast.show {
     if (outcomePanel) {
       outcomePanel.innerHTML = `<div class="battleOutcomeHead"><strong>${win ? 'Victory report' : 'Defeat report'}</strong><span>${MAP[i].name}</span></div>
         <div class="battleOutcomeStats"><div><small>Troops deployed</small><b>${startingTotal}</b></div><div><small>Troops returned</small><b>${survivingTotal}</b></div><div><small>Casualties</small><b>${casualties} · ${casualtyPct}%</b></div></div>
-        ${rewardForSummary ? `<div class="battleOutcomeReward"><small>Resources received${rewardForSummary.capped ? ' · storage cap applied' : ''}</small><strong>${costText(Object.fromEntries(Object.entries(rewardForSummary.actual).filter(([, amount]) => amount > 0))) || 'Storage full'}</strong></div>` : '<div class="battleOutcomeReward"><small>Recovery</small><strong>Train replacements and retry when ready.</strong></div>'}`;
+        ${rewardForSummary ? `<div class="battleOutcomeReward"><small>Resources received${rewardForSummary.overCap ? ' · inventory may exceed cap' : ''}</small><strong>${costText(Object.fromEntries(Object.entries(rewardForSummary.actual).filter(([, amount]) => amount > 0))) || 'No resources'}</strong></div>` : '<div class="battleOutcomeReward"><small>Recovery</small><strong>Train replacements and retry when ready.</strong></div>'}`;
       outcomePanel.classList.remove('hidden');
     }
     S.reports = S.reports.slice(0, 10);
@@ -14521,11 +14590,18 @@ body:has(.modal.open) #toast.toast.show {
     save();
     renderAll()
   }
-  function showWelcomeBack() {
-    const away = Math.max(0, Date.now() - (S.lastSeen || Date.now()));
+  function showWelcomeBack(lossAtLoad = null, measuredAwayMs = null) {
+    const away = measuredAwayMs == null ? Math.max(0, Date.now() - (S.lastSeen || Date.now())) : Math.max(0, Number(measuredAwayMs) || 0);
     if (away < 120000) return;
     const mins = Math.round(away / 60000), waiting = S.buildings.filter(isProducerOperational).reduce((a, b) => a + Math.floor(b.pending || 0), 0);
-    toast(`Welcome back · ${mins} min away · ${waiting} ready`)
+    const delta = key => ['food', 'wood', 'iron', 'coins'].reduce((sum, r) => sum + Math.max(0, (Number(S[key]?.[r]) || 0) - (Number(lossAtLoad?.[key]?.[r]) || 0)), 0);
+    const reserveLost = delta('productionDiscardedReserve'), offlineNotAccrued = delta('productionDiscardedOffline');
+    if (reserveLost > 0 || offlineNotAccrued > 0) {
+      const reasons = [];
+      if (reserveLost > 0) reasons.push(`${Math.floor(reserveLost).toLocaleString()} overflow not stored`);
+      if (offlineNotAccrued > 0) reasons.push(`${Math.floor(offlineNotAccrued).toLocaleString()} output beyond offline limit`);
+      toast(`Welcome back · ${mins} min away · production limits reached; check Economy (${reasons.join('; ')})`)
+    } else toast(`Welcome back · ${mins} min away · ${waiting} ready`)
   }
   function showCampaignEnding() {
     if (S.endSeen) return;
@@ -14549,13 +14625,14 @@ body:has(.modal.open) #toast.toast.show {
     const done = qData.filter(q => S.quests[q[0]]).length;
     $('#questList').innerHTML = qData.map(q => `<div class="panel quest"><div class="questMark">${S.quests[q[0]] ? '✅' : '⭕'}</div><div><b>${q[1]}</b><div>${q[2]}</div></div></div>`).join('') + (done === qData.length && !S.quests.reward ? '<button class="primary" id="claimBtn">Claim Grand Reward · 600 🪙 + 300 🪵</button>' : '');
     $('#claimBtn')?.addEventListener('click', () => {
-      const grandReward = { coins: grantResourceWithinStorage('coins', 600), wood: grantResourceWithinStorage('wood', 300) };
-      const rewardLimited = grandReward.coins < 600 || grandReward.wood < 300;
+      const grandReward = { coins: 600, wood: 300 };
+      const rewardOverCap = rewardWouldExceedStorage(grandReward);
+      Object.entries(grandReward).forEach(([resource, amount]) => grantResourceReward(resource, amount));
       S.quests.reward = true;
       advanceTutorial(7);
       save();
       renderAll();
-      toast(rewardLimited ? 'Grand reward claimed · some items limited by storage' : 'Grand reward claimed')
+      toast(rewardOverCap ? 'Grand reward claimed · inventory may exceed cap' : 'Grand reward claimed')
     });
     $('#reportList').innerHTML = S.reports.length ? S.reports.map(r => `<div class="darkPanel" style="margin-bottom:9px">${r}</div>`).join('') : '<div class="panel">No battles fought yet.</div>'
   }
@@ -14583,14 +14660,14 @@ body:has(.modal.open) #toast.toast.show {
   }
   /* P1 Phase 3: Return Layer and Session Direction */
   const P3_DAILY_POOL = [
-    { id: 'collect', title: 'Secure Supplies', desc: 'Collect 300 resources', target: 300, event: 'collect', reward: { coins: 90 } },
+    { id: 'collect', title: 'Secure Supplies', desc: 'Claim 300 reserve resources', target: 300, event: 'collect', reward: { coins: 90 } },
     { id: 'train', title: 'Raise Reinforcements', desc: 'Train 10 troops', target: 10, event: 'train', reward: { food: 120 } },
     { id: 'battle', title: 'Prove Your Command', desc: 'Complete 1 campaign battle', target: 1, event: 'battle', reward: { coins: 110 } },
     { id: 'research', title: 'Advance the Academy', desc: 'Start 1 research project', target: 1, event: 'research', reward: { wood: 120 } },
     { id: 'raid', title: 'Guard the Dominion', desc: 'Resolve 1 city raid', target: 1, event: 'raid', reward: { iron: 80 } }
   ];
   const P3_WEEKLY_POOL = [
-    { id: 'w_collect', title: 'Realm Provisioning', desc: 'Collect 2,500 resources', target: 2500, event: 'collect', reward: { coins: 220 } },
+    { id: 'w_collect', title: 'Realm Provisioning', desc: 'Claim 2,500 reserve resources', target: 2500, event: 'collect', reward: { coins: 220 } },
     { id: 'w_train', title: 'Standing Army', desc: 'Train 50 troops', target: 50, event: 'train', reward: { food: 300 } },
     { id: 'w_battle', title: 'Campaign Orders', desc: 'Complete 5 campaign battles', target: 5, event: 'battle', reward: { coins: 300 } },
     { id: 'w_research', title: 'Scholars at Work', desc: 'Start 3 research projects', target: 3, event: 'research', reward: { wood: 260 } },
@@ -14639,7 +14716,7 @@ body:has(.modal.open) #toast.toast.show {
   function p3Grant(r) {
     const credited = {};
     Object.entries(r || {}).forEach(([k, v]) => {
-      if (S.r[k] != null) credited[k] = grantResourceWithinStorage(k, v);
+      if (S.r[k] != null) credited[k] = grantResourceReward(k, v);
     });
     return credited;
   }
@@ -14655,37 +14732,37 @@ body:has(.modal.open) #toast.toast.show {
     ensurePhase3();
     const o = S.phase3[scope][index];
     if (!o || o.claimed || o.progress < o.target) return;
+    const rewardOverCap = rewardWouldExceedStorage(o.reward);
     o.claimed = true;
-    const credited = p3Grant(o.reward);
-    const limited = Object.entries(o.reward || {}).some(([resource, amount]) => (credited[resource] || 0) < amount);
+    p3Grant(o.reward);
     save();
     renderAll();
-    toast(limited ? `${o.title} claimed · some items limited by storage` : `${o.title} reward claimed`)
+    toast(rewardOverCap ? `${o.title} claimed · inventory may exceed cap` : `${o.title} reward claimed`)
   }
   function p3ClaimLogin() {
     ensurePhase3();
     const p = S.phase3, day = p3DayKey();
     if (p.lastLoginClaim === day) return toast('Today’s tribute is already claimed');
     const reward = P3_LOGIN_REWARDS[p.loginStep];
-    const credited = p3Grant(reward);
-    const limited = Object.entries(reward || {}).some(([resource, amount]) => (credited[resource] || 0) < amount);
+    const rewardOverCap = rewardWouldExceedStorage(reward);
+    p3Grant(reward);
     p.lastLoginClaim = day;
     p.loginStep = (p.loginStep + 1) % 7;
     save();
     renderAll();
-    toast(limited ? 'Daily tribute claimed · some items limited by storage' : 'Daily tribute claimed')
+    toast(rewardOverCap ? 'Daily tribute claimed · inventory may exceed cap' : 'Daily tribute claimed')
   }
   function p3ClaimWeekly() {
     ensurePhase3();
     const p = S.phase3, done = p.weekly.filter(o => o.claimed).length;
     if (done < 3 || p.weeklyClaimed) return;
-    p.weeklyClaimed = true;
     const reward = { coins: 500, food: 350, wood: 250 };
-    const credited = p3Grant(reward);
-    const limited = Object.entries(reward).some(([resource, amount]) => (credited[resource] || 0) < amount);
+    const rewardOverCap = rewardWouldExceedStorage(reward);
+    p.weeklyClaimed = true;
+    p3Grant(reward);
     save();
     renderAll();
-    toast(limited ? 'Weekly reward claimed · some items limited by storage' : 'Weekly command reward claimed')
+    toast(rewardOverCap ? 'Weekly reward claimed · inventory may exceed cap' : 'Weekly command reward claimed')
   }
   function p3Reroll() {
     ensurePhase3();
@@ -14904,16 +14981,20 @@ body:has(.modal.open) #toast.toast.show {
       cancelBuildSelection()
     }
   });
+  const __startupProductionLoss = {
+    productionDiscardedReserve: { ...S.productionDiscardedReserve },
+    productionDiscardedOffline: { ...S.productionDiscardedOffline }
+  };
   const __awayBeforeLoad = Math.max(0, Date.now() - (S.lastSeen || Date.now()));
   updateProduction();
   processTimers();
   renderAll();
-  setTimeout(showWelcomeBack, 700);
+  setTimeout(() => showWelcomeBack(__startupProductionLoss, __awayBeforeLoad), 700);
   setInterval(() => {
     if (!paused) {
+      updateProduction();
       processTimers();
       processRaid();
-      updateProduction();
       renderTop();
       updateProductionUI();
       if (Date.now() % 5000 < 1000) save()
@@ -16530,6 +16611,7 @@ html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;v
     coins: { name: 'Coins', short: 'Coins', icon: '🪙' }
   };
   const nfmt = n => Math.max(0, Math.floor(Number(n) || 0)).toLocaleString();
+  const nfmtPrecise = n => Math.max(0, Number(n) || 0).toLocaleString(undefined, { maximumFractionDigits: 1 });
   function fmtEta(minutes) {
     if (minutes === null || !Number.isFinite(minutes)) return 'No active production';
     if (minutes <= 0) return 'Buffer full';
@@ -16568,6 +16650,8 @@ html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;v
       <div class="productionMetricRow"><span>Reserve ready to claim</span><strong class="${claimClass}">${claimText}</strong></div>
       <div class="productionMetricRow"><span>Passive storage status</span><strong>${r.current > r.cap ? `Over cap by ${nfmt(r.current - r.cap)}` : r.current >= r.cap ? 'Full' : 'Auto-filling'}</strong></div>
       <div class="productionMetricRow"><span>Reserve-cap estimate</span><strong>${eta}</strong></div>
+      <div class="productionMetricRow"><span>Not stored (reserve full)</span><strong>${nfmtPrecise(r.discardedReserve)}</strong></div>
+      <div class="productionMetricRow"><span>Beyond offline limit</span><strong>${nfmtPrecise(r.discardedOffline)}</strong></div>
       <div class="productionSectionLabel">Production buildings</div>
       <div class="productionProducerList">${producers}</div>
     </article>`;
@@ -16576,12 +16660,15 @@ html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;v
     if (!modal.classList.contains('open')) return;
     const snapshot = window.WDEconomyDashboard.snapshot();
     const scrollTop = body.scrollTop;
+    const reserveLosses = snapshot.resources.filter(r => r.discardedReserve > 0).map(r => `${r.icon} ${r.name} ${nfmtPrecise(r.discardedReserve)}`).join(' · ') || 'None recorded';
+    const offlineLosses = snapshot.resources.filter(r => r.discardedOffline > 0).map(r => `${r.icon} ${r.name} ${nfmtPrecise(r.discardedOffline)}`).join(' · ') || 'None recorded';
     body.innerHTML = `<div class="productionDashboardIntro">
       <div class="productionDashStat"><span>Operational producers</span><strong>${nfmt(snapshot.operationalProducers)}</strong><small>${nfmt(snapshot.producerCount)} total producer buildings</small></div>
       <div class="productionDashStat"><span>Resources in reserve</span><strong>${snapshot.readyResourceCount} / 4</strong><small>Resource types with overflow ready to claim</small></div>
       <div class="productionDashStat"><span>Passive storage cap</span><strong>${nfmt(snapshot.cap)}</strong><small>Per resource · Palace Lv${snapshot.palaceLevel}</small></div>
     </div>
-    <div class="productionDashboardNote" id="productionDashboardNote">Production automatically fills regular stock up to the storage cap. Any excess production is held in the reserve buffer. Collect All claims reserve overflow and can temporarily raise stock above the passive storage cap; passive production resumes when stock drops below the cap. Reserve capacity is shared by all producers of each resource.</div>
+    <div class="productionDashboardNote" id="productionDashboardNote">Production automatically fills regular stock up to the storage cap. Excess is held in each resource's shared reserve. Claim can temporarily raise stock above the passive cap. Passive production fills normal storage when stock is below the cap.</div>
+    <div class="productionDashboardNote" id="productionLossSummary"><b>Production limits (tracked from this build)</b><br>Not stored because reserve was full: ${reserveLosses}<br>Output beyond the ${nfmt(snapshot.offlineCapHours)}h offline allowance: ${offlineLosses}</div>
     <div class="productionResourceGrid">${snapshot.resources.map(resourceCardHtml).join('')}</div>`;
     body.scrollTop = scrollTop;
     const readyParts = snapshot.readyByResource.map(r => `${r.icon} ${r.amount.toLocaleString()}`).join(' · ');
