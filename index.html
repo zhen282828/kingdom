@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion — Mobile UI Polish</title>
 <meta name="application-name" content="Three Kingdoms: Warlord Dominion">
-<meta name="wd-build" content="P1.4-F5.5">
+<meta name="wd-build" content="P1.4-F5.7">
 <meta name="wd-save-schema" content="4">
 <meta name="theme-color" content="#142641"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="format-detection" content="telephone=no">
 
@@ -12240,7 +12240,7 @@ body:has(.modal.open) #toast.toast.show {
 <div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
 <nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
 <div class="modal" id="factionModal"><div class="dialog"><h2>Raise Your Banner</h2><p>Choose a faction. This changes your crest and resource bonus.</p><div class="factionGrid"><button class="faction wei" data-faction="Wei"><div class="cardIcon">🐉</div>WEI<br><small>+15% Iron</small></button><button class="faction shu" data-faction="Shu"><div class="cardIcon">🦚</div>SHU<br><small>+15% Food</small></button><button class="faction wu" data-faction="Wu"><div class="cardIcon">🐅</div>WU<br><small>+15% Coins</small></button></div></div></div>
-<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F5.1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
+<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F5.7 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
 <div class="modal" id="detailModal"><div class="dialog" id="detailDialog"></div></div>
 <div class="modal" id="battleModal"><div class="dialog battleDialog"><div class="row spread"><div><h2 id="battleTitle">Battle</h2><div id="battleStatus">Engaging enemy...</div></div><button class="secondary hidden" id="battleExit">Exit</button></div><div class="battlefield" id="battlefield"></div><div class="battleOutcomeSummary hidden" id="battleOutcomeSummary" aria-live="polite"></div><div class="battleTactics" id="battleTactics" aria-label="Tactical orders">
 <div class="battleTacticsHead"><span>TACTICAL ORDERS</span><strong id="battleTacticStatus">Choose an order · 5 second effect</strong></div>
@@ -12255,7 +12255,7 @@ body:has(.modal.open) #toast.toast.show {
 (() => {
   'use strict';
   const $ = q => document.querySelector(q), $$ = q => Array.from(document.querySelectorAll(q));
-  const BUILD_VERSION = 'P1.4-F5.5', SAVE_SCHEMA = 4;
+  const BUILD_VERSION = 'P1.4-F5.7', SAVE_SCHEMA = 4;
   const GameEvents = (() => {
     const listeners = new Map(), seen = new Map();
     return {
@@ -12284,28 +12284,29 @@ body:has(.modal.open) #toast.toast.show {
   window.WDGame = { version: BUILD_VERSION, schema: SAVE_SCHEMA, events: GameEvents };
   // Read-only Palace diagnostics allow targeted balance/regression checks.
   window.WDPalaceDefense = Object.freeze({ previewVolley: (threat, level, condition) => calculatePalaceVolley(threat, level, condition), baseVolley: level => palaceVolleyBase(level), snapshot: () => Object.freeze({ condition: palaceCondition(), level: palaceLevel(), baseVolley: palaceVolleyBase(), defenseDamage: Math.max(0, Number(S.defenseDamage) || 0) }) });
-  const P1 = { maxBuildingLevel: 15, costGrowth: 1.25, productionGrowth: 1.15, timeGrowth: 1.22, deploymentFoodPerPower: .06, deploymentCoinsPerPower: .018, repairWoodPerDamage: 5, repairIronPerDamage: 2, startResources: { food: 500, wood: 500, iron: 220, coins: 500 }, upgradeBaseMs: 45000, upgradeTimeGrowth: 1.18, researchTimeMultiplier: 4, trainingBaseSeconds: 18, trainingStepSeconds: 3, defeatArmyLoss: .15, enemyThreatPowerRatio: .30, lateNodeThreatRatio: .23, finalNodeThreatRatio: .18, campaignCycleGrowth: .35, introEnemyDamageMultiplier: .40 };
-  // Stage F.8 role-specific upgrade economy.
-  // Economy producers use 20% growth, storage and defense 18%, and military/core progression 22%.
-  // Each building has a distinct resource recipe; initial construction costs are not changed.
+  const P1 = { maxBuildingLevel: 15, costGrowth: 1.25, productionGrowth: 1.15, timeGrowth: 1.22, deploymentFoodPerPower: .06, deploymentCoinsPerPower: .018, repairWoodPerDamage: 4, repairIronPerDamage: 1.5, startResources: { food: 500, wood: 500, iron: 220, coins: 500 }, upgradeBaseMs: 45000, upgradeTimeGrowth: 1.18, researchTimeMultiplier: 4, trainingBaseSeconds: 18, trainingStepSeconds: 3, defeatArmyLoss: .15, enemyThreatPowerRatio: .30, lateNodeThreatRatio: .23, finalNodeThreatRatio: .18, campaignCycleGrowth: .35, introEnemyDamageMultiplier: .40 };
+  // Stage F.9 economy and recovery balance.
+  // Economy producers use 17% upgrade-cost growth, storage/defense 18%, and military/core 20%.
+  // These curves are closer to the 15% production curve so upgrade affordability does not drift as sharply at high levels.
+  // Each building retains its distinct resource recipe; initial construction costs are not changed.
   // b.level is the currently owned level, so the next upgrade starts at the profile's base cost.
-  // Production (15% growth), construction/upgrade timers, warehouse capacity and save schema are unchanged.
+  // Production, construction/upgrade timers, warehouse capacity, troop prices, and save schema are unchanged.
   function scaleCost(base, level, growth = P1.costGrowth) {
     const out = {};
     Object.entries(base || {}).forEach(([k, v]) => out[k] = Math.max(1, Math.round(v * Math.pow(growth, Math.max(0, level - 1)))));
     return out
   }
   const UPGRADE_COST_PROFILES = Object.freeze({
-    Palace:        { role: 'Core progression',             growth: 1.22, base: { wood: 100, iron: 60, coins: 80 } },
-    Farm:          { role: 'Food economy',                 growth: 1.20, base: { wood: 55, coins: 20 } },
-    'Lumber Yard': { role: 'Wood economy',                 growth: 1.20, base: { food: 40, coins: 20 } },
-    'Iron Mine':   { role: 'Iron economy',                 growth: 1.20, base: { wood: 75, food: 50, coins: 15 } },
-    Market:        { role: 'Coin economy',                 growth: 1.20, base: { wood: 70, iron: 20, coins: 35 } },
+    Palace:        { role: 'Core progression',             growth: 1.20, base: { wood: 100, iron: 60, coins: 80 } },
+    Farm:          { role: 'Food economy',                 growth: 1.17, base: { wood: 55, coins: 20 } },
+    'Lumber Yard': { role: 'Wood economy',                 growth: 1.17, base: { food: 40, coins: 20 } },
+    'Iron Mine':   { role: 'Iron economy',                 growth: 1.17, base: { wood: 75, food: 50, coins: 15 } },
+    Market:        { role: 'Coin economy',                 growth: 1.17, base: { wood: 70, iron: 20, coins: 35 } },
     Warehouse:     { role: 'Storage',                      growth: 1.18, base: { wood: 90, iron: 35, coins: 25 } },
-    Barracks:      { role: 'Infantry and spearmen',        growth: 1.22, base: { wood: 90, iron: 40, food: 25 } },
-    'Archer Camp': { role: 'Ranged military',              growth: 1.22, base: { wood: 105, iron: 50, food: 25 } },
-    Stable:        { role: 'Cavalry',                      growth: 1.22, base: { wood: 115, iron: 55, food: 35, coins: 25 } },
-    Academy:       { role: 'Advanced military/research',   growth: 1.22, base: { wood: 130, iron: 60, coins: 65 } },
+    Barracks:      { role: 'Infantry and spearmen',        growth: 1.20, base: { wood: 90, iron: 40, food: 25 } },
+    'Archer Camp': { role: 'Ranged military',              growth: 1.20, base: { wood: 105, iron: 50, food: 25 } },
+    Stable:        { role: 'Cavalry',                      growth: 1.20, base: { wood: 115, iron: 55, food: 35, coins: 25 } },
+    Academy:       { role: 'Advanced military/research',   growth: 1.20, base: { wood: 130, iron: 60, coins: 65 } },
     Watchtower:    { role: 'Early warning defense',        growth: 1.18, base: { wood: 75, iron: 40, coins: 15 } },
     Walls:         { role: 'Passive fortification',        growth: 1.18, base: { wood: 55, iron: 35 } },
     Gate:          { role: 'Entrance defense',             growth: 1.18, base: { wood: 70, iron: 40, coins: 15 } }
@@ -12348,9 +12349,9 @@ body:has(.modal.open) #toast.toast.show {
     'Archer Camp': 'Unlocks Archer training and improves ranged-force development.',
     Stable: 'Unlocks Cavalry training and improves mounted-force development.',
     Academy: 'Unlocks Siege Engineers and supports advanced military development.',
-    Watchtower: 'Adds 18 defense per level against raids and improves early warning.',
-    Walls: 'Adds 28 defense per level against raids.',
-    Gate: 'Adds 22 defense per level against raids.'
+    Watchtower: 'Adds 30 base defense per level. Early warning and overlapping coverage help reduce raid losses.',
+    Walls: 'Adds 28 base defense per level. Wall coverage reduces the impact of raids.',
+    Gate: 'Adds 22 base defense per level to protect the city entrance.'
   };
   const UNLOCK_BENEFITS = {
     'Iron Mine': 'Produces Iron for advanced upgrades.', 'Market': 'Creates a repeatable source of Coins.', 'Archer Camp': 'Unlocks Archer recruitment.', 'Watchtower': 'Improves defense against raids.', 'Stable': 'Unlocks Cavalry recruitment.', 'Walls': 'Strengthens settlement defense.', 'Gate': 'Protects the city entrance.', 'Academy': 'Unlocks Siege Engineer recruitment.'
@@ -12464,9 +12465,9 @@ body:has(.modal.open) #toast.toast.show {
     infantry: { name: 'Infantry Formation', branch: 'Military', icon: '🛡️', desc: '+5% Infantry doctrine per level', cost: { coins: 220, iron: 130 }, time: 28000, max: 3 },
     archers: { name: 'Trained Archers', branch: 'Military', icon: '🏹', desc: '+5% Archer doctrine per level', cost: { coins: 220, wood: 160 }, time: 28000, max: 3 },
     cavalry: { name: 'Cavalry Conditioning', branch: 'Military', icon: '🐎', desc: '+5% Cavalry doctrine per level', cost: { coins: 240, food: 180 }, time: 30000, max: 3 },
-    signals: { name: 'Watchtower Signals', branch: 'Defense', icon: '🗼', desc: '+7% raid defense per level', cost: { coins: 180, wood: 140 }, time: 24000, max: 3 },
-    walls: { name: 'Reinforced Walls', branch: 'Defense', icon: '🧱', desc: '+7% raid defense per level', cost: { coins: 230, iron: 150 }, time: 30000, max: 3 },
-    gate: { name: 'Fortified Gate', branch: 'Defense', icon: '⛩️', desc: '+7% raid defense per level', cost: { coins: 230, wood: 150 }, time: 30000, max: 3 },
+    signals: { name: 'Watchtower Signals', branch: 'Defense', icon: '🗼', desc: '+2% raid defense per level', cost: { coins: 180, wood: 140 }, time: 24000, max: 3 },
+    walls: { name: 'Reinforced Walls', branch: 'Defense', icon: '🧱', desc: '+2% raid defense per level', cost: { coins: 230, iron: 150 }, time: 30000, max: 3 },
+    gate: { name: 'Fortified Gate', branch: 'Defense', icon: '⛩️', desc: '+2% raid defense per level', cost: { coins: 230, wood: 150 }, time: 30000, max: 3 },
     protection: { name: 'Protected Storehouses', branch: 'Defense', icon: '🔒', desc: '-3% resource loss from raids per level', cost: { coins: 260, wood: 180 }, time: 34000, max: 3 },
     repairs: { name: 'Rapid Repairs', branch: 'Defense', icon: '🔨', desc: '-8% repair cost per level', cost: { coins: 210, iron: 120 }, time: 28000, max: 3 },
     intelligence: { name: 'Raid Intelligence', branch: 'Defense', icon: '🔭', desc: '+2 minutes between raids per level', cost: { coins: 240, wood: 170 }, time: 32000, max: 3 }
@@ -12489,7 +12490,7 @@ body:has(.modal.open) #toast.toast.show {
     if (type === 'offlineSeconds') return researchLevel('offline') * 3600;
     if (type === 'trainingSpeed') return researchLevel('training') * .07;
     if (type === 'unitDamage') return researchLevel('damage') * .05;
-    if (type === 'raidDefense') return (researchLevel('signals') + researchLevel('walls') + researchLevel('gate')) * .07;
+    if (type === 'raidDefense') return (researchLevel('signals') + researchLevel('walls') + researchLevel('gate')) * .02;
     if (type === 'casualtyReduction') return researchLevel('medicine') * .04;
     if (type === 'raidProtection') return researchLevel('protection') * .03;
     if (type === 'repairDiscount') return researchLevel('repairs') * .08;
@@ -13315,15 +13316,18 @@ body:has(.modal.open) #toast.toast.show {
     const buildingRecords = defenseBuildingRecords();
     const operational = operationalDefenseBuildings();
     const raw = operational.reduce((sum, building) => sum + DEFENSE_BUILDING_VALUES[building.type] * building.level, 0);
+    const coverageFactor = defenseOverlapFactor(operational);
+    const baseAdjusted = Math.round(raw / coverageFactor);
     const bonus = researchEffect('raidDefense');
-    const adjusted = Math.round(raw * (1 + bonus));
+    const adjusted = Math.round(baseAdjusted * (1 + bonus));
     const damage = Math.max(0, Number(S.defenseDamage) || 0);
     const palaceHp = palaceCondition();
     const palaceLevelNow = palaceLevel();
     const palaceBaseDamage = palaceVolleyBase(palaceLevelNow);
     const current = defenseRating();
-    const threatMin = 35 + (S.campaignCycle || 0) * 18;
-    const threatMax = threatMin + 35;
+    const raidRange = raidThreatRange(S.campaignCycle);
+    const threatMin = raidRange.min;
+    const threatMax = raidRange.max;
     const effectiveThreatMin = calculatePalaceVolley(threatMin, palaceLevelNow, palaceHp).effectiveThreat;
     const effectiveThreatMax = calculatePalaceVolley(threatMax, palaceLevelNow, palaceHp).effectiveThreat;
     const untilRaid = Math.max(0, Number(S.nextRaidAt || 0) - Date.now());
@@ -13353,9 +13357,9 @@ body:has(.modal.open) #toast.toast.show {
           <div><small>Threat after volley</small><b>${effectiveThreatMin}–${effectiveThreatMax}</b></div>
           <div><small>Research / damage penalty</small><b>+${Math.round(bonus * 100)}% / −${damage}</b></div>
         </div>
-        <div class="defenseFormula"><span>Palace counterattack</span><b>Condition ${palaceHp}% · ${palaceVolleyBase(palaceLevelNow)} base damage · up to 35% of incoming threat reduced each raid. Condition below 80% weakens the volley.</b></div>
-        <div class="defenseFormula"><span>Defense breakdown</span><b>max(0, ${adjusted} − ${damage}) = ${current} effective</b></div>
-        <div class="defenseBuildingsHeading"><b>Defensive structures</b><small>${operational.length} operational · ${buildingRecords.length - operational.length} under construction</small></div>
+        <div class="defenseFormula"><span>Palace counterattack</span><b>Condition ${palaceHp}% · ${palaceVolleyBase(palaceLevelNow)} base damage · up to 35% of incoming threat reduced each raid. Condition below 80% weakens the volley.</b></div><div class="defenseFormula"><span>Coverage overlap</span><b>One or two defense types combine additively. When all three types are active, overlapping coverage applies a 1.40 divisor before research bonuses.</b></div>
+        <div class="defenseFormula"><span>Defense breakdown</span><b>${raw} nominal ÷ ${coverageFactor.toFixed(2)} overlap = ${baseAdjusted} base · research +${Math.round(bonus * 100)}% → ${adjusted} − ${damage} damage = ${current} effective</b></div>
+        <div class="defenseBuildingsHeading"><b>Defensive structures</b><small>${operational.length} operational · ${buildingRecords.length - operational.length} under construction</small></div><small class="defenseRepairNote">Listed points are base values. One or two types add fully; all three together use a 1.40 overlap divisor before research bonuses.</small>
         <div class="defenseBuildingsList">${rows}</div>
         <div class="defenseDamageSummary ${damage ? 'damaged' : ''}"><span>${damage ? '🔧 City defense damage recorded' : '✅ City defenses intact'}</span><small>${damage ? `${damage} defense points lost. Repair from the Palace to restore city and Palace condition together.` : 'City-defense rating has no damage penalty. Palace condition is tracked separately above.'}</small></div>
         <div class="defenseRepairArea"></div>
@@ -14449,8 +14453,19 @@ body:has(.modal.open) #toast.toast.show {
     renderBattleTactics(performance.now())
   }
   // Defensive buildings are tracked centrally so raid, repair, and display logic
-  // agree on which structures currently contribute to city defense.
-  const DEFENSE_BUILDING_VALUES = Object.freeze({ Watchtower: 18, Walls: 28, Gate: 22 });
+  // agree on which structures contribute to city defense. One or two defensive
+  // types combine additively; when all three types are operational, overlapping
+  // coverage applies a 1.40 divisor before research bonuses.
+  const DEFENSE_BUILDING_VALUES = Object.freeze({ Watchtower: 30, Walls: 28, Gate: 22 });
+  function defenseOverlapFactor(defenders = operationalDefenseBuildings()) {
+    const types = new Set(defenders.map(building => building.type)).size;
+    return types >= 3 ? 1.40 : 1;
+  }
+  function raidThreatRange(cycle = S.campaignCycle) {
+    const c = Math.max(0, Math.floor(Number(cycle) || 0));
+    const min = 25 + c * 20;
+    return { min, max: min + 55 };
+  }
   function defenseBuildingRecords() {
     return S.buildings.filter(b => Object.prototype.hasOwnProperty.call(DEFENSE_BUILDING_VALUES, b.type))
   }
@@ -14494,8 +14509,9 @@ body:has(.modal.open) #toast.toast.show {
   function defenseRating() {
     const defenders = operationalDefenseBuildings();
     if (!defenders.length) return 0;
-    const raw = defenders.reduce((total, building) => total + DEFENSE_BUILDING_VALUES[building.type] * building.level, 0);
-    return Math.max(0, Math.round(raw * (1 + researchEffect('raidDefense'))) - (S.defenseDamage || 0))
+    const nominal = defenders.reduce((total, building) => total + DEFENSE_BUILDING_VALUES[building.type] * building.level, 0);
+    const baseRating = Math.round(nominal / defenseOverlapFactor(defenders));
+    return Math.max(0, Math.round(baseRating * (1 + researchEffect('raidDefense'))) - (S.defenseDamage || 0))
   }
   function repairCost() {
     const d = S.defenseDamage || 0;
@@ -14517,10 +14533,10 @@ body:has(.modal.open) #toast.toast.show {
     const defenseDamage = Math.max(0, Math.round(Number(S.defenseDamage) || 0));
     const discount = Math.max(0, Math.min(.35, researchEffect('repairDiscount')));
     const multiplier = 1 - discount;
-    // Palace restoration costs 2 Wood + 1 Iron per condition point; existing city-defense repair rates remain 5 Wood + 2 Iron per damage point.
+    // Recovery tuning: Palace restoration costs 1.5 Wood + 0.75 Iron per condition point; city-defense repairs cost 4 Wood + 1.5 Iron per damage point.
     return {
-      wood: Math.ceil((conditionMissing * 2 + defenseDamage * P1.repairWoodPerDamage) * multiplier),
-      iron: Math.ceil((conditionMissing + defenseDamage * P1.repairIronPerDamage) * multiplier)
+      wood: Math.ceil((conditionMissing * 1.5 + defenseDamage * P1.repairWoodPerDamage) * multiplier),
+      iron: Math.ceil((conditionMissing * 0.75 + defenseDamage * P1.repairIronPerDamage) * multiplier)
     }
   }
   function repairPalaceAndDefenses() {
@@ -14552,7 +14568,8 @@ body:has(.modal.open) #toast.toast.show {
     const raidKey = S.nextRaidAt;
     const defenders = operationalDefenseBuildings();
     const defense = defenseRating();
-    const rawThreat = 35 + (S.campaignCycle || 0) * 18 + Math.floor(Math.random() * 36);
+    const raidRange = raidThreatRange(S.campaignCycle);
+    const rawThreat = raidRange.min + Math.floor(Math.random() * 56);
     const palaceVolley = calculatePalaceVolley(rawThreat);
     const threat = palaceVolley.effectiveThreat;
     const repelled = defense >= threat;
