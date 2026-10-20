@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion — Mobile UI Polish</title>
+<html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion</title>
 <meta name="application-name" content="Three Kingdoms: Warlord Dominion">
-<meta name="wd-build" content="P1.4-F5.7">
+<meta name="wd-build" content="P1.4-F6.1-RC1">
 <meta name="wd-save-schema" content="4">
 <meta name="theme-color" content="#142641"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="format-detection" content="telephone=no">
 
@@ -12240,7 +12240,7 @@ body:has(.modal.open) #toast.toast.show {
 <div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
 <nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
 <div class="modal" id="factionModal"><div class="dialog"><h2>Raise Your Banner</h2><p>Choose a faction. This changes your crest and resource bonus.</p><div class="factionGrid"><button class="faction wei" data-faction="Wei"><div class="cardIcon">🐉</div>WEI<br><small>+15% Iron</small></button><button class="faction shu" data-faction="Shu"><div class="cardIcon">🦚</div>SHU<br><small>+15% Food</small></button><button class="faction wu" data-faction="Wu"><div class="cardIcon">🐅</div>WU<br><small>+15% Coins</small></button></div></div></div>
-<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F5.7 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
+<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F6.1-RC1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
 <div class="modal" id="detailModal"><div class="dialog" id="detailDialog"></div></div>
 <div class="modal" id="battleModal"><div class="dialog battleDialog"><div class="row spread"><div><h2 id="battleTitle">Battle</h2><div id="battleStatus">Engaging enemy...</div></div><button class="secondary hidden" id="battleExit">Exit</button></div><div class="battlefield" id="battlefield"></div><div class="battleOutcomeSummary hidden" id="battleOutcomeSummary" aria-live="polite"></div><div class="battleTactics" id="battleTactics" aria-label="Tactical orders">
 <div class="battleTacticsHead"><span>TACTICAL ORDERS</span><strong id="battleTacticStatus">Choose an order · 5 second effect</strong></div>
@@ -12255,7 +12255,7 @@ body:has(.modal.open) #toast.toast.show {
 (() => {
   'use strict';
   const $ = q => document.querySelector(q), $$ = q => Array.from(document.querySelectorAll(q));
-  const BUILD_VERSION = 'P1.4-F5.7', SAVE_SCHEMA = 4;
+  const BUILD_VERSION = 'P1.4-F6.1-RC1', SAVE_SCHEMA = 4;
   const GameEvents = (() => {
     const listeners = new Map(), seen = new Map();
     return {
@@ -12368,10 +12368,10 @@ body:has(.modal.open) #toast.toast.show {
     const description = BUILD_DESCRIPTIONS[type] || 'Develops the city and supports progression.';
     if (available) {
       el.className = 'buildInfo';
-      el.innerHTML = `<button class="buildInfoClose" aria-label="Close building description">×</button><span class="buildInfoIcon">${d.icon}</span><div class="buildInfoBody"><h3>${displayBuildingName(type)}</h3><p>${description}</p></div><div class="buildInfoMeta"><div class="buildInfoMetric"><span>Construction cost</span><strong>${costText(d.cost)}</strong></div><div class="buildInfoMetric buildInfoEstimate"><span>Estimated build time</span><strong>⏱ ${fmtTime(buildMs)}</strong></div></div>`;
+      el.innerHTML = `<button class="buildInfoClose" aria-label="Close building description">×</button><span class="buildInfoIcon">${d.icon}</span><div class="buildInfoBody"><h3>${type}</h3><p>${description}</p></div><div class="buildInfoMeta"><div class="buildInfoMetric"><span>Construction cost</span><strong>${costText(d.cost)}</strong></div><div class="buildInfoMetric buildInfoEstimate"><span>Estimated build time</span><strong>⏱ ${fmtTime(buildMs)}</strong></div></div>`;
     } else {
       el.className = 'buildInfo lockedPanel';
-      el.innerHTML = `<button class="buildInfoClose" aria-label="Close building description">×</button><span class="buildInfoIcon">🔒</span><div class="buildInfoBody"><h3>${displayBuildingName(type)}</h3><p>${description}</p></div><div class="buildInfoMeta"><div class="buildInfoMetric"><span>Unlock requirement</span><strong>Palace Lv${need}</strong></div><div class="buildInfoMetric buildInfoEstimate"><span>Estimated build time after unlock</span><strong>⏱ ${fmtTime(buildMs)}</strong></div></div><div class="lockedInfo"><div class="lockedInfoTitle">Upgrade the Palace ${gap} more level${gap === 1 ? '' : 's'} to unlock</div><div class="lockedProgress"><i style="width:${pct}%"></i></div><div class="lockedReason">Current Palace: Level ${current} · Required: Level ${need}</div><div class="lockedSteps"><div class="lockedStep done">✓ Current<br>Palace Lv${current}</div><div class="lockedStep">1. Upgrade<br>Palace toward Lv${need}</div><div class="lockedStep">2. Build<br>${displayBuildingName(type)}</div></div><div class="unlockPreview"><b>Unlock benefit:</b> ${UNLOCK_BENEFITS[type] || 'Expands city development.'}<br><b>Future construction cost:</b> ${costText(d.cost)}<br><b>Estimated build time after unlock:</b> ${fmtTime(buildMs)}</div><button class="lockedPalaceAction" id="viewPalaceUpgrade">View Palace Upgrade</button></div>`;
+      el.innerHTML = `<button class="buildInfoClose" aria-label="Close building description">×</button><span class="buildInfoIcon">🔒</span><div class="buildInfoBody"><h3>${type}</h3><p>${description}</p></div><div class="buildInfoMeta"><div class="buildInfoMetric"><span>Unlock requirement</span><strong>Palace Lv${need}</strong></div><div class="buildInfoMetric buildInfoEstimate"><span>Estimated build time after unlock</span><strong>⏱ ${fmtTime(buildMs)}</strong></div></div><div class="lockedInfo"><div class="lockedInfoTitle">Upgrade the Palace ${gap} more level${gap === 1 ? '' : 's'} to unlock</div><div class="lockedProgress"><i style="width:${pct}%"></i></div><div class="lockedReason">Current Palace: Level ${current} · Required: Level ${need}</div><div class="lockedSteps"><div class="lockedStep done">✓ Current<br>Palace Lv${current}</div><div class="lockedStep">1. Upgrade<br>Palace toward Lv${need}</div><div class="lockedStep">2. Build<br>${type}</div></div><div class="unlockPreview"><b>Unlock benefit:</b> ${UNLOCK_BENEFITS[type] || 'Expands city development.'}<br><b>Future construction cost:</b> ${costText(d.cost)}<br><b>Estimated build time after unlock:</b> ${fmtTime(buildMs)}</div><button class="lockedPalaceAction" id="viewPalaceUpgrade">View Palace Upgrade</button></div>`;
     }
     el.classList.remove('hidden');
     const closeInfo = el.querySelector('.buildInfoClose');
@@ -12390,7 +12390,7 @@ body:has(.modal.open) #toast.toast.show {
   const BUILD_LEVEL = { 'Farm': 1, 'Lumber Yard': 1, 'Warehouse': 1, 'Barracks': 1, 'Iron Mine': 2, 'Market': 2, 'Archer Camp': 2, 'Watchtower': 2, 'Stable': 3, 'Walls': 3, 'Gate': 3, 'Academy': 4 };
   const BUILD_CATEGORY = { 'Farm': 'Economy', 'Lumber Yard': 'Economy', 'Iron Mine': 'Economy', 'Market': 'Economy', 'Warehouse': 'Economy', 'Barracks': 'Military', 'Archer Camp': 'Military', 'Stable': 'Military', 'Academy': 'Military', 'Watchtower': 'Defense', 'Walls': 'Defense', 'Gate': 'Defense' };
   // Short labels are presentation-only; canonical building IDs and save data keep their existing names.
-  const COMPACT_BUILDING_LABELS = { 'Lumber Yard': 'Lumber', 'Iron Mine': 'Mine', 'Archer Camp': 'Archery' };
+  const COMPACT_BUILDING_LABELS = { 'Lumber Yard': 'Lumber', 'Iron Mine': 'Iron', 'Archer Camp': 'Archers' };
   function displayBuildingName(type) { return COMPACT_BUILDING_LABELS[type] || type; }
   const PLOT_UNLOCKS = { 1: 9, 2: 13, 3: 18, 4: 25 };
   const DECOR = { 'Farm': '🌱🌾', 'Lumber Yard': '🪵🪓', 'Iron Mine': '🪨⛏️', 'Market': '🏮🧺', 'Warehouse': '📦🛒', 'Barracks': '🎯⚔️', 'Archer Camp': '🎯🏹', 'Stable': '🪵🐴', 'Academy': '📜🏮', 'Watchtower': '🚩🔥', 'Walls': '🧱🧱', 'Gate': '🚩⛩️', 'Palace': '🚩🏮🚩' };
@@ -13640,7 +13640,7 @@ body:has(.modal.open) #toast.toast.show {
       collectBtn.setAttribute('aria-label', plan.total ? `Claim reserve overflow. ${detail}` : 'Reserve empty; resources are being added to regular storage automatically.');
       collectBtn.setAttribute('title', detail);
       const label = collectBtn.querySelector('span');
-      if (label) label.textContent = plan.total > 0 ? 'Claim' : 'Empty';
+      if (label) label.textContent = plan.total > 0 ? 'Collect All' : 'Filling';
     }
     const collectibleBySlot = new Map(S.buildings.map(b => [b.slot, Math.max(0, Math.floor(Number(b.pending) || 0))]));
     S.buildings.forEach(b => {
@@ -13794,6 +13794,15 @@ body:has(.modal.open) #toast.toast.show {
     }
     save();
     renderAll();
+    // Explicit success feedback makes the reserve-only action feel responsive;
+    // amounts are shown by resource so players can verify the claim happened.
+    if (total > 0) {
+      const claimed = Object.entries(byResource)
+        .filter(([, amount]) => amount > 0)
+        .map(([resource, amount]) => `${costsEmoji[resource]} ${Math.floor(amount)}`)
+        .join(' · ');
+      toast(`Collect All claimed ${claimed}`);
+    }
     const btn = $('#collectAllBtn');
     if (btn) {
       btn.classList.add('collectAck');
@@ -13813,7 +13822,7 @@ body:has(.modal.open) #toast.toast.show {
     const affordable = canPay(c);
     const currentVolley = calculatePalaceVolley(100, palaceLevel(), condition);
     const shortage = affordable ? '' : `<small class="palaceRepairNote shortage">Missing ${escapeDefenseText(missingCost(c))}. Gather or produce more resources before repairing.</small>`;
-    return `<section class="palaceConditionPanel"><div class="palaceConditionHeader"><span>🛡️ Palace condition</span><strong>${condition}/100</strong></div><div class="palaceConditionTrack ${condition < 80 ? 'damaged' : ''}" role="progressbar" aria-label="Palace condition" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${condition}"><i style="width:${condition}%"></i></div><div class="palaceConditionMeta"><div><small>Counterattack now</small><b>${currentVolley.conditionScaledDamage} damage before 35% cap</b></div><div><small>City-defense damage</small><b>${defenseDamage} points</b></div><div><small>Palace condition to restore</small><b>${conditionMissing} points</b></div><div><small>Repair discount</small><b>${Math.round(Math.min(.35, researchEffect('repairDiscount')) * 100)}%</b></div></div><div class="palaceRepairCost"><span>Unified repair cost</span><b>${costText(c)}</b></div><button type="button" class="primary palaceRepairButton" id="repairPalaceAndDefenses" ${affordable ? '' : 'disabled'} aria-label="Repair Palace and Defenses">🔧 Repair</button>${shortage}<small class="palaceRepairNote">Restores Palace condition to 100 and clears the current city-defense damage penalty. Costs 2 Wood + 1 Iron per missing Palace condition point, plus the existing city-defense repair costs.</small></section>`
+    return `<section class="palaceConditionPanel"><div class="palaceConditionHeader"><span>🛡️ Palace condition</span><strong>${condition}/100</strong></div><div class="palaceConditionTrack ${condition < 80 ? 'damaged' : ''}" role="progressbar" aria-label="Palace condition" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${condition}"><i style="width:${condition}%"></i></div><div class="palaceConditionMeta"><div><small>Counterattack now</small><b>${currentVolley.conditionScaledDamage} damage before 35% cap</b></div><div><small>City-defense damage</small><b>${defenseDamage} points</b></div><div><small>Palace condition to restore</small><b>${conditionMissing} points</b></div><div><small>Repair discount</small><b>${Math.round(Math.min(.35, researchEffect('repairDiscount')) * 100)}%</b></div></div><div class="palaceRepairCost"><span>Unified repair cost</span><b>${costText(c)}</b></div><button type="button" class="primary palaceRepairButton" id="repairPalaceAndDefenses" ${affordable ? '' : 'disabled'} aria-label="Repair Palace and Defenses">🔧 Repair</button>${shortage}<small class="palaceRepairNote">Restores Palace condition to 100 and clears the current city-defense damage penalty. Costs 1.5 Wood + 0.75 Iron per missing Palace condition point, plus 4 Wood + 1.5 Iron per city-defense damage point. Rapid Repairs research discounts the combined bill, up to the overall 35% limit.</small></section>`
   }
   function palaceEconomyMarkup() {
     const cap = storageCap();
@@ -13893,7 +13902,7 @@ body:has(.modal.open) #toast.toast.show {
     const upgradeButtonHTML = atMax
       ? '<button class="primary" id="upgradeBuilding" disabled>MAX LEVEL</button>'
       : `<button class="primary" id="upgradeBuilding" ${canPay(c) ? '' : 'disabled'}>Upgrade to Level ${next}<br><small>${costText(c)}</small>${canPay(c) ? '' : `<em class="missingCost">Missing ${missingCost(c)}</em>`}<span class="upgradeButtonTime">⏱ ${fmtTime(upgradeDuration(next))}</span></button>`;
-    $('#detailDialog').innerHTML = `<div class="row spread"><h2>${DB[b.type].icon} ${displayBuildingName(b.type)}</h2><button class="secondary closeDetailAction">Close</button></div><p>${BUILD_DESCRIPTIONS[b.type] || (b.type === 'Palace' ? 'The heart of your city: unlocks development, stores resources, and leads the defense against raids.' : 'Develops the city and supports progression.')}</p><div class="upgradeCompare"><div class="upgradeStat"><small>LEVEL ${b.level}</small><br>${current}</div><div class="upgradeArrow">➜</div><div class="upgradeStat"><small>${atMax ? 'MAX LEVEL' : `LEVEL ${next}`}</small><br>${atMax ? 'Maximum level reached' : future}</div></div>${unlockHTML}${palaceTreasuryPanel}${palaceRepairPanel}${upgradeTimePanel}${academyResearchAction}${upgradeButtonHTML}`;
+    $('#detailDialog').innerHTML = `<div class="row spread"><h2>${DB[b.type].icon} ${b.type}</h2><button class="secondary closeDetailAction">Close</button></div><p>${BUILD_DESCRIPTIONS[b.type] || (b.type === 'Palace' ? 'The heart of your city: unlocks development, stores resources, and leads the defense against raids.' : 'Develops the city and supports progression.')}</p><div class="upgradeCompare"><div class="upgradeStat"><small>LEVEL ${b.level}</small><br>${current}</div><div class="upgradeArrow">➜</div><div class="upgradeStat"><small>${atMax ? 'MAX LEVEL' : `LEVEL ${next}`}</small><br>${atMax ? 'Maximum level reached' : future}</div></div>${unlockHTML}${palaceTreasuryPanel}${palaceRepairPanel}${upgradeTimePanel}${academyResearchAction}${upgradeButtonHTML}`;
     $('#detailModal').classList.add('open');
     renderMotionState();
     $('#detailDialog .closeDetailAction').onclick = closeDetail;
@@ -17871,4 +17880,130 @@ html:not(#_):not(#_):not(#_) body #researchModal .modalClose {
     .palaceTreasuryMain > b, .palaceTreasuryMain > strong { font-size: 10px !important; }
   }
 </style>
+<style id="wd-phase6-ui-polish">
+  /* Phase 6.1: restrained UI polish. Layout, handlers, economy and balance remain unchanged. */
+  :root {
+    --wd-polish-shadow: 0 16px 38px #000a, inset 0 0 0 1px #ffffff0d;
+    --wd-polish-focus: #ffe17c;
+  }
+
+  /* Bring the setup and settings panels into the same navy-and-gold language as Research,
+     building details, the Library/message panels and the Economy dashboard. */
+  #factionModal, #settingsModal {
+    background: rgba(4, 11, 22, .80) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+    backdrop-filter: blur(5px) !important;
+  }
+  #factionModal > .dialog,
+  #settingsModal > .dialog {
+    box-sizing: border-box !important;
+    color: var(--wd-message-text, #f6e7bf) !important;
+    background: var(--wd-message-bg, linear-gradient(145deg, #112640f8, #1a3551f8)) !important;
+    border: 1px solid var(--wd-message-border, #e3c36d) !important;
+    border-radius: var(--wd-message-radius, 16px) !important;
+    box-shadow: var(--wd-polish-shadow) !important;
+    padding: 18px !important;
+  }
+  #factionModal .dialog > h2,
+  #settingsModal .dialog > .row.spread h2 {
+    margin: 0 !important;
+    color: #ffe18a !important;
+    font: 700 22px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif !important;
+    letter-spacing: .01em !important;
+    text-shadow: 0 1px 0 #0005 !important;
+  }
+  #factionModal .dialog > p {
+    margin: 9px 0 15px !important;
+    color: var(--wd-message-muted, #d4e0ed) !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+  }
+  #settingsModal .dialog > .row.spread {
+    align-items: center !important;
+    gap: 10px !important;
+    margin: 0 0 12px !important;
+    padding: 0 0 12px !important;
+    border-bottom: 1px solid #71849a66 !important;
+  }
+  #settingsModal .dialog > .row.spread button {
+    flex: 0 0 auto !important;
+    min-height: 36px !important;
+    padding: 7px 12px !important;
+    border-radius: 10px !important;
+  }
+  #settingsModal .dialog #buildVersion,
+  #settingsModal .dialog > p.small {
+    color: var(--wd-message-muted, #d4e0ed) !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+  }
+  #settingsModal .dialog > p.small {
+    margin: 12px 0 0 !important;
+  }
+  #settingsModal .dialog .grid {
+    gap: 8px !important;
+  }
+  #settingsModal .dialog .grid button {
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    min-width: 0 !important;
+    min-height: 42px !important;
+    padding: 9px 11px !important;
+    border-radius: 10px !important;
+    text-align: left !important;
+    line-height: 1.3 !important;
+  }
+  #factionModal .factionGrid { gap: 10px !important; }
+  #factionModal .factionGrid .faction {
+    min-width: 0 !important;
+    padding: 11px 6px !important;
+    border-radius: 13px !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Stable numeral widths reduce resource-count jitter as production updates. */
+  .topbar .res b,
+  .topbar .res small,
+  #productionStatus .economyHeadline,
+  #productionStatus .economyRates,
+  .productionDashStat strong,
+  .productionMetricRow strong,
+  .productionProducerAmount,
+  .palaceTreasuryMain > strong {
+    font-variant-numeric: tabular-nums !important;
+  }
+
+  /* Consistent keyboard focus and understated physical-press feedback across controls. */
+  html body button:focus-visible,
+  html body a[href]:focus-visible,
+  html body input:focus-visible,
+  html body select:focus-visible,
+  html body textarea:focus-visible,
+  html body [role="button"]:focus-visible {
+    outline: 2px solid var(--wd-polish-focus, #ffe17c) !important;
+    outline-offset: 2px !important;
+  }
+  html body button:not(:disabled) {
+    -webkit-tap-highlight-color: transparent;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    html body button:not(:disabled):hover { filter: brightness(1.06); }
+  }
+  html body button:not(:disabled):active { filter: brightness(1.10); }
+  html body button:disabled { cursor: not-allowed; }
+
+  @media (max-width: 430px) {
+    #factionModal > .dialog,
+    #settingsModal > .dialog { padding: 14px !important; }
+    #factionModal .dialog > h2,
+    #settingsModal .dialog > .row.spread h2 { font-size: 20px !important; }
+    #settingsModal .dialog .grid { gap: 7px !important; }
+    #settingsModal .dialog .grid button { min-height: 40px !important; padding: 8px !important; }
+    #factionModal .factionGrid { gap: 6px !important; }
+    #factionModal .factionGrid .faction { padding: 9px 3px !important; font-size: 12px !important; }
+  }
+</style>
+
 </body></html>
