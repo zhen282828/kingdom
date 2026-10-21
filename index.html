@@ -12363,20 +12363,24 @@ body:has(.modal.open) #toast.toast.show {
   @media(max-width:420px){.palaceMilestonePanel{padding:10px}.palaceMilestoneRow{grid-template-columns:25px minmax(0,1fr) auto;gap:6px;padding:7px}.palaceMilestoneIcon{width:25px;height:25px}.palaceMilestoneStatus{font-size:.58rem}.campaignEncounterRule{padding:10px}}
 </style>
 <style id="phase7d-raid-prep-styles">
+  /* Quiet, non-blocking raid indicator. The full preparation choices live in City > Orders. */
   .raidWarningBanner {
     position: fixed; z-index: 12000; left: 10px; right: 10px;
     bottom: calc(74px + env(safe-area-inset-bottom, 0px));
-    width: min(460px, calc(100% - 20px)); margin-inline: auto;
-    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px;
-    padding: 10px 11px; border: 1px solid #e3bd62; border-radius: 13px;
-    color: #f6eddb; background: linear-gradient(145deg, #283d58, #14243a 82%);
-    box-shadow: 0 8px 28px #0009, inset 0 1px 0 #ffffff14;
+    width: min(340px, calc(100% - 20px)); margin-inline: auto;
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px;
+    padding: 7px 9px; border: 1px solid #8b774e; border-radius: 11px;
+    color: #e8edf2; background: linear-gradient(145deg, #223146, #172336 82%);
+    box-shadow: 0 4px 14px #0007, inset 0 1px 0 #ffffff0d;
   }
   .raidWarningBanner.hidden, .raidWarningBanner.context-suppressed { display: none !important; }
-  .raidWarningCopy { min-width: 0; display: grid; gap: 3px; }
-  .raidWarningCopy strong { color: #ffe19a; font-size: 12px; letter-spacing: .02em; }
-  .raidWarningCopy small { color: #d4e0ee; font-size: 10px; line-height: 1.35; }
-  .raidWarningBanner button { min-height: 36px; padding: 7px 12px; border: 1px solid #f3d58e; border-radius: 9px; color: #2d210f; background: linear-gradient(#efd071, #c18a37); font-size: 11px; font-weight: 900; white-space: nowrap; }
+  .raidWarningCopy { min-width: 0; display: grid; gap: 2px; }
+  .raidWarningCopy strong { color: #e8d39b; font-size: 10px; letter-spacing: .01em; }
+  .raidWarningCopy small { color: #bdc9d6; font-size: 9px; line-height: 1.25; }
+  .raidWarningActions { display: flex; align-items: center; gap: 5px; }
+  .raidWarningBanner button { min-height: 29px; padding: 5px 9px; border: 1px solid #8b774e; border-radius: 7px; color: #f1e0bb; background: #34445a; font-size: 10px; font-weight: 750; white-space: nowrap; }
+  .raidWarningBanner .raidWarningDismiss { width: 28px; min-width: 28px; padding: 0; border-color: #566274; color: #d6dce4; background: #202c3d; font-size: 17px; font-weight: 500; line-height: 1; }
+  .raidWarningBanner button:focus-visible { outline: 2px solid #f0d48b; outline-offset: 2px; }
   .raidPrepPanel { display: grid; gap: 8px; margin: 10px 0 2px; padding: 10px; border: 1px solid #c69e53; border-radius: 11px; background: linear-gradient(145deg, #493d2c, #222b38); }
   .raidPrepHeading { display: grid; gap: 3px; }
   .raidPrepHeading strong { color: #ffe19a; font-size: 11px; }
@@ -12390,13 +12394,15 @@ body:has(.modal.open) #toast.toast.show {
   .raidPrepChoiceLocked { display: grid; gap: 4px; padding: 9px; border: 1px solid #57856e; border-radius: 9px; color: #e0f4e5; background: #173a30; font-size: 10px; line-height: 1.4; }
   .raidPrepChoiceLocked strong { color: #bce9c9; }
   @media (max-width: 350px) {
-    .raidWarningBanner { left: 6px; right: 6px; width: calc(100% - 12px); padding: 8px; gap: 7px; }
-    .raidWarningCopy strong { font-size: 11px; }
-    .raidWarningBanner button { padding: 6px 9px; font-size: 10px; }
+    .raidWarningBanner { left: 6px; right: 6px; width: calc(100% - 12px); padding: 7px; gap: 6px; }
+    .raidWarningCopy strong { font-size: 9px; }
+    .raidWarningBanner button { padding: 5px 7px; font-size: 9px; }
+    .raidWarningBanner .raidWarningDismiss { width: 25px; min-width: 25px; }
     .raidPrepOption { padding: 7px; }
   }
   @media (prefers-reduced-motion: reduce) { .raidWarningBanner, .raidPrepPanel { scroll-behavior: auto; transition: none !important; } }
 </style>
+<!-- Phase 7E quiet raid reminder polish: non-blocking and dismissible -->
 <style id="phase7e-campaign-balance-style">
 .campaignPrepCallout{margin:10px 0;padding:10px 12px;border:1px solid #be9658;border-left:4px solid #edc56b;border-radius:10px;background:linear-gradient(140deg,#3a2b19,#1c2634);color:#f8edd5}
 .campaignPrepCallout strong{display:block;color:#ffe18a;font-size:12px;letter-spacing:.03em}
@@ -12420,7 +12426,7 @@ body:has(.modal.open) #toast.toast.show {
   </div>
 </div>
 <div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
-<nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div id="raidWarningBanner" class="raidWarningBanner hidden" role="status" aria-live="polite" aria-atomic="true"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
+<nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div id="raidWarningBanner" class="raidWarningBanner hidden" role="group" aria-label="Raid warning"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
 <div class="modal" id="factionModal"><div class="dialog"><h2>Raise Your Banner</h2><p>Choose a faction. This changes your crest and resource bonus.</p><div class="factionGrid"><button class="faction wei" data-faction="Wei"><div class="cardIcon">🐉</div>WEI<br><small>+15% Iron</small></button><button class="faction shu" data-faction="Shu"><div class="cardIcon">🦚</div>SHU<br><small>+15% Food</small></button><button class="faction wu" data-faction="Wu"><div class="cardIcon">🐅</div>WU<br><small>+15% Coins</small></button></div></div></div>
 <div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.7-F7D-RC1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
 <div class="modal" id="detailModal"><div class="dialog" id="detailDialog"></div></div>
@@ -12437,7 +12443,7 @@ body:has(.modal.open) #toast.toast.show {
 (() => {
   'use strict';
   const $ = q => document.querySelector(q), $$ = q => Array.from(document.querySelectorAll(q));
-  const BUILD_VERSION = 'P1.8-F7E-RC1', SAVE_SCHEMA = 4;
+  const BUILD_VERSION = 'P1.8-F7E-RC2', SAVE_SCHEMA = 4;
   const GameEvents = (() => {
     const listeners = new Map(), seen = new Map();
     return {
@@ -14884,52 +14890,36 @@ body:has(.modal.open) #toast.toast.show {
     return `<div class="raidPrepPanel"><div class="raidPrepHeading"><strong>⚠ Raid warning · ${fmtTime(remaining)}</strong><small>Choose one preparation before the raid arrives. Costs are paid immediately; you may also leave resources untouched and rely on your existing defenses.</small></div><div class="raidPrepOptions">${Object.entries(RAID_PREPARATIONS).map(([key, item]) => `<button class="raidPrepOption" type="button" data-raid-prep="${key}" ${canPay(item.cost) ? '' : 'disabled'}><strong>${item.icon} ${item.title}</strong><small>${item.effect}</small><em>Cost · ${costText(item.cost)}</em></button>`).join('')}</div></div>`;
   }
   function renderRaidWarningUI() {
-    const banner = document.getElementById('raidWarningBanner');
     const active = activeRaidWarning();
+    const cityNav = document.querySelector('.navBtn[data-screen="city"]');
+    if (cityNav) {
+      cityNav.classList.toggle('raid-alert', active);
+      if (active) cityNav.setAttribute('aria-label', 'City · raid preparation available');
+      else cityNav.removeAttribute('aria-label');
+    }
+    const ordersToggle = document.getElementById('activityToggle');
+    if (ordersToggle) {
+      ordersToggle.classList.toggle('raid-alert', active);
+      ordersToggle.title = active ? 'Raid warning active · Open Orders for preparation choices' : 'Active orders';
+      ordersToggle.setAttribute('aria-label', active ? 'Active orders · raid preparation available' : 'Active orders');
+    }
+    // Do not place a floating banner over the city build dock or stack a toast.
+    // A quiet dot on City and an emphasized Orders button indicate where to act.
+    const banner = document.getElementById('raidWarningBanner');
     if (banner) {
-      const activityPanel = document.getElementById('activityPanel');
-      const prepPanelOpen = !!(active && activityPanel && !activityPanel.classList.contains('hidden') && activityPanel.querySelector('.raidPrepPanel'));
-      banner.classList.toggle('context-suppressed', prepPanelOpen);
-      banner.classList.toggle('hidden', !active);
-      if (!active) {
-        banner.innerHTML = '';
-        delete banner.dataset.raidAt;
-        delete banner.dataset.raidKey;
-      } else {
-        const raidAt = String(S.nextRaidAt);
-        const choice = S.raidPrep?.choice || '';
-        const bannerKey = `${raidAt}:${choice}`;
-        if (banner.dataset.raidKey !== bannerKey) {
-          banner.dataset.raidAt = raidAt;
-          banner.dataset.raidKey = bannerKey;
-          const status = choice && RAID_PREPARATIONS[choice] ? `${RAID_PREPARATIONS[choice].title} committed.` : 'Choose one preparation.';
-          banner.innerHTML = `<div class="raidWarningCopy"><strong>⚠ City raid incoming</strong><small><span data-raid-banner-countdown></span> · ${status}</small></div><button type="button" data-raid-open>${choice ? 'Review' : 'Prepare'}</button>`;
-        }
-        const countdown = fmtTime(Math.max(0, Number(S.nextRaidAt) - Date.now()));
-        const label = banner.querySelector('[data-raid-banner-countdown]');
-        if (label) label.textContent = `Raid in ${countdown}`;
-      }
+      banner.classList.add('hidden');
+      banner.classList.remove('context-suppressed');
+      banner.innerHTML = '';
     }
     const countdown = `Raid in ${fmtTime(Math.max(0, Number(S.nextRaidAt) - Date.now()))}`;
     document.querySelectorAll('[data-raid-countdown]').forEach(node => { node.textContent = countdown; });
   }
-  function startRaidWarning(now, message = 'Raid warning · Prepare your city within 2 minutes.') {
+  function startRaidWarning(now) {
     S.raidPrep = { raidAt: Number(S.nextRaidAt), warnedAt: now, choice: null };
     save();
-    if (document.getElementById('city')?.classList.contains('active')) {
-      const panel = document.getElementById('activityPanel');
-      if (panel) {
-        panel.classList.remove('hidden');
-        renderActivityPanel();
-        const details = panel.querySelector('.defenseSummaryCard');
-        if (details) details.open = true;
-        revealRaidPreparation(panel);
-      }
-    }
+    // Do not force-open City > Orders or stack a toast over gameplay.
+    // Preparation remains available from City > Orders through the quiet indicator.
     renderRaidWarningUI();
-    // On the City screen the expanded Orders panel already shows the warning; avoid
-    // stacking a toast over the preparation choices. Other screens keep the brief toast.
-    if (!document.getElementById('city')?.classList.contains('active')) toast(message);
   }
   function chooseRaidPreparation(choice) {
     const prep = S.raidPrep, config = RAID_PREPARATIONS[choice];
@@ -14947,31 +14937,11 @@ body:has(.modal.open) #toast.toast.show {
     toast(`${config.title} committed · ${costText(config.cost)} paid`);
     return true;
   }
-  function openRaidPreparation() {
-    if (!activeRaidWarning()) return toast('No raid warning is active right now');
-    document.querySelectorAll('.navBtn').forEach(btn => btn.classList.toggle('active', btn.dataset.screen === 'city'));
-    document.querySelectorAll('.screen').forEach(screen => screen.classList.toggle('active', screen.id === 'city'));
-    const panel = document.getElementById('activityPanel');
-    if (panel) {
-      panel.classList.remove('hidden');
-      renderActivityPanel();
-      const details = panel.querySelector('.defenseSummaryCard');
-      if (details) details.open = true;
-      revealRaidPreparation(panel);
-    }
-    renderRaidWarningUI();
-  }
   document.addEventListener('click', event => {
     const prepButton = event.target.closest('[data-raid-prep]');
-    if (prepButton) {
-      event.preventDefault();
-      chooseRaidPreparation(prepButton.dataset.raidPrep);
-      return;
-    }
-    if (event.target.closest('[data-raid-open]')) {
-      event.preventDefault();
-      openRaidPreparation();
-    }
+    if (!prepButton) return;
+    event.preventDefault();
+    chooseRaidPreparation(prepButton.dataset.raidPrep);
   });
   function defenseOverlapFactor(defenders = operationalDefenseBuildings()) {
     const types = new Set(defenders.map(building => building.type)).size;
@@ -15096,17 +15066,8 @@ body:has(.modal.open) #toast.toast.show {
       S.nextRaidAt = now + RAID_WARNING_MS;
       S.raidPrep = { raidAt: Number(S.nextRaidAt), warnedAt: now, choice: committedChoice || null };
       save();
-      if (document.getElementById('city')?.classList.contains('active')) {
-        const panel = document.getElementById('activityPanel');
-        if (panel) {
-          panel.classList.remove('hidden');
-          renderActivityPanel();
-          const details = panel.querySelector('.defenseSummaryCard');
-          if (details) details.open = true;
-        }
-      }
+      // Background throttling resumes silently; the City/Orders indicators mark the new window.
       renderRaidWarningUI();
-      toast('Raid timing resumed · You have 2 minutes to prepare.');
       return;
     }
     const prep = S.raidPrep && Number(S.raidPrep.raidAt) === scheduledAt ? S.raidPrep : null;
@@ -15467,8 +15428,15 @@ body:has(.modal.open) #toast.toast.show {
     toast(`${S.faction} banner raised`)
   });
   $('#activityToggle').onclick = () => {
+    const opening = $('#activityPanel').classList.contains('hidden');
     $('#activityPanel').classList.toggle('hidden');
     renderActivityPanel();
+    // If the player deliberately opens Orders during a raid warning, show the relevant raid details immediately.
+    if (opening && activeRaidWarning()) {
+      const details = $('#activityPanel').querySelector('.defenseSummaryCard');
+      if (details) details.open = true;
+      revealRaidPreparation($('#activityPanel'));
+    }
     renderRaidWarningUI();
   };
   renderRaidWarningUI();
@@ -18734,4 +18702,23 @@ html:not(#_):not(#_):not(#_) body #researchModal .modalClose {
   }
 </style>
 
+<style id="phase7e-quiet-raid-indicator-style">
+  /* The old floating alert is intentionally disabled to avoid covering city controls. */
+  #raidWarningBanner { display: none !important; }
+  .navBtn.raid-alert { position: relative; }
+  .navBtn.raid-alert::after {
+    content: ""; position: absolute; top: 4px; right: calc(50% - 16px);
+    width: 7px; height: 7px; border-radius: 50%; background: #e2b65a;
+    box-shadow: 0 0 0 2px #183327;
+  }
+  .activityToggle.raid-alert {
+    border-color: #b89b60 !important;
+    box-shadow: 0 0 0 1px #d9b46830, 0 4px 12px #0004 !important;
+  }
+  .activityToggle.raid-alert::after {
+    content: ""; position: absolute; top: -3px; right: -3px;
+    width: 8px; height: 8px; border-radius: 50%; background: #e2b65a;
+    border: 2px solid #1c2d27; pointer-events: none;
+  }
+</style>
 </body></html>
