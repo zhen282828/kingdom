@@ -12228,6 +12228,111 @@ body:has(.modal.open) #toast.toast.show {
   .palaceConditionIntact { padding:10px; border-radius:10px; color:#d9f0d9; background:#173a31; border:1px solid #4d8e70; font-size:11px; line-height:1.5; }
   @media (max-width:430px) { .palaceConditionPanel { padding:10px; } .palaceConditionMeta { gap:5px; } }
 </style>
+<style id="phase7b-unit-roles">
+.unitTrainingCard .unitRole{margin:4px 0 7px!important;min-height:42px;font-size:11px!important;line-height:1.35!important;color:#e0d2ad!important;}
+.unitTrainingCard .unitRole b{color:#ffdf7a!important;}
+@media(max-width:560px){.unitTrainingCard .unitRole{font-size:10px!important;min-height:48px;line-height:1.3!important;}}
+</style>
+
+<style id="phase7b-mobile-card-layout-fix">
+/* Phase 7B mobile fix: give every card field its own grid area.
+   The earlier shared .small selector placed Power and role text in the same grid cell. */
+#unitGrid>.unitTrainingCard {
+  grid-template-columns: 58px minmax(0,1fr)!important;
+  grid-template-rows: auto auto auto auto auto auto!important;
+  grid-template-areas: "icon title" "icon power" "role role" "batch batch" "action action" "afford afford"!important;
+  align-items: start!important;
+  row-gap: 7px!important;
+  min-width: 0!important;
+  min-height: 0!important;
+}
+#unitGrid>.unitTrainingCard>.cardIcon {
+  grid-area: icon!important;
+  width: 52px!important;
+  height: 56px!important;
+  justify-self: start!important;
+  align-self: center!important;
+}
+#unitGrid>.unitTrainingCard>h3 {
+  grid-area: title!important;
+  align-self: end!important;
+  min-width: 0!important;
+  overflow-wrap: anywhere!important;
+  word-break: normal!important;
+}
+#unitGrid>.unitTrainingCard>.small:not(.unitRole) {
+  grid-area: power!important;
+  align-self: start!important;
+  min-width: 0!important;
+  margin: 0!important;
+  overflow-wrap: anywhere!important;
+}
+#unitGrid>.unitTrainingCard>.unitRole {
+  grid-area: role!important;
+  display: block!important;
+  min-width: 0!important;
+  min-height: 0!important;
+  margin: 0!important;
+  padding: 8px 10px!important;
+  border-left: 2px solid #bda05b!important;
+  border-radius: 4px 9px 9px 4px!important;
+  background: #0d1d2d66!important;
+  line-height: 1.45!important;
+  overflow-wrap: anywhere!important;
+}
+#unitGrid>.unitTrainingCard>.trainBatchLabel { grid-area: batch!important; min-width: 0!important; }
+#unitGrid>.unitTrainingCard>button[data-train] {
+  grid-area: action!important;
+  align-self: stretch!important;
+  min-width: 0!important;
+  margin: 0!important;
+  overflow-wrap: anywhere!important;
+}
+#unitGrid>.unitTrainingCard>.affordabilitySlot {
+  grid-area: afford!important;
+  display: block!important;
+  width: 100%!important;
+  min-width: 0!important;
+  max-width: 100%!important;
+  align-self: stretch!important;
+}
+#unitGrid>.unitTrainingCard .affordabilityHint {
+  box-sizing: border-box!important;
+  width: 100%!important;
+  min-width: 0!important;
+  margin: 0!important;
+}
+#unitGrid>.unitTrainingCard .affordabilityResource {
+  min-width: 0!important;
+  grid-template-columns: minmax(0,1fr) auto auto!important;
+  overflow-wrap: anywhere!important;
+}
+#unitGrid>.unitTrainingCard .affordabilityResource span { overflow-wrap: anywhere!important; }
+@media(max-width:480px) {
+  /* One full-width unit card per row on phones prevents role/affordability text being crushed. */
+  #unitGrid { grid-template-columns: minmax(0,1fr)!important; gap: 9px!important; }
+  #unitGrid>.unitTrainingCard {
+    grid-template-columns: 54px minmax(0,1fr)!important;
+    padding: 12px!important;
+    border-radius: 13px!important;
+    row-gap: 7px!important;
+  }
+  #unitGrid>.unitTrainingCard>.cardIcon { width: 48px!important; height: 52px!important; font-size: 28px!important; }
+  #unitGrid>.unitTrainingCard>h3 { font-size: 14px!important; line-height: 1.3!important; letter-spacing: 0!important; }
+  #unitGrid>.unitTrainingCard>.small:not(.unitRole) { font-size: 11px!important; line-height: 1.4!important; }
+  #unitGrid>.unitTrainingCard>.unitRole { font-size: 11px!important; line-height: 1.45!important; }
+  #unitGrid>.unitTrainingCard>button[data-train] { min-height: 43px!important; font-size: 11px!important; padding: 8px 10px!important; }
+  #unitGrid>.unitTrainingCard .affordabilityHint { padding: 8px 9px!important; }
+  #unitGrid>.unitTrainingCard .affordabilityResource { grid-template-columns: minmax(0,1fr) auto auto!important; }
+}
+@media(max-width:355px) {
+  #unitGrid>.unitTrainingCard { grid-template-columns: 48px minmax(0,1fr)!important; }
+  #unitGrid>.unitTrainingCard>.cardIcon { width: 44px!important; height: 48px!important; }
+  #unitGrid>.unitTrainingCard .affordabilityResource { grid-template-columns: minmax(0,1fr) auto!important; }
+  #unitGrid>.unitTrainingCard .affordabilityResource em { grid-column: 2!important; }
+}
+</style>
+
 </head><body><div id="portraitLockOverlay" role="status" aria-live="polite"><div class="portraitLockCard"><div class="portraitLockIcon" aria-hidden="true">📱 ↻</div><h2>Please rotate your device</h2><p>Warlord Dominion is designed for portrait play. Rotate your iPhone vertically to continue your campaign.</p></div></div><div class="game"><header class="topbar"><div class="ab-crest"><div class="crestIcon" id="factionCrest">⚔️</div><div class="logo">THREE KINGDOMS<br>WARLORD DOMINION</div></div><div class="level">🏯 <span id="cityLevel">1</span></div><div class="resources"><span class="res">🌾 <b id="food">0</b><small id="foodCap"></small></span><span class="res">🪵 <b id="wood">0</b><small id="woodCap"></small></span><span class="res">⛓️ <b id="iron">0</b><small id="ironCap"></small></span><span class="res">🪙 <b id="coins">0</b><small id="coinsCap"></small></span></div><button class="iconBtn" id="settingsBtn" aria-label="Settings">⚙️</button></header>
 <main class="main"><section class="screen cityScreen active" id="city"><div class="cityViewport" id="cityViewport"><div class="skyGlow"></div><div class="mountains"></div><div class="river"><span class="riverSpark r1"></span><span class="riverSpark r2"></span><span class="riverSpark r3"></span></div><div class="riverBankDecor"></div><div class="bridge"></div><div class="ambient" id="ambient"><span class="bird b1">⌁</span><span class="bird b2">⌁</span></div><div class="tip" id="cityTip">Choose a building below, then tap an empty plot.</div><div class="buildModeActions hidden" id="buildModeActions"><div class="buildModeChoice"><small>PLACING</small><b id="buildModeName">Building</b><span id="buildModeCost"></span></div><button class="secondary" id="buildModeCollect">Collect</button><button class="danger" id="cancelBuildMode">Cancel</button></div><div class="productionStatus" id="productionStatus"></div><div class="cityFocusLabel">Citadel</div><div class="cameraControls" aria-label="City camera controls"><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomReset">Reset</button><button id="zoomIn" aria-label="Zoom in">+</button></div><button class="activityToggle" id="activityToggle" aria-label="Active orders">Orders <b id="activityCount">0</b></button><div class="activityPanel hidden" id="activityPanel"></div><div class="cityBoard" id="cityBoard"></div><div class="buildDock"><div class="buildInfo hidden" id="buildInfo"></div><div class="buildArea"><div class="buildFilters" id="buildFilters"><button class="filter active" data-filter="All">All</button><button class="filter" data-filter="Economy">Economy</button><button class="filter" data-filter="Military">Military</button><button class="filter" data-filter="Defense">Defense</button><span class="filterSpacer"></span><button class="primary empty" id="collectAllBtn" disabled><span>Collect</span><b id="collectionReadyCount">0</b></button></div><div class="buildList" id="buildList"></div></div></div></div></section><section class="screen" id="army"><div class="heading">⚔️ Army Command</div><div class="panel row spread"><div><b id="armyPower">0 Power</b><div>Train troops for your field army.</div></div><button class="primary" id="balancedBtn" aria-label="Queue balanced reinforcement">Reinforce</button></div><div class="queuePanel hidden" id="trainingQueue"></div><div class="grid" id="unitGrid"></div></section><section class="screen" id="generals"><div class="heading">🎖️ General Roster</div><div class="panel row spread"><div><b>Recruit historical commanders</b><div>Each commander specializes in one troop type.</div></div><button class="primary" id="recruitBtn">Recruit · 300 🪙</button></div><div class="grid" id="generalGrid"></div></section><section class="screen" id="campaign"><div class="heading">🗺️ Campaign Map</div><div class="map" id="campaignMap"></div></section><section class="screen" id="quests"><div class="heading">📜 Quests & Reports</div><div id="questList"></div><div id="phase3Hub" class="phase3Hub">
   <div class="phase3Header"><div><div class="phase3Eyebrow">P1 PHASE 3</div><h2>Daily Command</h2></div><div id="phase3Reset" class="phase3Reset"></div></div>
@@ -12240,7 +12345,7 @@ body:has(.modal.open) #toast.toast.show {
 <div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
 <nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
 <div class="modal" id="factionModal"><div class="dialog"><h2>Raise Your Banner</h2><p>Choose a faction. This changes your crest and resource bonus.</p><div class="factionGrid"><button class="faction wei" data-faction="Wei"><div class="cardIcon">🐉</div>WEI<br><small>+15% Iron</small></button><button class="faction shu" data-faction="Shu"><div class="cardIcon">🦚</div>SHU<br><small>+15% Food</small></button><button class="faction wu" data-faction="Wu"><div class="cardIcon">🐅</div>WU<br><small>+15% Coins</small></button></div></div></div>
-<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F7A-RC1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
+<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.5-F7B-RC1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
 <div class="modal" id="detailModal"><div class="dialog" id="detailDialog"></div></div>
 <div class="modal" id="battleModal"><div class="dialog battleDialog"><div class="row spread"><div><h2 id="battleTitle">Battle</h2><div id="battleStatus">Engaging enemy...</div></div><button class="secondary hidden" id="battleExit">Exit</button></div><div class="battlefield" id="battlefield"></div><div class="battleOutcomeSummary hidden" id="battleOutcomeSummary" aria-live="polite"></div><div class="battleTactics" id="battleTactics" aria-label="Tactical orders">
 <div class="battleTacticsHead"><span>TACTICAL ORDERS</span><strong id="battleTacticStatus">Choose an order · 5 second effect</strong></div>
@@ -12255,7 +12360,7 @@ body:has(.modal.open) #toast.toast.show {
 (() => {
   'use strict';
   const $ = q => document.querySelector(q), $$ = q => Array.from(document.querySelectorAll(q));
-  const BUILD_VERSION = 'P1.4-F7A-RC1', SAVE_SCHEMA = 4;
+  const BUILD_VERSION = 'P1.5-F7B-RC1', SAVE_SCHEMA = 4;
   const GameEvents = (() => {
     const listeners = new Map(), seen = new Map();
     return {
@@ -12433,6 +12538,15 @@ body:has(.modal.open) #toast.toast.show {
     return Object.keys(BUILD_LEVEL).filter(n => BUILD_LEVEL[n] === level)
   }
   const UNITS = { Infantry: { icon: '🗡️', cost: { food: 35, iron: 10 }, power: 10, need: 'Barracks', time: 1 }, Spearmen: { icon: '🔱', cost: { food: 45, wood: 15 }, power: 13, need: 'Barracks', time: 1.2 }, Archers: { icon: '🏹', cost: { food: 40, wood: 25 }, power: 14, need: 'Archer Camp', time: 1.35 }, Cavalry: { icon: '🐎', cost: { food: 75, coins: 30 }, power: 22, need: 'Stable', time: 1.8 }, 'Siege Engineers': { icon: '💣', cost: { wood: 70, iron: 45 }, power: 28, need: 'Academy', time: 2.3 } };
+  // Phase 7B: role text is shown wherever players train or inspect a troop stack.
+  // These are combat-only specializations; recruitment costs and power ratings remain unchanged.
+  const UNIT_ROLES = Object.freeze({
+    Infantry: { label: 'Frontline', description: '20% more battle HP; living Infantry protects allied non-Infantry units (10% less incoming damage)' },
+    Spearmen: { label: 'Anti-cavalry', description: 'Counter Cavalry · deals 1.55× damage to mounted troops' },
+    Archers: { label: 'Ranged', description: 'Long range · prioritizes Infantry, with 10% lower base damage' },
+    Cavalry: { label: 'Flanker', description: 'Fast advance · prioritizes Archers and Siege Engineers' },
+    'Siege Engineers': { label: 'Siege', description: 'Long range · deals 35% more damage at fortified campaign locations' }
+  });
   const GENERALS = [{ name: 'Cao Cao', icon: '🧔🏻', skill: 'Commanding Surge', type: 'Infantry' }, { name: 'Liu Bei', icon: '👨🏻‍🦱', skill: 'Benevolent Rally', type: 'Spearmen' }, { name: 'Sun Quan', icon: '👨🏻', skill: 'Tigerfire Volley', type: 'Archers' }];
   const MAP = [{ name: 'Home Citadel', x: 14, y: 80, p: 0 }, { name: 'Bandit Camp', x: 34, y: 65, p: 40 }, { name: 'Yellow Ford', x: 58, y: 78, p: 145 }, { name: 'Red Cliff', x: 76, y: 52, p: 250 }, { name: 'Hanzhong Gate', x: 48, y: 35, p: 380 }, { name: 'Imperial Capital', x: 76, y: 17, p: 540 }];
   const Store = (() => {
@@ -13988,7 +14102,7 @@ body:has(.modal.open) #toast.toast.show {
           return `<option value="${q}">${q} troops</option>`;
         }).join('')}</select><span>Up to ${maxBatch}</span></label>`
         : '';
-      return `<div class="card unitTrainingCard"><div class="cardIcon">${u.icon}</div><h3>${n} · ${S.units[n]}</h3><div class="small">Power ${u.power} · ${u.need} Lv${lvl}</div>${quantityControl}<button class="secondary" data-train="${n}" data-train-amount="5" ${unlocked ? '' : 'disabled'}>${unlocked ? `Train 5 · ${fmtTime(dur)} · ${costText(u.cost, 5)}` : `Build ${u.need}`}</button>${unlocked ? affordabilitySlot(u.cost, 5) : ''}</div>`;
+      return `<div class="card unitTrainingCard"><div class="cardIcon">${u.icon}</div><h3>${n} · ${S.units[n]}</h3><div class="small">Power ${u.power} · ${u.need} Lv${lvl}</div><div class="small unitRole"><b>${UNIT_ROLES[n]?.label || 'Troop role'}:</b> ${UNIT_ROLES[n]?.description || 'Standard combat unit'}</div>${quantityControl}<button class="secondary" data-train="${n}" data-train-amount="5" ${unlocked ? '' : 'disabled'}>${unlocked ? `Train 5 · ${fmtTime(dur)} · ${costText(u.cost, 5)}` : `Build ${u.need}`}</button>${unlocked ? affordabilitySlot(u.cost, 5) : ''}</div>`;
     }).join('');
     $$('[data-train-qty]').forEach(sel => sel.addEventListener('change', () => {
       const unit = sel.dataset.trainQty, q = Math.max(5, Number(sel.value) || 5), u = UNITS[unit], button = $$('[data-train]').find(b => b.dataset.train === unit);
@@ -14107,13 +14221,14 @@ body:has(.modal.open) #toast.toast.show {
     return side === 'enemy' && index === 1 && !(S.campaignCycle || 0) ? P1.introEnemyDamageMultiplier : 1
   }
   function compositionHTML(list) {
-    return list.map(([n, q]) => `<span class="unitChip">${UNITS[n]?.icon || '⚔️'} ${n} ×${q}</span>`).join('')
+    return list.map(([n, q]) => `<span class="unitChip" title="${UNIT_ROLES[n]?.description || 'Standard combat unit'}">${UNITS[n]?.icon || '⚔️'} ${n} ×${q}</span>`).join('')
   }
-  function recommend(enemy) {
+  function recommend(enemy, index = 0) {
     const types = enemy.map(x => x[0]), rec = [];
     if (types.includes('Infantry')) rec.push('Archers');
     if (types.includes('Archers')) rec.push('Cavalry');
     if (types.includes('Cavalry')) rec.push('Spearmen');
+    if (index >= 3) rec.push('Siege Engineers');
     return [...new Set(rec)]
   }
   // Apply casualties against the army total, then distribute them proportionally across stacks.
@@ -14202,8 +14317,9 @@ body:has(.modal.open) #toast.toast.show {
       const units = [];
       const addSide = (side, list) => list.slice(0, 5).forEach(([type, q], lane) => {
         const stats = battleUnitStats(side, type, q);
+        const damage = stats.damage * combatDamageMultiplier(side, i) * unitRoleDamageMultiplier(type, i);
         units.push({ side, type, q, hp: stats.hp, max: stats.hp, hpPerTroop: stats.hpPerTroop || stats.hp / Math.max(1, q),
-          x: side === 'player' ? 11 : 89, y: 24 + lane * 14, damage: stats.damage * combatDamageMultiplier(side, i), cool: 0 });
+          x: side === 'player' ? 11 : 89, y: 24 + lane * 14, damage, cool: 0 });
       });
       addSide('player', mine);
       addSide('enemy', enemy);
@@ -14222,14 +14338,14 @@ body:has(.modal.open) #toast.toast.show {
         alive.forEach(u => {
           const targets = alive.filter(v => v.side !== u.side);
           if (!targets.length) return;
-          const distanceTo = v => Math.hypot(v.x - u.x, (v.y - u.y) * .8);
-          const target = targets.reduce((a, b) => distanceTo(b) < distanceTo(a) ? b : a);
-          if (Math.abs(target.x - u.x) > 9) {
-            u.x += (u.side === 'player' ? 1 : -1) * .05 * (u.type === 'Cavalry' ? 19 : 12);
+          const target = selectBattleTarget(u, targets, 'balanced');
+          if (Math.abs(target.x - u.x) > unitAttackRange(u.type)) {
+            u.x += (u.side === 'player' ? 1 : -1) * .05 * unitMovementSpeed(u.type);
           } else if ((u.cool -= .05) <= 0) {
             let damage = u.damage * counter(u.type, target.type) * (.8 + random() * .4);
             // This deliberately mirrors the live battle loop's assigned-general bonus.
             if (u.side === 'player' && S.assigned !== null && GENERALS[S.assigned]?.type === u.type) damage *= 1.2;
+            damage *= incomingProtectionMultiplier(target, units);
             target.hp -= damage;
             target.q = Math.max(0, Math.ceil(Math.max(0, target.hp) / target.hpPerTroop));
             u.cool = .62;
@@ -14287,8 +14403,8 @@ body:has(.modal.open) #toast.toast.show {
       <div class="forecast">
         <div class="forecastHeading"><b class="difficulty ${difficulty}">${forecast.noArmy ? 'No deployable troops' : `Estimated win chance · ${forecast.chance}%`}</b><span>${forecast.noArmy ? 'Train troops for an estimate' : `${forecast.wins}/${forecast.runs} simulations`}</span></div>
         <div class="forecastStats"><div><small>Casualties if victorious</small><strong>${forecast.noArmy || forecast.losses === null ? '— · No simulated victories' : `${forecast.losses}% · ${loss}`}</strong></div><div><small>Loss if defeated</small><strong>${forecast.noArmy ? '— · Unavailable' : `${forecast.defeatLossCount} troops · ${forecast.defeatLosses}%`}</strong></div><div><small>Deployment supply</small><strong>${costText(supply)}</strong></div></div>
-        <p><b>Recommended counters:</b> ${recommend(enemy).join(', ') || 'Balanced force'}</p>
-        <p><b>Battle tip:</b> Charge to break through, Shield Wall when your line is weak, or Focus Fire to finish a wounded enemy.</p>
+        <p><b>Recommended counters:</b> ${recommend(enemy, i).join(', ') || 'Balanced force'}</p>
+        <p><b>Battle tip:</b> Spearmen counter Cavalry; Archers pressure Infantry from range; Cavalry hunt ranged troops; Siege Engineers excel at fortified locations. Charge, Shield Wall, and Focus Fire remain available.</p>
         <p><b>Estimated resources received if victorious:</b> ${rewardText}</p><small class="forecastNote">Full victory rewards are granted even if your inventory temporarily exceeds normal storage capacity.</small>
         <small class="forecastNote">Victory casualties are averaged only across simulated wins. If defeated, the recovery penalty is 15% of the army, rounded down (minimum 1 troop lost when troops are deployed). Forecasts use standard tactics; active orders and general abilities can change the result.</small>
         ${cappedNote}
@@ -14300,17 +14416,52 @@ body:has(.modal.open) #toast.toast.show {
     $('#deployBtn').onclick = () => startBattle(i);
   }
   function battleUnitStats(side, type, q) {
-    const qty = Math.max(1, q), baseDamage = (UNITS[type]?.power || 11) * Math.pow(qty, .7);
-    if (side !== 'player') return { hp: qty * 32, hpPerTroop: 32, damage: baseDamage };
+    const qty = Math.max(1, q);
+    const frontlineHP = type === 'Infantry' ? 1.2 : 1;
+    const archerDamage = type === 'Archers' ? .9 : 1;
+    const baseDamage = (UNITS[type]?.power || 11) * Math.pow(qty, .7) * archerDamage;
+    if (side !== 'player') {
+      const hpPerTroop = 32 * frontlineHP;
+      return { hp: qty * hpPerTroop, hpPerTroop, damage: baseDamage };
+    }
     const u = unitUpgrade(type), spec = type === 'Infantry' ? researchLevel('infantry') * .05 : type === 'Archers' ? researchLevel('archers') * .05 : type === 'Cavalry' ? researchLevel('cavalry') * .05 : 0;
-    const hpPerTroop = 32 * (1 + u.armor * .05);
+    const hpPerTroop = 32 * frontlineHP * (1 + u.armor * .05);
     return { hp: qty * hpPerTroop, hpPerTroop, damage: baseDamage * (1 + researchEffect('unitDamage')) * (1 + u.weapon * .04) * (1 + u.doctrine * .025) * (1 + spec) }
+  }
+  // Attack range and movement are shared by live combat and the deployment forecast.
+  function unitAttackRange(type) {
+    return type === 'Archers' ? 30 : type === 'Siege Engineers' ? 24 : 9;
+  }
+  function unitMovementSpeed(type) {
+    return type === 'Cavalry' ? 19 : type === 'Archers' ? 9 : type === 'Siege Engineers' ? 8 : 12;
+  }
+  function unitRoleDamageMultiplier(type, index) {
+    return type === 'Siege Engineers' && index >= 3 ? 1.35 : 1;
+  }
+  function incomingProtectionMultiplier(target, battleUnits) {
+    if (!target || target.type === 'Infantry') return 1;
+    return battleUnits.some(v => v.side === target.side && v.type === 'Infantry' && v.hp > 0) ? .9 : 1;
+  }
+  function selectBattleTarget(unit, targets, tactic = 'balanced') {
+    if (!targets.length) return null;
+    if (unit.side === 'player' && tactic === 'focus') return targets.reduce((a, b) => a.hp < b.hp ? a : b);
+    let candidates = targets;
+    if (unit.type === 'Cavalry') {
+      const ranged = targets.filter(v => v.type === 'Archers' || v.type === 'Siege Engineers');
+      if (ranged.length) candidates = ranged;
+    } else if (unit.type === 'Archers') {
+      const frontline = targets.filter(v => v.type === 'Infantry' || v.type === 'Spearmen');
+      if (frontline.length) candidates = frontline;
+    }
+    const distanceTo = v => Math.hypot(v.x - unit.x, (v.y - unit.y) * .8);
+    return candidates.reduce((a, b) => distanceTo(b) < distanceTo(a) ? b : a);
   }
   function makeBattleUnits(side, p, index) {
     const list = side === 'player' ? Object.entries(S.units).filter(([, q]) => q > 0) : enemyComposition(index);
     return list.slice(0, 5).map(([type, q], i) => {
       const stats = battleUnitStats(side, type, q);
-      return { side, type, q, hp: stats.hp, max: stats.hp, hpPerTroop: stats.hpPerTroop || stats.hp / Math.max(1, q), x: side === 'player' ? 11 : 89, y: 24 + i * 14, damage: stats.damage * combatDamageMultiplier(side, index), cool: 0, el: null, baseDamage: stats.damage * combatDamageMultiplier(side, index) }
+      const damage = stats.damage * combatDamageMultiplier(side, index) * unitRoleDamageMultiplier(type, index);
+      return { side, type, q, hp: stats.hp, max: stats.hp, hpPerTroop: stats.hpPerTroop || stats.hp / Math.max(1, q), x: side === 'player' ? 11 : 89, y: 24 + i * 14, damage, cool: 0, el: null, baseDamage: damage }
     })
   }
   function startBattle(i) {
@@ -14341,6 +14492,7 @@ body:has(.modal.open) #toast.toast.show {
     battle.units.forEach(u => {
       const e = document.createElement('div');
       e.className = `fighter ${u.side === 'enemy' ? 'enemy' : ''}`;
+      e.title = `${u.type} — ${UNIT_ROLES[u.type]?.description || 'Standard combat unit'}`;
       e.innerHTML = `${UNITS[u.type].icon}<small>${u.type} ×<span>${u.q}</span></small><div class="hp"><i></i></div>`;
       u.el = e;
       $('#battlefield').appendChild(e)
@@ -14375,20 +14527,15 @@ body:has(.modal.open) #toast.toast.show {
     alive.forEach(u => {
       const targets = alive.filter(v => v.side !== u.side);
       if (!targets.length) return;
-      let target;
-      if (u.side === 'player' && activeTactic === 'focus') {
-        target = targets.reduce((a, b) => a.hp < b.hp ? a : b);
-      } else {
-        const distanceTo = v => Math.hypot(v.x - u.x, (v.y - u.y) * .8);
-        target = targets.reduce((a, b) => distanceTo(b) < distanceTo(a) ? b : a);
-      }
-      if (Math.abs(target.x - u.x) > 9) {
+      const target = selectBattleTarget(u, targets, activeTactic);
+      if (Math.abs(target.x - u.x) > unitAttackRange(u.type)) {
         const marchBoost = u.side === 'player' && activeTactic === 'charge' ? (S.faction === 'Wei' ? 1.65 : 1.5) : 1;
-        u.x += (u.side === 'player' ? 1 : -1) * dt * (u.type === 'Cavalry' ? 19 : 12) * marchBoost
+        u.x += (u.side === 'player' ? 1 : -1) * dt * unitMovementSpeed(u.type) * marchBoost
       } else if ((u.cool -= dt) <= 0) {
         const mult = counter(u.type, target.type);
         let dmg = u.damage * mult * (.8 + Math.random() * .4);
         if (u.side === 'player' && S.assigned !== null && GENERALS[S.assigned].type === u.type) dmg *= 1.2;
+        dmg *= incomingProtectionMultiplier(target, battle.units);
         if (u.side === 'player' && activeTactic === 'charge') dmg *= S.faction === 'Wei' ? 1.35 : 1.22;
         if (u.side === 'player' && activeTactic === 'focus') dmg *= S.faction === 'Wu' ? 1.2 : 1.1;
         if (target.side === 'player' && activeTactic === 'wall') dmg *= S.faction === 'Shu' ? .44 : .62;
