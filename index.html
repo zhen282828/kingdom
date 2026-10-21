@@ -12240,7 +12240,7 @@ body:has(.modal.open) #toast.toast.show {
 <div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
 <nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
 <div class="modal" id="factionModal"><div class="dialog"><h2>Raise Your Banner</h2><p>Choose a faction. This changes your crest and resource bonus.</p><div class="factionGrid"><button class="faction wei" data-faction="Wei"><div class="cardIcon">🐉</div>WEI<br><small>+15% Iron</small></button><button class="faction shu" data-faction="Shu"><div class="cardIcon">🦚</div>SHU<br><small>+15% Food</small></button><button class="faction wu" data-faction="Wu"><div class="cardIcon">🐅</div>WU<br><small>+15% Coins</small></button></div></div></div>
-<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F6.3-RC1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
+<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F7A-RC1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
 <div class="modal" id="detailModal"><div class="dialog" id="detailDialog"></div></div>
 <div class="modal" id="battleModal"><div class="dialog battleDialog"><div class="row spread"><div><h2 id="battleTitle">Battle</h2><div id="battleStatus">Engaging enemy...</div></div><button class="secondary hidden" id="battleExit">Exit</button></div><div class="battlefield" id="battlefield"></div><div class="battleOutcomeSummary hidden" id="battleOutcomeSummary" aria-live="polite"></div><div class="battleTactics" id="battleTactics" aria-label="Tactical orders">
 <div class="battleTacticsHead"><span>TACTICAL ORDERS</span><strong id="battleTacticStatus">Choose an order · 5 second effect</strong></div>
@@ -12255,7 +12255,7 @@ body:has(.modal.open) #toast.toast.show {
 (() => {
   'use strict';
   const $ = q => document.querySelector(q), $$ = q => Array.from(document.querySelectorAll(q));
-  const BUILD_VERSION = 'P1.4-F6.3-RC1', SAVE_SCHEMA = 4;
+  const BUILD_VERSION = 'P1.4-F7A-RC1', SAVE_SCHEMA = 4;
   const GameEvents = (() => {
     const listeners = new Map(), seen = new Map();
     return {
@@ -12475,7 +12475,7 @@ body:has(.modal.open) #toast.toast.show {
       }
     }
   })();
-  const fresh = () => ({ faction: null, r: { ...P1.startResources }, level: 1, buildings: [{ type: 'Palace', level: 1, slot: 12, pending: 0 }, { type: 'Farm', level: 1, slot: 7, pending: 0 }], units: { Infantry: 0, Spearmen: 0, Archers: 0, Cavalry: 0, 'Siege Engineers': 0 }, generals: [], assigned: null, territory: 0, quests: { collect: false, lumber: false, palace: false, train: false, general: false, bandit: false, reward: false }, tutorial: 0, reports: [], sound: true, reducedMotion: false, trainingQueue: [], lastProduction: Date.now(), lastSeen: Date.now(), nextRaidAt: Date.now() + 1200000, campaignCycle: 0, palaceCondition: 100, productionDiscardedReserve: { food: 0, wood: 0, iron: 0, coins: 0 }, productionDiscardedOffline: { food: 0, wood: 0, iron: 0, coins: 0 }, endSeen: false });
+  const fresh = () => ({ faction: null, r: { ...P1.startResources }, level: 1, buildings: [{ type: 'Palace', level: 1, slot: 12, pending: 0 }, { type: 'Farm', level: 1, slot: 7, pending: 0 }], units: { Infantry: 0, Spearmen: 0, Archers: 0, Cavalry: 0, 'Siege Engineers': 0 }, generals: [], assigned: null, territory: 0, quests: { treasury: false, collect: false, lumber: false, palace: false, train: false, general: false, bandit: false, reward: false }, tutorial: 0, reports: [], sound: true, reducedMotion: false, trainingQueue: [], lastProduction: Date.now(), lastSeen: Date.now(), nextRaidAt: Date.now() + 1200000, campaignCycle: 0, palaceCondition: 100, productionDiscardedReserve: { food: 0, wood: 0, iron: 0, coins: 0 }, productionDiscardedOffline: { food: 0, wood: 0, iron: 0, coins: 0 }, endSeen: false });
   const RESEARCH = {
     food: { name: 'Agricultural Methods', branch: 'Economy', icon: '🌾', desc: '+8% Food production per level', cost: { coins: 160, wood: 80 }, time: 18000, max: 3 },
     wood: { name: 'Timber Administration', branch: 'Economy', icon: '🪵', desc: '+8% Wood production per level', cost: { coins: 160, food: 100 }, time: 18000, max: 3 },
@@ -12644,7 +12644,11 @@ body:has(.modal.open) #toast.toast.show {
   S.buildings = Array.isArray(S.buildings) ? S.buildings : fresh().buildings;
   S.units = Object.assign(fresh().units, S.units || {});
   S.generals = Array.isArray(S.generals) ? S.generals : [];
+  const hadTreasuryQuestFlag = Object.prototype.hasOwnProperty.call(S.quests || {}, 'treasury');
   S.quests = Object.assign(fresh().quests, S.quests || {});
+  // Phase 7A migration: the first campaign milestone is Treasury orientation, not reserve overflow.
+  // Only migrate older saves that lack the new flag; do not let later reserve claims auto-complete it.
+  if (!hadTreasuryQuestFlag && (S.quests.collect || Number(S.tutorial) > 0)) S.quests.treasury = true;
   S.reports = Array.isArray(S.reports) ? S.reports : [];
   S.trainingQueue = Array.isArray(S.trainingQueue) ? S.trainingQueue : [];
   S.saveSchema = SAVE_SCHEMA;
@@ -13765,6 +13769,7 @@ body:has(.modal.open) #toast.toast.show {
     }
     const now = Date.now(), dur = buildDuration(selected);
     S.buildings.push({ type: selected, level: 1, slot, pending: 0, constructing: true, startedAt: now, finishAt: now + dur, productionUpdatedAt: now });
+    GameEvents.emit('building:started', { type: selected, kind: 'construction', slot }, `construction-${slot}-${now}`);
     const name = selected;
     selected = null;
     const buildInfo = $('#buildInfo');
@@ -13872,7 +13877,13 @@ body:has(.modal.open) #toast.toast.show {
   function openBuilding(b) {
     if (b.constructing) return toast(`${displayBuildingName(b.type)} is still under construction`);
     if (b.upgrading) return toast(`${b.type} upgrade has ${fmtTime(b.finishAt - Date.now())} remaining`);
-    if (b.type === 'Palace' && S.tutorial === 0) advanceTutorial(1);
+    if (b.type === 'Palace') {
+      const alreadyVisitedTreasury = !!S.quests.treasury;
+      S.quests.treasury = true;
+      if (S.tutorial === 0) advanceTutorial(1);
+      else if (!alreadyVisitedTreasury) save();
+      if (!alreadyVisitedTreasury) renderQuests();
+    }
     const atMax = b.level >= P1.maxBuildingLevel;
     if (atMax && !['Academy', 'Palace'].includes(b.type)) return toast(`${b.type} has reached the Level ${P1.maxBuildingLevel} cap`);
     const next = atMax ? b.level : b.level + 1, c = atMax ? {} : upgradeCost(b);
@@ -13949,6 +13960,7 @@ body:has(.modal.open) #toast.toast.show {
       b.targetLevel = next;
       b.startedAt = now;
       b.finishAt = now + dur;
+      GameEvents.emit('building:started', { type: b.type, kind: 'upgrade', slot: b.slot }, `upgrade-${b.slot}-${now}`);
       selected = null;
       save();
       closeDetail();
@@ -14688,7 +14700,7 @@ body:has(.modal.open) #toast.toast.show {
     };
     $('#closeEnding').onclick = closeDetail
   }
-  const qData = [['collect', 'Reserve Claim', 'Claim Food from reserve overflow when it is ready'], ['lumber', 'Timber Supply', 'Build a Lumber Yard'], ['palace', 'Seat of Power', 'Upgrade the Palace'], ['train', 'Raise the Banners', 'Train Infantry'], ['general', 'A Hero Arrives', 'Recruit a general'], ['bandit', 'Secure the Road', 'Defeat the Bandit Camp']];
+  const qData = [['treasury', 'Visit the Treasury', 'Open the Palace to review stock and passive production'], ['lumber', 'Timber Supply', 'Build a Lumber Yard'], ['palace', 'Seat of Power', 'Upgrade the Palace'], ['train', 'Raise the Banners', 'Train Infantry'], ['general', 'A Hero Arrives', 'Recruit a general'], ['bandit', 'Secure the Road', 'Defeat the Bandit Camp']];
   function renderQuests() {
     const done = qData.filter(q => S.quests[q[0]]).length;
     $('#questList').innerHTML = qData.map(q => `<div class="panel quest"><div class="questMark">${S.quests[q[0]] ? '✅' : '⭕'}</div><div><b>${q[1]}</b><div>${q[2]}</div></div></div>`).join('') + (done === qData.length && !S.quests.reward ? '<button class="primary" id="claimBtn">Claim Grand Reward · 600 🪙 + 300 🪵</button>' : '');
@@ -14736,6 +14748,7 @@ body:has(.modal.open) #toast.toast.show {
   /* P1 Phase 3: Return Layer and Session Direction */
   const P3_DAILY_POOL = [
     { id: 'collect', title: 'Secure Supplies', desc: 'Claim 300 reserve resources', target: 300, event: 'collect', reward: { coins: 90 } },
+    { id: 'develop', title: 'Build the Realm', desc: 'Start 1 building or upgrade', target: 1, event: 'building', reward: { coins: 90 } },
     { id: 'train', title: 'Raise Reinforcements', desc: 'Train 10 troops', target: 10, event: 'train', reward: { food: 120 } },
     { id: 'battle', title: 'Prove Your Command', desc: 'Complete 1 campaign battle', target: 1, event: 'battle', reward: { coins: 110 } },
     { id: 'research', title: 'Advance the Academy', desc: 'Start 1 research project', target: 1, event: 'research', reward: { wood: 120 } },
@@ -14743,6 +14756,7 @@ body:has(.modal.open) #toast.toast.show {
   ];
   const P3_WEEKLY_POOL = [
     { id: 'w_collect', title: 'Realm Provisioning', desc: 'Claim 2,500 reserve resources', target: 2500, event: 'collect', reward: { coins: 220 } },
+    { id: 'w_develop', title: 'Realm Expansion', desc: 'Start 5 building or upgrade projects', target: 5, event: 'building', reward: { coins: 220 } },
     { id: 'w_train', title: 'Standing Army', desc: 'Train 50 troops', target: 50, event: 'train', reward: { food: 300 } },
     { id: 'w_battle', title: 'Campaign Orders', desc: 'Complete 5 campaign battles', target: 5, event: 'battle', reward: { coins: 300 } },
     { id: 'w_research', title: 'Scholars at Work', desc: 'Start 3 research projects', target: 3, event: 'research', reward: { wood: 260 } },
@@ -14775,14 +14789,31 @@ body:has(.modal.open) #toast.toast.show {
     const p = S.phase3;
     if (p.dailyKey !== day) {
       p.dailyKey = day;
-      p.daily = p3Pick(P3_DAILY_POOL, 3, day).map(p3Objective);
+      const dailyPool = S.quests.collect ? P3_DAILY_POOL : P3_DAILY_POOL.filter(o => o.event !== 'collect');
+      p.daily = p3Pick(dailyPool, 3, day).map(p3Objective);
       p.dailyRerollUsed = false
     }
     if (p.weeklyKey !== week) {
       p.weeklyKey = week;
-      p.weekly = p3Pick(P3_WEEKLY_POOL, 4, week).map(p3Objective);
+      const weeklyPool = S.quests.collect ? P3_WEEKLY_POOL : P3_WEEKLY_POOL.filter(o => o.event !== 'collect');
+      p.weekly = p3Pick(weeklyPool, 4, week).map(p3Objective);
       p.weeklyClaimed = false
     }
+    // Migrate already-generated reserve-only objectives so returning/new players are not
+    // stuck with a task that requires storage to fill before any meaningful first-session action.
+    const migrateReserveObjective = (objective, weekly) => {
+      if (!objective || objective.event !== 'collect' || S.quests.collect) return;
+      const wasClaimed = !!objective.claimed;
+      const wasComplete = (Number(objective.progress) || 0) >= (Number(objective.target) || (weekly ? 2500 : 300));
+      objective.id = weekly ? 'w_develop' : 'develop';
+      objective.title = weekly ? 'Realm Expansion' : 'Build the Realm';
+      objective.desc = weekly ? 'Start 5 building projects' : 'Start 1 building or upgrade';
+      objective.target = weekly ? 5 : 1;
+      objective.event = 'building';
+      objective.progress = wasClaimed || wasComplete ? objective.target : 0;
+    };
+    p.daily.forEach(objective => migrateReserveObjective(objective, false));
+    p.weekly.forEach(objective => migrateReserveObjective(objective, true));
     p.loginStep = Math.max(0, Math.min(6, Number(p.loginStep) || 0));
   }
   function p3RewardText(r) {
@@ -14884,6 +14915,7 @@ body:has(.modal.open) #toast.toast.show {
   GameEvents.on('resource:collected', e => p3Progress('collect', Math.max(0, Number(e.amount) || 0)));
   GameEvents.on('training:completed', e => p3Progress('train', Math.max(0, Number(e.amount) || 0)));
   GameEvents.on('research:started', () => p3Progress('research', 1));
+  GameEvents.on('building:started', () => p3Progress('building', 1));
   GameEvents.on('battle:completed', () => p3Progress('battle', 1));
   GameEvents.on('raid:resolved', () => p3Progress('raid', 1));
   const p3RenderQuestsBase = renderQuests;
