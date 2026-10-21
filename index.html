@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion</title>
 <meta name="application-name" content="Three Kingdoms: Warlord Dominion">
-<meta name="wd-build" content="P1.4-F6.1-RC1">
+<meta name="wd-build" content="P1.4-F6.3-RC1">
 <meta name="wd-save-schema" content="4">
 <meta name="theme-color" content="#142641"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="format-detection" content="telephone=no">
 
@@ -12240,7 +12240,7 @@ body:has(.modal.open) #toast.toast.show {
 <div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
 <nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
 <div class="modal" id="factionModal"><div class="dialog"><h2>Raise Your Banner</h2><p>Choose a faction. This changes your crest and resource bonus.</p><div class="factionGrid"><button class="faction wei" data-faction="Wei"><div class="cardIcon">🐉</div>WEI<br><small>+15% Iron</small></button><button class="faction shu" data-faction="Shu"><div class="cardIcon">🦚</div>SHU<br><small>+15% Food</small></button><button class="faction wu" data-faction="Wu"><div class="cardIcon">🐅</div>WU<br><small>+15% Coins</small></button></div></div></div>
-<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F6.1-RC1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
+<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.4-F6.3-RC1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
 <div class="modal" id="detailModal"><div class="dialog" id="detailDialog"></div></div>
 <div class="modal" id="battleModal"><div class="dialog battleDialog"><div class="row spread"><div><h2 id="battleTitle">Battle</h2><div id="battleStatus">Engaging enemy...</div></div><button class="secondary hidden" id="battleExit">Exit</button></div><div class="battlefield" id="battlefield"></div><div class="battleOutcomeSummary hidden" id="battleOutcomeSummary" aria-live="polite"></div><div class="battleTactics" id="battleTactics" aria-label="Tactical orders">
 <div class="battleTacticsHead"><span>TACTICAL ORDERS</span><strong id="battleTacticStatus">Choose an order · 5 second effect</strong></div>
@@ -12255,7 +12255,7 @@ body:has(.modal.open) #toast.toast.show {
 (() => {
   'use strict';
   const $ = q => document.querySelector(q), $$ = q => Array.from(document.querySelectorAll(q));
-  const BUILD_VERSION = 'P1.4-F6.1-RC1', SAVE_SCHEMA = 4;
+  const BUILD_VERSION = 'P1.4-F6.3-RC1', SAVE_SCHEMA = 4;
   const GameEvents = (() => {
     const listeners = new Map(), seen = new Map();
     return {
@@ -12315,8 +12315,32 @@ body:has(.modal.open) #toast.toast.show {
     const profile = UPGRADE_COST_PROFILES[b.type] || { role: 'Default', growth: P1.costGrowth, base: { wood: 70, iron: 30, coins: 25 } };
     return scaleCost(profile.base, b.level, profile.growth)
   }
-  function missingCost(c) {
-    return Object.entries(c).filter(([k, v]) => S.r[k] < v).map(([k, v]) => `${costsEmoji[k]} ${Math.ceil(v - S.r[k])}`).join(' · ')
+  function missingCost(c, m = 1) {
+    return Object.entries(c).filter(([k, v]) => (Number(S.r[k]) || 0) < v * m).map(([k, v]) => `${costsEmoji[k]} ${Math.ceil(v * m - (Number(S.r[k]) || 0))}`).join(' · ')
+  }
+  const affordabilityResourceNames = { food: 'Food', wood: 'Wood', iron: 'Iron', coins: 'Coins' };
+  function affordabilityMarkup(c, m = 1) {
+    if (!c || !Object.keys(c).length || canPay(c, m)) return '';
+    const rows = Object.entries(c).map(([key, value]) => {
+      const required = Math.ceil((Number(value) || 0) * m);
+      const stock = Math.max(0, Math.floor(Number(S.r[key]) || 0));
+      const short = Math.max(0, required - stock);
+      return `<div class="affordabilityResource ${short ? 'isShort' : 'isReady'}"><span>${costsEmoji[key] || ''} ${affordabilityResourceNames[key] || key}</span><b>${stock.toLocaleString()} / ${required.toLocaleString()}</b>${short ? `<em>Short ${short.toLocaleString()}</em>` : '<em>Ready</em>'}</div>`;
+    }).join('');
+    return `<div class="affordabilityHint" role="note"><strong>Resource check</strong><small>Current stock / required</small>${rows}<div class="affordabilityShortage">Still needed: ${escapeDefenseText(missingCost(c, m))}</div></div>`;
+  }
+  function affordabilitySlot(c, m = 1) {
+    if (!c || !Object.keys(c).length) return '';
+    return `<div class="affordabilitySlot" data-affordability-cost='${JSON.stringify(c)}' data-affordability-mult="${m}">${affordabilityMarkup(c, m)}</div>`;
+  }
+  function refreshAffordabilityHints(root = document) {
+    root.querySelectorAll('[data-affordability-cost]').forEach(slot => {
+      try {
+        const cost = JSON.parse(slot.dataset.affordabilityCost || '{}');
+        const amount = Math.max(1, Number(slot.dataset.affordabilityMult) || 1);
+        slot.innerHTML = affordabilityMarkup(cost, amount);
+      } catch (_) { slot.textContent = ''; }
+    });
   }
   function deploymentCost(i) {
     const threat = nodePower(i), power = Math.max(10, armyPower());
@@ -12586,20 +12610,21 @@ body:has(.modal.open) #toast.toast.show {
         const u = unitUpgrade(n);
         return `<article class="unitResearchCard"><header><b>${UNITS[n].icon || '⚔️'} ${n}</b><span>Power ${Math.round(stackPower(n, Math.max(1, S.units[n] || 1)))}</span></header>${['weapon', 'armor', 'doctrine'].map(t => {
           const next = u[t] + 1, c = next <= 5 ? unitUpgradeCost(n, t, next) : {};
-          return `<div class="unitUpgradeRow"><span><b>${t[0].toUpperCase() + t.slice(1)} Lv${u[t]}</b><small>${t === 'weapon' ? '+4% damage' : t === 'armor' ? '+5% battle HP' : '+2.5% power'} per level</small></span><button data-unit-upgrade="${n}|${t}" ${next > 5 ? 'disabled' : ''}>${next > 5 ? 'MAX' : costText(c)}</button></div>`
+          return `<div class="unitUpgradeRow"><span><b>${t[0].toUpperCase() + t.slice(1)} Lv${u[t]}</b><small>${t === 'weapon' ? '+4% damage' : t === 'armor' ? '+5% battle HP' : '+2.5% power'} per level</small></span><button data-unit-upgrade="${n}|${t}" ${next > 5 ? 'disabled' : ''}>${next > 5 ? 'MAX' : costText(c)}</button></div>${next <= 5 ? affordabilitySlot(c) : ''}`
         }).join('')}</article>`
       }).join('')
     } else {
       grid.innerHTML = Object.entries(RESEARCH).filter(([, d]) => d.branch === researchBranch).map(([k, d]) => {
         const lvl = researchLevel(k), next = lvl + 1, max = lvl >= d.max, locked = !researchUnlocked(k), c = max ? {} : researchCost(k, next);
-        return `<article class="researchCard ${max ? 'complete' : ''} ${locked ? 'locked' : ''}"><div class="researchIcon">${d.icon}</div><div><h3>${d.name}</h3><p>${d.desc}</p><div class="researchPips">${[1, 2, 3].map(x => `<i class="${x <= lvl ? 'on' : ''}"></i>`).join('')}</div><small>${max ? 'Completed' : locked ? `Requires Academy Lv${next}` : `Level ${next} · ${fmtTime(researchDuration(k, next))}`}</small></div><button data-research="${k}" ${max || locked || S.researchQueue ? 'disabled' : ''}>${max ? 'MAX' : costText(c)}</button></article>`
+        return `<article class="researchCard ${max ? 'complete' : ''} ${locked ? 'locked' : ''}"><div class="researchIcon">${d.icon}</div><div><h3>${d.name}</h3><p>${d.desc}</p><div class="researchPips">${[1, 2, 3].map(x => `<i class="${x <= lvl ? 'on' : ''}"></i>`).join('')}</div><small>${max ? 'Completed' : locked ? `Requires Academy Lv${next}` : `Level ${next} · ${fmtTime(researchDuration(k, next))}`}</small></div><button data-research="${k}" ${max || locked || S.researchQueue ? 'disabled' : ''}>${max ? 'MAX' : costText(c)}</button>${!max && !locked ? affordabilitySlot(c) : ''}</article>`
       }).join('')
     }
     grid.querySelectorAll('[data-research]').forEach(b => b.onclick = () => startResearch(b.dataset.research));
     grid.querySelectorAll('[data-unit-upgrade]').forEach(b => b.onclick = () => {
       const [u, t] = b.dataset.unitUpgrade.split('|');
       upgradeUnit(u, t)
-    })
+    });
+    refreshAffordabilityHints(grid)
   }
   let S;
   try {
@@ -12783,7 +12808,8 @@ body:has(.modal.open) #toast.toast.show {
   }
   function pay(c, m = 1) {
     if (!canPay(c, m)) {
-      toast('Not enough resources');
+      const missing = missingCost(c, m);
+      toast(missing ? `Not enough resources · Short ${missing}` : 'Not enough resources');
       return false
     }
     Object.entries(c).forEach(([k, v]) => S.r[k] -= v * m);
@@ -13375,6 +13401,8 @@ body:has(.modal.open) #toast.toast.show {
     const panelState = captureQueuePanelState(panel);
     const wasDefenseExpanded = panel.querySelector('.defenseSummaryCard')?.open;
     const defenseExpanded = wasDefenseExpanded === undefined ? (Number(S.defenseDamage) > 0) : wasDefenseExpanded;
+    const nextOrder = orders.length ? orders.reduce((best, order) => !best || order.remainingMs < best.remainingMs ? order : best, null) : null;
+    const nextMarkup = nextOrder ? `<div class="activeOrdersNext"><div class="activeOrdersNextHead"><small>NEXT COMPLETION</small><strong>${fmtTime(nextOrder.remainingMs)}</strong></div><b>${nextOrder.icon} ${nextOrder.kind}: ${nextOrder.name}</b><span>${nextOrder.category === 'training' && nextOrder.index > 0 ? 'Queued troops will complete after earlier training.' : 'Your next construction, upgrade or training completion.'}</span></div>` : '';
     const orderMarkup = orders.length ? orders.map(o => {
       const queueLabel = o.category === 'training'
         ? (o.index === 0 ? 'In progress' : `Queue position ${o.index + 1} · Estimated completion in ${fmtTime(o.remainingMs)}`)
@@ -13390,7 +13418,7 @@ body:has(.modal.open) #toast.toast.show {
         <div class="queueOrderActions">${locateButton}${cancelButton}</div>
       </div>`;
     }).join('') : '<div class="activityEmpty">No construction, upgrades, or training orders.</div>';
-    panel.innerHTML = `<div class="activityHead"><b>Active Orders</b><span>${orders.length} total</span></div>${defenseSummaryMarkup(defenseExpanded)}<div class="activityOrdersHeading">Construction & Training</div>${orderMarkup}`;
+    panel.innerHTML = `<div class="activityHead"><b>Active Orders</b><span>${orders.length} total</span></div>${nextMarkup}${defenseSummaryMarkup(defenseExpanded)}<div class="activityOrdersHeading">All Construction & Training</div>${orderMarkup}`;
     panel.querySelectorAll('[data-locate]').forEach(btn => btn.onclick = () => locatePlot(Number(btn.dataset.locate)));
     updateRepair();
     restoreQueuePanelState(panel, panelState);
@@ -13640,7 +13668,7 @@ body:has(.modal.open) #toast.toast.show {
       collectBtn.setAttribute('aria-label', plan.total ? `Claim reserve overflow. ${detail}` : 'Reserve empty; resources are being added to regular storage automatically.');
       collectBtn.setAttribute('title', detail);
       const label = collectBtn.querySelector('span');
-      if (label) label.textContent = plan.total > 0 ? 'Collect All' : 'Filling';
+      if (label) label.textContent = plan.total > 0 ? 'Claim Reserve' : 'Filling';
     }
     const collectibleBySlot = new Map(S.buildings.map(b => [b.slot, Math.max(0, Math.floor(Number(b.pending) || 0))]));
     S.buildings.forEach(b => {
@@ -13801,7 +13829,7 @@ body:has(.modal.open) #toast.toast.show {
         .filter(([, amount]) => amount > 0)
         .map(([resource, amount]) => `${costsEmoji[resource]} ${Math.floor(amount)}`)
         .join(' · ');
-      toast(`Collect All claimed ${claimed}`);
+      toast(`Reserve claimed · ${claimed}`);
     }
     const btn = $('#collectAllBtn');
     if (btn) {
@@ -13901,7 +13929,7 @@ body:has(.modal.open) #toast.toast.show {
       : `<div class="upgradeTime"><strong>Upgrade time required: ${fmtTime(upgradeDuration(next))}</strong><small>The building remains operational at its current level during the upgrade; new-level benefits apply when it completes.</small></div>`;
     const upgradeButtonHTML = atMax
       ? '<button class="primary" id="upgradeBuilding" disabled>MAX LEVEL</button>'
-      : `<button class="primary" id="upgradeBuilding" ${canPay(c) ? '' : 'disabled'}>Upgrade to Level ${next}<br><small>${costText(c)}</small>${canPay(c) ? '' : `<em class="missingCost">Missing ${missingCost(c)}</em>`}<span class="upgradeButtonTime">⏱ ${fmtTime(upgradeDuration(next))}</span></button>`;
+      : `<button class="primary" id="upgradeBuilding" ${canPay(c) ? '' : 'disabled'}>Upgrade to Level ${next}<br><small>${costText(c)}</small><span class="upgradeButtonTime">⏱ ${fmtTime(upgradeDuration(next))}</span></button>${affordabilitySlot(c)}`;
     $('#detailDialog').innerHTML = `<div class="row spread"><h2>${DB[b.type].icon} ${b.type}</h2><button class="secondary closeDetailAction">Close</button></div><p>${BUILD_DESCRIPTIONS[b.type] || (b.type === 'Palace' ? 'The heart of your city: unlocks development, stores resources, and leads the defense against raids.' : 'Develops the city and supports progression.')}</p><div class="upgradeCompare"><div class="upgradeStat"><small>LEVEL ${b.level}</small><br>${current}</div><div class="upgradeArrow">➜</div><div class="upgradeStat"><small>${atMax ? 'MAX LEVEL' : `LEVEL ${next}`}</small><br>${atMax ? 'Maximum level reached' : future}</div></div>${unlockHTML}${palaceTreasuryPanel}${palaceRepairPanel}${upgradeTimePanel}${academyResearchAction}${upgradeButtonHTML}`;
     $('#detailModal').classList.add('open');
     renderMotionState();
@@ -13948,13 +13976,17 @@ body:has(.modal.open) #toast.toast.show {
           return `<option value="${q}">${q} troops</option>`;
         }).join('')}</select><span>Up to ${maxBatch}</span></label>`
         : '';
-      return `<div class="card unitTrainingCard"><div class="cardIcon">${u.icon}</div><h3>${n} · ${S.units[n]}</h3><div class="small">Power ${u.power} · ${u.need} Lv${lvl}</div>${quantityControl}<button class="secondary" data-train="${n}" data-train-amount="5" ${unlocked ? '' : 'disabled'}>${unlocked ? `Train 5 · ${fmtTime(dur)} · ${costText(u.cost, 5)}` : `Build ${u.need}`}</button></div>`;
+      return `<div class="card unitTrainingCard"><div class="cardIcon">${u.icon}</div><h3>${n} · ${S.units[n]}</h3><div class="small">Power ${u.power} · ${u.need} Lv${lvl}</div>${quantityControl}<button class="secondary" data-train="${n}" data-train-amount="5" ${unlocked ? '' : 'disabled'}>${unlocked ? `Train 5 · ${fmtTime(dur)} · ${costText(u.cost, 5)}` : `Build ${u.need}`}</button>${unlocked ? affordabilitySlot(u.cost, 5) : ''}</div>`;
     }).join('');
     $$('[data-train-qty]').forEach(sel => sel.addEventListener('change', () => {
       const unit = sel.dataset.trainQty, q = Math.max(5, Number(sel.value) || 5), u = UNITS[unit], button = $$('[data-train]').find(b => b.dataset.train === unit);
       if (!u || !button) return;
       button.dataset.trainAmount = String(q);
       button.innerHTML = `Train ${q} · ${fmtTime(trainingDuration(unit, q))} · ${costText(u.cost, q)}`;
+      const card = button.closest('.unitTrainingCard');
+      const slot = card?.querySelector('[data-affordability-cost]');
+      if (slot) slot.dataset.affordabilityMult = String(q);
+      if (slot) refreshAffordabilityHints(card);
     }));
     $$('[data-train]').forEach(b => b.onclick = () => train(b.dataset.train, Math.max(5, Number(b.dataset.trainAmount) || 5)));
     updateTimerUI();
@@ -14443,10 +14475,20 @@ body:has(.modal.open) #toast.toast.show {
     const survivingTotal = Object.values(S.units).reduce((sum, q) => sum + Math.max(0, q || 0), 0);
     const casualties = Math.max(0, startingTotal - survivingTotal);
     const casualtyPct = startingTotal ? Math.round(casualties / startingTotal * 100) : 0;
+    const battleUnitRows = Object.keys(UNITS).map(type => {
+      const deployed = Math.max(0, Math.floor(Number((battle.startingArmy || {})[type]) || 0));
+      const remaining = Math.max(0, Math.floor(Number(S.units[type]) || 0));
+      return { type, deployed, remaining, lost: Math.max(0, deployed - remaining) };
+    }).filter(row => row.deployed > 0 || row.remaining > 0);
+    const unitLossText = battleUnitRows.map(row => `${UNITS[row.type].icon || '⚔️'} ${row.type} −${row.lost}`).join(' · ') || 'No units deployed';
+    const armyRemainingText = battleUnitRows.map(row => `${UNITS[row.type].icon || '⚔️'} ${row.type} ${row.remaining}`).join(' · ') || 'No troops remaining';
+    const campaignProgress = Math.max(0, Math.min(MAP.length - 1, Number(S.territory) || 0));
     const outcomePanel = $('#battleOutcomeSummary');
     if (outcomePanel) {
       outcomePanel.innerHTML = `<div class="battleOutcomeHead"><strong>${win ? 'Victory report' : 'Defeat report'}</strong><span>${MAP[i].name}</span></div>
         <div class="battleOutcomeStats"><div><small>Troops deployed</small><b>${startingTotal}</b></div><div><small>Troops returned</small><b>${survivingTotal}</b></div><div><small>Casualties</small><b>${casualties} · ${casualtyPct}%</b></div></div>
+        <div class="battleOutcomeBreakdown"><div><small>Losses by unit</small><b>${unitLossText}</b></div><div><small>Army remaining</small><b>${armyRemainingText}</b></div></div>
+        <div class="battleOutcomeProgress"><span>Campaign progress</span><strong>${campaignProgress} / ${Math.max(1, MAP.length - 1)} territories secured</strong><div class="battleOutcomeProgressTrack" role="progressbar" aria-label="Campaign progress" aria-valuemin="0" aria-valuemax="${Math.max(1, MAP.length - 1)}" aria-valuenow="${campaignProgress}"><i style="width:${Math.max(0, Math.min(100, 100 * campaignProgress / Math.max(1, MAP.length - 1)))}%"></i></div></div>
         ${rewardForSummary ? `<div class="battleOutcomeReward"><small>Resources received${rewardForSummary.overCap ? ' · inventory may exceed cap' : ''}</small><strong>${costText(Object.fromEntries(Object.entries(rewardForSummary.actual).filter(([, amount]) => amount > 0))) || 'No resources'}</strong></div>` : '<div class="battleOutcomeReward"><small>Recovery</small><strong>Train replacements and retry when ready.</strong></div>'}`;
       outcomePanel.classList.remove('hidden');
     }
@@ -14660,7 +14702,14 @@ body:has(.modal.open) #toast.toast.show {
       renderAll();
       toast(rewardOverCap ? 'Grand reward claimed · inventory may exceed cap' : 'Grand reward claimed')
     });
-    $('#reportList').innerHTML = S.reports.length ? S.reports.map(r => `<div class="darkPanel" style="margin-bottom:9px">${r}</div>`).join('') : '<div class="panel">No battles fought yet.</div>'
+    $('#reportList').innerHTML = S.reports.length ? S.reports.map(r => {
+      const raw = String(r ?? 'Battle report');
+      const victory = /^Victory at\s/.test(raw), defeat = /^Defeat at\s/.test(raw);
+      const match = raw.match(/^(Victory|Defeat) at (.*?) · (.*)$/);
+      const title = match ? match[2] : (victory ? 'Victory' : defeat ? 'Defeat' : 'Battle report');
+      const detail = match ? match[3] : raw;
+      return `<article class="battleHistoryCard ${victory ? 'isVictory' : defeat ? 'isDefeat' : ''}"><header><span>${victory ? 'VICTORY' : defeat ? 'DEFEAT' : 'REPORT'}</span><b>${escapeDefenseText(title)}</b></header><p>${escapeDefenseText(detail)}</p></article>`;
+    }).join('') : '<div class="panel">No battles fought yet.</div>'
   }
   function renderTutorial() {
     const steps = ['Open the Palace to view your Treasury. Resources fill regular storage automatically; Claim is only needed for reserve overflow after storage fills.', 'Choose Lumber Yard, then tap an empty plot.', 'Upgrade the Palace to unlock more plots and buildings.', 'Open Army and train Infantry.', 'Open Generals and recruit a general.', 'Open Campaign and attack the Bandit Camp.', 'Open Quests and claim the reward.'];
@@ -15023,6 +15072,7 @@ body:has(.modal.open) #toast.toast.show {
       processRaid();
       renderTop();
       updateProductionUI();
+      refreshAffordabilityHints(document);
       if (Date.now() % 5000 < 1000) save()
     }
   }, 1000);
@@ -16240,7 +16290,7 @@ html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;v
       <div class="productionDashboardHeading">
         <small>IMPERIAL ECONOMY</small>
         <h2 id="productionDashboardTitle">Economy</h2>
-        <p>See automatic production rates and the overflow reserve available to claim after passive storage fills.</p>
+        <p>Stock fills automatically. Open a resource’s Details for building and reserve information.</p>
       </div>
       <button class="productionDashboardClose" type="button" data-close-production-dashboard aria-label="Close production dashboard">×</button>
     </header>
@@ -16657,54 +16707,81 @@ html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;v
     const storageWidth = `${Math.max(0, Math.min(100, Number(r.storagePercent) || 0)).toFixed(1)}%`;
     const stockPercent = r.cap > 0 ? Math.round(Math.min(100, Number(r.current || 0) / r.cap * 100)) : 0;
     const overCapAmount = Math.max(0, Number(r.current || 0) - r.cap);
-    const overCapText = overCapAmount > 0 ? ` · OVER CAP +${nfmt(overCapAmount)}` : '';
     const bufferWidth = `${Math.max(0, Math.min(100, Number(r.bufferPercent) || 0)).toFixed(1)}%`;
-    const producers = r.producers.length ? r.producers.map(p => producerHtml(p, r)).join('') : '<div class="productionNoProducer">No building currently produces this resource. Build or unlock a suitable producer to begin production.</div>';
+    const producers = r.producers.length ? r.producers.map(p => producerHtml(p, r)).join('') : '<div class="productionNoProducer">No active building produces this resource yet.</div>';
     const pendingText = `${nfmt(r.pending)} / ${nfmt(r.bufferCap)}`;
     const claimClass = r.collectible > 0 ? 'good' : '';
     const claimText = r.collectible > 0 ? nfmt(r.collectible) : '0';
     const eta = r.ratePerMinute > 0 ? fmtEta(r.bufferEtaMinutes) : (r.activeProducerCount ? 'Buffer full' : 'No active production');
+    const rateText = Number(r.ratePerMinute || 0) > 0 ? `+${Number(r.ratePerMinute).toFixed(1)} / min` : '0 / min';
+    const storageStatus = overCapAmount > 0 ? `Over cap by ${nfmt(overCapAmount)}` : r.current >= r.cap ? 'Full' : 'Auto-filling';
+    const reserveLoss = Number(r.discardedReserve || 0) > 0 ? `<div class="productionMetricRow"><span>Not stored (reserve full)</span><strong class="warn">${nfmtPrecise(r.discardedReserve)}</strong></div>` : '';
+    const offlineLoss = Number(r.discardedOffline || 0) > 0 ? `<div class="productionMetricRow"><span>Beyond offline limit</span><strong class="warn">${nfmtPrecise(r.discardedOffline)}</strong></div>` : '';
     return `<article class="productionResourceCard">
-      <header class="productionResourceHead"><div class="productionResourceIcon">${r.icon}</div><div class="productionResourceTitle"><h3>${r.name}</h3><small>${r.activeProducerCount} active · ${r.producerCount} total producer${r.producerCount === 1 ? '' : 's'}</small></div></header>
-      <div class="productionMetricRow"><span>Stock / passive cap</span><strong>${nfmt(r.current)} / ${nfmt(r.cap)} · ${stockPercent}%${overCapText}</strong></div>
+      <header class="productionResourceHead">
+        <div class="productionResourceIcon" aria-hidden="true">${r.icon}</div>
+        <div class="productionResourceTitle"><h3>${r.name}</h3></div>
+        <div class="productionResourceStock"><strong>${nfmt(r.current)}</strong><span>/ ${nfmt(r.cap)}</span></div>
+      </header>
       <div class="productionProgress" role="progressbar" aria-label="${r.name} storage used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(r.storagePercent)}"><i style="width:${storageWidth}"></i></div>
-      <div class="productionMetricRow"><span>Room remaining</span><strong>${nfmt(r.room)}</strong></div>
-      <div class="productionMetricRow"><span>Production rate</span><strong class="${r.ratePerMinute > 0 ? 'good' : ''}">${Number(r.ratePerMinute || 0) > 0 ? `+${Number(r.ratePerMinute).toFixed(1)} / min` : '0 / min'}</strong></div>
-      <div class="productionSectionLabel">Reserve overflow</div>
-      <div class="productionMetricRow"><span>Reserve / shared cap</span><strong>${pendingText}</strong></div>
-      <div class="productionProgress pending" role="progressbar" aria-label="${r.name} reserve used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(r.bufferPercent)}"><i style="width:${bufferWidth}"></i></div>
-      <div class="productionMetricRow"><span>Reserve ready to claim</span><strong class="${claimClass}">${claimText}</strong></div>
-      <div class="productionMetricRow"><span>Passive storage status</span><strong>${r.current > r.cap ? `Over cap by ${nfmt(r.current - r.cap)}` : r.current >= r.cap ? 'Full' : 'Auto-filling'}</strong></div>
-      <div class="productionMetricRow"><span>Reserve-cap estimate</span><strong>${eta}</strong></div>
-      <div class="productionMetricRow"><span>Not stored (reserve full)</span><strong>${nfmtPrecise(r.discardedReserve)}</strong></div>
-      <div class="productionMetricRow"><span>Beyond offline limit</span><strong>${nfmtPrecise(r.discardedOffline)}</strong></div>
-      <div class="productionSectionLabel">Production buildings</div>
-      <div class="productionProducerList">${producers}</div>
+      <div class="productionResourceFooter">
+        <span class="productionRate ${r.ratePerMinute > 0 ? 'good' : ''}">${rateText}</span>
+        ${r.collectible > 0 ? `<span class="productionReserveReady">📦 ${nfmt(r.collectible)} ready</span>` : ''}
+      </div>
+      <details class="productionResourceDetails" data-resource-detail="${r.key}">
+        <summary>Details</summary>
+        <div class="productionDetailRows">
+          <div class="productionMetricRow"><span>Storage used</span><strong>${stockPercent}%${overCapAmount > 0 ? ` · +${nfmt(overCapAmount)} over cap` : ''}</strong></div>
+          <div class="productionMetricRow"><span>Room remaining</span><strong>${nfmt(r.room)}</strong></div>
+          <div class="productionMetricRow"><span>Storage status</span><strong>${storageStatus}</strong></div>
+          <div class="productionMetricRow"><span>Production buildings</span><strong>${nfmt(r.activeProducerCount)} active / ${nfmt(r.producerCount)} total</strong></div>
+          <div class="productionMetricRow"><span>Reserve / shared cap</span><strong>${pendingText}</strong></div>
+          <div class="productionProgress pending" role="progressbar" aria-label="${r.name} reserve used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(r.bufferPercent)}"><i style="width:${bufferWidth}"></i></div>
+          <div class="productionMetricRow"><span>Reserve ready to claim</span><strong class="${claimClass}">${claimText}</strong></div>
+          <div class="productionMetricRow"><span>Reserve-cap estimate</span><strong>${eta}</strong></div>
+          ${reserveLoss}${offlineLoss}
+          <div class="productionSectionLabel">Production buildings</div>
+          <div class="productionProducerList">${producers}</div>
+        </div>
+      </details>
     </article>`;
   }
   function renderDashboard() {
     if (!modal.classList.contains('open')) return;
     const snapshot = window.WDEconomyDashboard.snapshot();
     const scrollTop = body.scrollTop;
-    const reserveLosses = snapshot.resources.filter(r => r.discardedReserve > 0).map(r => `${r.icon} ${r.name} ${nfmtPrecise(r.discardedReserve)}`).join(' · ') || 'None recorded';
-    const offlineLosses = snapshot.resources.filter(r => r.discardedOffline > 0).map(r => `${r.icon} ${r.name} ${nfmtPrecise(r.discardedOffline)}`).join(' · ') || 'None recorded';
-    body.innerHTML = `<div class="productionDashboardIntro">
-      <div class="productionDashStat"><span>Operational producers</span><strong>${nfmt(snapshot.operationalProducers)}</strong><small>${nfmt(snapshot.producerCount)} total producer buildings</small></div>
-      <div class="productionDashStat"><span>Resources in reserve</span><strong>${snapshot.readyResourceCount} / 4</strong><small>Resource types with overflow ready to claim</small></div>
-      <div class="productionDashStat"><span>Passive storage cap</span><strong>${nfmt(snapshot.cap)}</strong><small>Per resource · Palace Lv${snapshot.palaceLevel}</small></div>
-    </div>
-    <div class="productionDashboardNote" id="productionDashboardNote">Production automatically fills regular stock up to the storage cap. Excess is held in each resource's shared reserve. Claim can temporarily raise stock above the passive cap. Passive production fills normal storage when stock is below the cap.</div>
-    <div class="productionDashboardNote" id="productionLossSummary"><b>Production limits (tracked from this build)</b><br>Not stored because reserve was full: ${reserveLosses}<br>Output beyond the ${nfmt(snapshot.offlineCapHours)}h offline allowance: ${offlineLosses}</div>
-    <div class="productionResourceGrid">${snapshot.resources.map(resourceCardHtml).join('')}</div>`;
+    const openResourceDetails = new Set(Array.from(body.querySelectorAll('details[data-resource-detail][open]')).map(el => el.dataset.resourceDetail));
+    const advancedWasOpen = !!body.querySelector('#productionAdvancedDetails')?.open;
+    const focusedResourceSummary = document.activeElement?.matches('summary')
+      ? document.activeElement.closest('details[data-resource-detail]')?.dataset.resourceDetail
+      : null;
+    const focusedAdvancedSummary = !!(document.activeElement?.matches('summary') && document.activeElement.closest('#productionAdvancedDetails'));
+    const hasLosses = snapshot.discardedReserveTotal > 0 || snapshot.discardedOfflineTotal > 0;
+    const reserveLosses = snapshot.resources.filter(r => r.discardedReserve > 0).map(r => `${r.icon} ${r.name} ${nfmtPrecise(r.discardedReserve)}`).join(' · ');
+    const offlineLosses = snapshot.resources.filter(r => r.discardedOffline > 0).map(r => `${r.icon} ${r.name} ${nfmtPrecise(r.discardedOffline)}`).join(' · ');
+    body.innerHTML = `<div class="productionDashboardNote" id="productionDashboardNote">Production is automatic. Claim Reserve collects overflow once normal storage is full.</div>
+    <div class="productionResourceGrid">${snapshot.resources.map(resourceCardHtml).join('')}</div>
+    <details class="productionAdvanced" id="productionAdvancedDetails">
+      <summary>Advanced economy details</summary>
+      <div class="productionDashboardIntro">
+        <div class="productionDashStat"><span>Active producers</span><strong>${nfmt(snapshot.operationalProducers)}</strong><small>${nfmt(snapshot.producerCount)} producer buildings total</small></div>
+        <div class="productionDashStat"><span>Storage cap</span><strong>${nfmt(snapshot.cap)}</strong><small>Per resource · Palace Lv${snapshot.palaceLevel}</small></div>
+        <div class="productionDashStat"><span>Reserve available</span><strong>${snapshot.readyResourceCount} / 4</strong><small>Resource types ready to claim</small></div>
+      </div>
+      ${hasLosses ? `<div class="productionLossBox"><b>Production limits reached</b>${reserveLosses ? `<div>Not stored (reserve full): ${reserveLosses}</div>` : ''}${offlineLosses ? `<div>Beyond ${nfmt(snapshot.offlineCapHours)}h offline allowance: ${offlineLosses}</div>` : ''}</div>` : '<p class="productionDiagnosticsQuiet">No production losses recorded.</p>'}
+    </details>`;
+    body.querySelectorAll('details[data-resource-detail]').forEach(el => { el.open = openResourceDetails.has(el.dataset.resourceDetail); });
+    const advancedDetails = body.querySelector('#productionAdvancedDetails');
+    if (advancedDetails) advancedDetails.open = advancedWasOpen;
     body.scrollTop = scrollTop;
+    if (focusedResourceSummary) body.querySelector(`details[data-resource-detail="${focusedResourceSummary}"] > summary`)?.focus({ preventScroll: true });
+    else if (focusedAdvancedSummary) advancedDetails?.querySelector(':scope > summary')?.focus({ preventScroll: true });
     const readyParts = snapshot.readyByResource.map(r => `${r.icon} ${r.amount.toLocaleString()}`).join(' · ');
-    summary.innerHTML = readyParts
-      ? `<strong>Reserve ready to claim:</strong> ${readyParts}<br><span>Claiming reserve can temporarily exceed normal storage capacity.</span>`
-      : 'No reserve is waiting. Production is automatically filling regular storage.';
+    summary.textContent = readyParts ? `Reserve ready: ${readyParts}` : 'No reserve ready · stock fills automatically.';
     collectButton.disabled = snapshot.readyResourceCount === 0;
-    collectButton.textContent = snapshot.readyResourceCount ? 'Claim' : 'Empty';
+    collectButton.textContent = snapshot.readyResourceCount ? 'Claim Reserve' : 'Filling';
     collectButton.setAttribute('aria-label', snapshot.readyResourceCount ? `Claim reserve overflow by resource: ${readyParts}` : 'Reserve empty; automatic production is filling regular storage.');
-    collectButton.title = snapshot.readyResourceCount ? `Claim reserve: ${readyParts}` : 'No reserve is currently available.';
+    collectButton.title = snapshot.readyResourceCount ? `Claim Reserve: ${readyParts}` : 'Filling: passive production is filling regular storage automatically.';
   }
   function openDashboard() {
     previousFocus = document.activeElement;
@@ -18003,6 +18080,121 @@ html:not(#_):not(#_):not(#_) body #researchModal .modalClose {
     #settingsModal .dialog .grid button { min-height: 40px !important; padding: 8px !important; }
     #factionModal .factionGrid { gap: 6px !important; }
     #factionModal .factionGrid .faction { padding: 9px 3px !important; font-size: 12px !important; }
+  }
+</style>
+
+
+<style id="wd-f62-qol-overrides">
+/* F6.2 QoL: actionable affordability, next order and readable after-action reports. */
+.affordabilitySlot:empty { display:none!important; }
+.affordabilityHint { display:grid; gap:4px; margin:6px 0 3px; padding:8px 9px; border:1px solid #9b6e38; border-radius:9px; background:linear-gradient(120deg,#251f19e8,#142239e8); color:#f4e7cc; font-size:10px; line-height:1.35; }
+.affordabilityHint>strong { color:#ffe09a; font-size:11px; }
+.affordabilityHint>small { color:#bfcfe0; font-size:9px; }
+.affordabilityResource { display:grid; grid-template-columns:minmax(0,1fr) auto auto; align-items:center; gap:6px; padding-top:3px; border-top:1px solid #ffffff12; }
+.affordabilityResource span { min-width:0; }
+.affordabilityResource b { color:#eef4ff; font-variant-numeric:tabular-nums; }
+.affordabilityResource em { font-style:normal; font-size:9px; font-weight:800; color:#a8ddb0; }
+.affordabilityResource.isShort em { color:#ffb0a7; }
+.affordabilityShortage { padding-top:4px; border-top:1px solid #ffffff24; color:#ffcf86; font-weight:800; }
+.unitTrainingCard .affordabilityHint { margin:7px 0 0; }
+.researchCard .affordabilitySlot { grid-column:1/-1; width:100%; }
+.unitResearchCard .affordabilitySlot { grid-column:1/-1; }
+.activeOrdersNext { display:grid; gap:5px; padding:10px 11px; margin:0 0 9px; border:1px solid #d7ad58; border-radius:10px; background:linear-gradient(120deg,#233e5c,#172841); box-shadow:inset 0 1px 0 #ffffff10; }
+.activeOrdersNextHead { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.activeOrdersNextHead small { color:#d3dfeb; font-size:9px; letter-spacing:.09em; font-weight:900; }
+.activeOrdersNextHead strong { color:#ffe18a; font-size:13px; font-variant-numeric:tabular-nums; }
+.activeOrdersNext>b { color:#fff5d8; font-size:12px; }
+.activeOrdersNext>span { color:#bfcee0; font-size:10px; line-height:1.35; }
+#collectAllBtn[data-collect-state="ready"] { min-width:108px!important; }
+#productionDashboardCollectAll { min-width:126px; }
+.battleOutcomeBreakdown { display:grid; gap:6px; margin-top:8px; }
+.battleOutcomeBreakdown>div { padding:7px 8px; border:1px solid #647c9655; border-radius:8px; background:#101e31aa; }
+.battleOutcomeBreakdown small { display:block; margin-bottom:4px; color:#bdcfe2; font-size:10px; }
+.battleOutcomeBreakdown b { display:block; color:#f2e3c2; font-size:10px; font-weight:700; line-height:1.5; overflow-wrap:anywhere; }
+.battleOutcomeProgress { display:grid; gap:5px; margin-top:8px; }
+.battleOutcomeProgress>span { color:#c9d8e8; font-size:10px; }
+.battleOutcomeProgress>strong { color:#ffe18a; font-size:11px; }
+.battleOutcomeProgressTrack { height:7px; overflow:hidden; border-radius:99px; background:#081422; border:1px solid #5d7590; }
+.battleOutcomeProgressTrack i { display:block; height:100%; background:linear-gradient(90deg,#4e976a,#e4c36c); border-radius:inherit; }
+.battleHistoryCard { margin-bottom:9px; padding:10px 12px; border:1px solid #60758d; border-radius:11px; background:linear-gradient(145deg,#152840,#0d192a); color:#e9eff8; }
+.battleHistoryCard header { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.battleHistoryCard header span { flex:0 0 auto; padding:3px 6px; border-radius:5px; background:#334b67; color:#e6eff8; font-size:9px; letter-spacing:.07em; font-weight:900; }
+.battleHistoryCard header b { min-width:0; color:#ffedc2; font-size:12px; }
+.battleHistoryCard p { margin:0; color:#c7d4e2; font-size:11px; line-height:1.45; overflow-wrap:anywhere; }
+.battleHistoryCard.isVictory { border-color:#648c64; }
+.battleHistoryCard.isVictory header span { background:#28583d; color:#c8f1cc; }
+.battleHistoryCard.isDefeat { border-color:#87564f; }
+.battleHistoryCard.isDefeat header span { background:#632f32; color:#ffd1ca; }
+@media(max-width:420px) {
+  .affordabilityHint { padding:7px; }
+  .affordabilityResource { grid-template-columns:minmax(0,1fr) auto; }
+  .affordabilityResource em { grid-column:2; }
+  .activeOrdersNext { padding:9px; }
+  #collectAllBtn[data-collect-state="ready"] { min-width:98px!important; }
+  .battleOutcomeBreakdown b { font-size:9.5px; }
+}
+@media(prefers-reduced-motion:reduce) { .activeOrdersNext,.battleHistoryCard,.affordabilityHint { animation:none!important; transition:none!important; } }
+</style>
+
+
+<style id="wd-compact-economy-dashboard">
+  /* Compact-first Economy dashboard: balances first, diagnostics only when expanded. */
+  #productionDashboardModal .productionDashboardHeading p { max-width: 520px; margin: 0; color: #c5d4e2; font-size: 11px; line-height: 1.35; }
+  #productionDashboardModal .productionDashboardBody { display: grid; align-content: start; gap: 10px; }
+  #productionDashboardModal .productionDashboardNote { margin: 0; padding: 8px 10px; border-left-width: 2px; font-size: 10px; line-height: 1.3; }
+  #productionDashboardModal .productionResourceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  #productionDashboardModal .productionResourceCard { padding: 10px; border-radius: 12px; box-shadow: 0 3px 10px #0002; }
+  #productionDashboardModal .productionResourceHead { gap: 7px; margin-bottom: 8px; }
+  #productionDashboardModal .productionResourceIcon { flex-basis: 30px; width: 30px; height: 30px; border-radius: 9px; font-size: 17px; }
+  #productionDashboardModal .productionResourceTitle h3 { color: #f7e6bb; font-size: 13px; }
+  #productionDashboardModal .productionResourceStock { display: flex; align-items: baseline; justify-content: flex-end; gap: 3px; min-width: 0; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  #productionDashboardModal .productionResourceStock strong { color: #ffe59b; font-size: 16px; line-height: 1.05; }
+  #productionDashboardModal .productionResourceStock span { color: #aebfd0; font-size: 9px; }
+  #productionDashboardModal .productionProgress { height: 5px; }
+  #productionDashboardModal .productionResourceFooter { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 8px; margin-top: 7px; min-height: 17px; }
+  #productionDashboardModal .productionRate { color: #bbc9d7; font-size: 10px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  #productionDashboardModal .productionRate.good { color: #9fe0a7; }
+  #productionDashboardModal .productionReserveReady { padding: 3px 5px; border: 1px solid #b88a3d8c; border-radius: 6px; background: #6b512b45; color: #ffdf91; font-size: 9px; font-weight: 900; white-space: nowrap; }
+  #productionDashboardModal .productionResourceDetails { margin-top: 8px; border-top: 1px solid #7188a040; }
+  #productionDashboardModal .productionResourceDetails > summary,
+  #productionDashboardModal .productionAdvanced > summary { display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; color: #d9bd75; font-size: 10px; font-weight: 900; list-style: none; padding: 7px 0 1px; touch-action: manipulation; }
+  #productionDashboardModal .productionResourceDetails > summary::-webkit-details-marker,
+  #productionDashboardModal .productionAdvanced > summary::-webkit-details-marker { display: none; }
+  #productionDashboardModal .productionResourceDetails > summary::after,
+  #productionDashboardModal .productionAdvanced > summary::after { content: '+'; color: #ffe29a; font-size: 14px; line-height: 1; }
+  #productionDashboardModal .productionResourceDetails[open] > summary::after,
+  #productionDashboardModal .productionAdvanced[open] > summary::after { content: '−'; }
+  #productionDashboardModal .productionDetailRows { padding-top: 5px; }
+  #productionDashboardModal .productionDetailRows .productionMetricRow { gap: 6px; margin: 5px 0; font-size: 10px; }
+  #productionDashboardModal .productionDetailRows .productionMetricRow strong { font-size: 10px; }
+  #productionDashboardModal .productionAdvanced { border: 1px solid #617a9359; border-radius: 11px; background: #0c1c2c80; padding: 0 10px 5px; }
+  #productionDashboardModal .productionAdvanced > summary { padding: 10px 0 7px; font-size: 11px; }
+  #productionDashboardModal .productionAdvanced[open] > summary { border-bottom: 1px solid #7188a040; margin-bottom: 9px; }
+  #productionDashboardModal .productionDashboardIntro { margin: 0 0 8px; gap: 6px; }
+  #productionDashboardModal .productionDashStat { padding: 8px; border-radius: 9px; }
+  #productionDashboardModal .productionDashStat span { font-size: 8px; }
+  #productionDashboardModal .productionDashStat strong { font-size: 15px; }
+  #productionDashboardModal .productionDashStat small { font-size: 9px; }
+  #productionDashboardModal .productionLossBox { display: grid; gap: 4px; padding: 8px 9px; border: 1px solid #a76e4180; border-radius: 8px; background: #4e2f2140; color: #e5cdb0; font-size: 10px; line-height: 1.4; overflow-wrap: anywhere; }
+  #productionDashboardModal .productionLossBox b { color: #ffce8e; font-size: 10px; }
+  #productionDashboardModal .productionDiagnosticsQuiet { margin: 0; color: #aebfd0; font-size: 10px; }
+  #productionDashboardModal .productionDashboardFooterNote { font-size: 10px; }
+  @media (max-width: 560px) {
+    #productionDashboardModal .productionResourceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+    #productionDashboardModal .productionResourceCard { padding: 8px; }
+    #productionDashboardModal .productionResourceHead { gap: 5px; }
+    #productionDashboardModal .productionResourceIcon { flex-basis: 26px; width: 26px; height: 26px; font-size: 15px; }
+    #productionDashboardModal .productionResourceTitle h3 { font-size: 12px; }
+    #productionDashboardModal .productionResourceStock strong { font-size: 14px; }
+    #productionDashboardModal .productionResourceStock span { font-size: 8px; }
+    #productionDashboardModal .productionResourceFooter { justify-content: flex-start; gap: 4px 6px; }
+    #productionDashboardModal .productionRate { font-size: 9px; }
+    #productionDashboardModal .productionReserveReady { font-size: 8px; }
+    #productionDashboardModal .productionDashboardIntro { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 350px) {
+    #productionDashboardModal .productionResourceHead { flex-wrap: wrap; }
+    #productionDashboardModal .productionResourceStock { margin-left: auto; }
   }
 </style>
 
