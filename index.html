@@ -12333,6 +12333,83 @@ body:has(.modal.open) #toast.toast.show {
 }
 </style>
 
+<style id="phase7c-campaign-palace-polish">
+  .campaignEncounterRule{margin:10px 0 12px;padding:11px 12px;border:1px solid rgba(212,174,98,.48);border-radius:12px;background:linear-gradient(135deg,rgba(117,83,37,.22),rgba(25,44,39,.55));color:#f4e7c8}
+  .campaignEncounterRule>div{display:flex;align-items:center;gap:7px;font-size:.92rem;font-weight:800;letter-spacing:.02em}
+  .campaignEncounterRule>div span{font-size:1.05rem}
+  .campaignEncounterRule p{margin:5px 0 0;color:#d6d1c2;font-size:.8rem;line-height:1.4}
+  .palaceMilestonePanel{margin:12px 0;padding:12px;border:1px solid rgba(213,174,99,.42);border-radius:13px;background:linear-gradient(150deg,rgba(39,54,45,.98),rgba(22,34,30,.98));color:#f4ebd3}
+  .palaceMilestonePanel>header{display:flex;justify-content:space-between;align-items:center;margin:0 0 9px}
+  .palaceMilestonePanel>header>div{display:flex;flex-direction:column;gap:2px}
+  .palaceMilestonePanel>header b{font-size:.96rem}
+  .palaceMilestonePanel>header small{font-size:.72rem;color:#b8c2b1}
+  .palaceMilestoneRows{display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+  .palaceMilestoneRow{display:grid;grid-template-columns:28px minmax(0,1fr) auto;align-items:center;gap:8px;padding:8px;border-radius:9px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.055);min-width:0}
+  .palaceMilestoneRow.isActive{background:rgba(110,154,103,.13);border-color:rgba(143,190,122,.35)}
+  .palaceMilestoneIcon{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:rgba(212,174,98,.12);font-size:1rem}
+  .palaceMilestoneCopy{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .palaceMilestoneCopy b{font-size:.82rem;line-height:1.25}
+  .palaceMilestoneCopy small{font-size:.72rem;color:#c7cbbb;line-height:1.35;overflow-wrap:anywhere}
+  .palaceMilestoneStatus{font-size:.62rem;font-weight:900;letter-spacing:.04em;white-space:nowrap;color:#d7c18c}
+  .palaceMilestoneRow.isActive .palaceMilestoneStatus{color:#a9d59a}
+  .palaceMilestoneRow.isLocked .palaceMilestoneIcon{filter:saturate(.55);opacity:.8}
+  .palaceMilestoneNext{margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.09);display:flex;flex-direction:column;gap:6px}
+  .palaceMilestoneNext>div:first-child{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .palaceMilestoneNext b{font-size:.8rem}
+  .palaceMilestoneNext small{font-size:.72rem;color:#c7cbbb}
+  .palaceMilestoneTrack{height:5px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.1)}
+  .palaceMilestoneTrack i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#be9953,#86b178)}
+  .palaceMilestoneNext.complete{display:block;color:#a9d59a}
+  @media(max-width:420px){.palaceMilestonePanel{padding:10px}.palaceMilestoneRow{grid-template-columns:25px minmax(0,1fr) auto;gap:6px;padding:7px}.palaceMilestoneIcon{width:25px;height:25px}.palaceMilestoneStatus{font-size:.58rem}.campaignEncounterRule{padding:10px}}
+</style>
+<style id="phase7d-raid-prep-styles">
+  .raidWarningBanner {
+    position: fixed; z-index: 12000; left: 10px; right: 10px;
+    bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+    width: min(460px, calc(100% - 20px)); margin-inline: auto;
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px;
+    padding: 10px 11px; border: 1px solid #e3bd62; border-radius: 13px;
+    color: #f6eddb; background: linear-gradient(145deg, #283d58, #14243a 82%);
+    box-shadow: 0 8px 28px #0009, inset 0 1px 0 #ffffff14;
+  }
+  .raidWarningBanner.hidden, .raidWarningBanner.context-suppressed { display: none !important; }
+  .raidWarningCopy { min-width: 0; display: grid; gap: 3px; }
+  .raidWarningCopy strong { color: #ffe19a; font-size: 12px; letter-spacing: .02em; }
+  .raidWarningCopy small { color: #d4e0ee; font-size: 10px; line-height: 1.35; }
+  .raidWarningBanner button { min-height: 36px; padding: 7px 12px; border: 1px solid #f3d58e; border-radius: 9px; color: #2d210f; background: linear-gradient(#efd071, #c18a37); font-size: 11px; font-weight: 900; white-space: nowrap; }
+  .raidPrepPanel { display: grid; gap: 8px; margin: 10px 0 2px; padding: 10px; border: 1px solid #c69e53; border-radius: 11px; background: linear-gradient(145deg, #493d2c, #222b38); }
+  .raidPrepHeading { display: grid; gap: 3px; }
+  .raidPrepHeading strong { color: #ffe19a; font-size: 11px; }
+  .raidPrepHeading small { color: #e0d8c8; font-size: 9px; line-height: 1.45; }
+  .raidPrepOptions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .raidPrepOption { display: grid; align-content: start; gap: 4px; min-width: 0; min-height: 80px; padding: 8px; border: 1px solid #8c7854; border-radius: 9px; text-align: left; color: #f3ead9; background: #182a40; }
+  .raidPrepOption strong { color: #ffe3a0; font-size: 10px; line-height: 1.25; }
+  .raidPrepOption small { color: #c8d3df; font-size: 9px; line-height: 1.35; overflow-wrap: anywhere; }
+  .raidPrepOption em { color: #b8e4c2; font-size: 9px; font-style: normal; font-weight: 800; line-height: 1.3; }
+  .raidPrepOption:disabled { opacity: .56; filter: saturate(.65); }
+  .raidPrepChoiceLocked { display: grid; gap: 4px; padding: 9px; border: 1px solid #57856e; border-radius: 9px; color: #e0f4e5; background: #173a30; font-size: 10px; line-height: 1.4; }
+  .raidPrepChoiceLocked strong { color: #bce9c9; }
+  @media (max-width: 350px) {
+    .raidWarningBanner { left: 6px; right: 6px; width: calc(100% - 12px); padding: 8px; gap: 7px; }
+    .raidWarningCopy strong { font-size: 11px; }
+    .raidWarningBanner button { padding: 6px 9px; font-size: 10px; }
+    .raidPrepOption { padding: 7px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .raidWarningBanner, .raidPrepPanel { scroll-behavior: auto; transition: none !important; } }
+</style>
+<style id="phase7e-campaign-balance-style">
+.campaignPrepCallout{margin:10px 0;padding:10px 12px;border:1px solid #be9658;border-left:4px solid #edc56b;border-radius:10px;background:linear-gradient(140deg,#3a2b19,#1c2634);color:#f8edd5}
+.campaignPrepCallout strong{display:block;color:#ffe18a;font-size:12px;letter-spacing:.03em}
+#detailDialog .campaignPrepCallout strong{color:#ffe18a!important}
+.campaignPrepCallout p{margin:5px 0 0;line-height:1.45;font-size:11px;color:#e7dfd0}
+#detailDialog .campaignPrepCallout p{color:#e7dfd0!important}
+.counterPlan{margin:8px 0;padding:9px 10px;border:1px solid #607b98;border-radius:10px;background:#172e49;color:#e4edf7;font-size:11px;line-height:1.4}
+.counterPlan> b{display:block;color:#ffe18a;margin-bottom:5px;font-size:11px}
+.counterPlanRow{padding:4px 0;border-top:1px solid #607b9855}
+.counterPlanRow b{color:#f2cf80}
+.counterPlanRow.locked{color:#c3d0df}
+@media(max-width:380px){.campaignPrepCallout{padding:9px}.campaignPrepCallout p{font-size:10px}}
+</style>
 </head><body><div id="portraitLockOverlay" role="status" aria-live="polite"><div class="portraitLockCard"><div class="portraitLockIcon" aria-hidden="true">📱 ↻</div><h2>Please rotate your device</h2><p>Warlord Dominion is designed for portrait play. Rotate your iPhone vertically to continue your campaign.</p></div></div><div class="game"><header class="topbar"><div class="ab-crest"><div class="crestIcon" id="factionCrest">⚔️</div><div class="logo">THREE KINGDOMS<br>WARLORD DOMINION</div></div><div class="level">🏯 <span id="cityLevel">1</span></div><div class="resources"><span class="res">🌾 <b id="food">0</b><small id="foodCap"></small></span><span class="res">🪵 <b id="wood">0</b><small id="woodCap"></small></span><span class="res">⛓️ <b id="iron">0</b><small id="ironCap"></small></span><span class="res">🪙 <b id="coins">0</b><small id="coinsCap"></small></span></div><button class="iconBtn" id="settingsBtn" aria-label="Settings">⚙️</button></header>
 <main class="main"><section class="screen cityScreen active" id="city"><div class="cityViewport" id="cityViewport"><div class="skyGlow"></div><div class="mountains"></div><div class="river"><span class="riverSpark r1"></span><span class="riverSpark r2"></span><span class="riverSpark r3"></span></div><div class="riverBankDecor"></div><div class="bridge"></div><div class="ambient" id="ambient"><span class="bird b1">⌁</span><span class="bird b2">⌁</span></div><div class="tip" id="cityTip">Choose a building below, then tap an empty plot.</div><div class="buildModeActions hidden" id="buildModeActions"><div class="buildModeChoice"><small>PLACING</small><b id="buildModeName">Building</b><span id="buildModeCost"></span></div><button class="secondary" id="buildModeCollect">Collect</button><button class="danger" id="cancelBuildMode">Cancel</button></div><div class="productionStatus" id="productionStatus"></div><div class="cityFocusLabel">Citadel</div><div class="cameraControls" aria-label="City camera controls"><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomReset">Reset</button><button id="zoomIn" aria-label="Zoom in">+</button></div><button class="activityToggle" id="activityToggle" aria-label="Active orders">Orders <b id="activityCount">0</b></button><div class="activityPanel hidden" id="activityPanel"></div><div class="cityBoard" id="cityBoard"></div><div class="buildDock"><div class="buildInfo hidden" id="buildInfo"></div><div class="buildArea"><div class="buildFilters" id="buildFilters"><button class="filter active" data-filter="All">All</button><button class="filter" data-filter="Economy">Economy</button><button class="filter" data-filter="Military">Military</button><button class="filter" data-filter="Defense">Defense</button><span class="filterSpacer"></span><button class="primary empty" id="collectAllBtn" disabled><span>Collect</span><b id="collectionReadyCount">0</b></button></div><div class="buildList" id="buildList"></div></div></div></div></section><section class="screen" id="army"><div class="heading">⚔️ Army Command</div><div class="panel row spread"><div><b id="armyPower">0 Power</b><div>Train troops for your field army.</div></div><button class="primary" id="balancedBtn" aria-label="Queue balanced reinforcement">Reinforce</button></div><div class="queuePanel hidden" id="trainingQueue"></div><div class="grid" id="unitGrid"></div></section><section class="screen" id="generals"><div class="heading">🎖️ General Roster</div><div class="panel row spread"><div><b>Recruit historical commanders</b><div>Each commander specializes in one troop type.</div></div><button class="primary" id="recruitBtn">Recruit · 300 🪙</button></div><div class="grid" id="generalGrid"></div></section><section class="screen" id="campaign"><div class="heading">🗺️ Campaign Map</div><div class="map" id="campaignMap"></div></section><section class="screen" id="quests"><div class="heading">📜 Quests & Reports</div><div id="questList"></div><div id="phase3Hub" class="phase3Hub">
   <div class="phase3Header"><div><div class="phase3Eyebrow">P1 PHASE 3</div><h2>Daily Command</h2></div><div id="phase3Reset" class="phase3Reset"></div></div>
@@ -12343,9 +12420,9 @@ body:has(.modal.open) #toast.toast.show {
   </div>
 </div>
 <div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
-<nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
+<nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div id="raidWarningBanner" class="raidWarningBanner hidden" role="status" aria-live="polite" aria-atomic="true"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
 <div class="modal" id="factionModal"><div class="dialog"><h2>Raise Your Banner</h2><p>Choose a faction. This changes your crest and resource bonus.</p><div class="factionGrid"><button class="faction wei" data-faction="Wei"><div class="cardIcon">🐉</div>WEI<br><small>+15% Iron</small></button><button class="faction shu" data-faction="Shu"><div class="cardIcon">🦚</div>SHU<br><small>+15% Food</small></button><button class="faction wu" data-faction="Wu"><div class="cardIcon">🐅</div>WU<br><small>+15% Coins</small></button></div></div></div>
-<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.5-F7B-RC1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
+<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.7-F7D-RC1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
 <div class="modal" id="detailModal"><div class="dialog" id="detailDialog"></div></div>
 <div class="modal" id="battleModal"><div class="dialog battleDialog"><div class="row spread"><div><h2 id="battleTitle">Battle</h2><div id="battleStatus">Engaging enemy...</div></div><button class="secondary hidden" id="battleExit">Exit</button></div><div class="battlefield" id="battlefield"></div><div class="battleOutcomeSummary hidden" id="battleOutcomeSummary" aria-live="polite"></div><div class="battleTactics" id="battleTactics" aria-label="Tactical orders">
 <div class="battleTacticsHead"><span>TACTICAL ORDERS</span><strong id="battleTacticStatus">Choose an order · 5 second effect</strong></div>
@@ -12360,7 +12437,7 @@ body:has(.modal.open) #toast.toast.show {
 (() => {
   'use strict';
   const $ = q => document.querySelector(q), $$ = q => Array.from(document.querySelectorAll(q));
-  const BUILD_VERSION = 'P1.5-F7B-RC1', SAVE_SCHEMA = 4;
+  const BUILD_VERSION = 'P1.8-F7E-RC1', SAVE_SCHEMA = 4;
   const GameEvents = (() => {
     const listeners = new Map(), seen = new Map();
     return {
@@ -12389,6 +12466,26 @@ body:has(.modal.open) #toast.toast.show {
   window.WDGame = { version: BUILD_VERSION, schema: SAVE_SCHEMA, events: GameEvents };
   // Read-only Palace diagnostics allow targeted balance/regression checks.
   window.WDPalaceDefense = Object.freeze({ previewVolley: (threat, level, condition) => calculatePalaceVolley(threat, level, condition), baseVolley: level => palaceVolleyBase(level), snapshot: () => Object.freeze({ condition: palaceCondition(), level: palaceLevel(), baseVolley: palaceVolleyBase(), defenseDamage: Math.max(0, Number(S.defenseDamage) || 0) }) });
+  // Read-only Phase 7C rules surface supports deterministic regression checks without mutating a save.
+  window.WDPhase7C = Object.freeze({
+    milestones: () => PALACE_MILESTONES.map(item => ({ ...item, active: palaceMilestoneActive(palaceLevel(), item.key) })),
+    milestoneActive: (level, key) => palaceMilestoneActive(level, key),
+    encounter: (index, cycle = S.campaignCycle || 0) => campaignEncounter(index, cycle),
+    deploymentCost: (index, level = palaceLevel()) => ({ ...deploymentCost(index, level) }),
+    victoryRewards: (index, level = palaceLevel()) => ({ ...campaignVictoryRewards(index, level) }),
+    tacticDurationMs: (level = palaceLevel()) => palaceTacticDurationMs(level),
+    moveSpeed: (type, index) => unitMovementSpeed(type, index),
+    damageMultiplier: (side, type, index, level = palaceLevel()) => ({ encounter: campaignEncounterDamageMultiplier(side, type, index, level), role: unitRoleDamageMultiplier(type, index, side, level), combined: campaignEncounterDamageMultiplier(side, type, index, level) * unitRoleDamageMultiplier(type, index, side, level) }),
+    hpMultiplier: (side, index) => campaignEncounterHPMultiplier(side, index)
+  });
+  window.WDPhase7EBalance = Object.freeze({
+    forecast: (index, runs = 30, army = null) => simulateForecast(index, runs, army),
+    enemyComposition: index => enemyComposition(index).map(([type, count]) => [type, count]),
+    encounter: index => campaignEncounter(index),
+    deploymentCost: (index, level = palaceLevel()) => ({ ...deploymentCost(index, level) }),
+    victoryRewards: (index, level = palaceLevel()) => ({ ...campaignVictoryRewards(index, level) }),
+    troopDefinitions: () => Object.fromEntries(Object.entries(UNITS).map(([type, value]) => [type, { power: value.power, cost: { ...value.cost }, need: value.need }]))
+  });
   const P1 = { maxBuildingLevel: 15, costGrowth: 1.25, productionGrowth: 1.15, timeGrowth: 1.22, deploymentFoodPerPower: .06, deploymentCoinsPerPower: .018, repairWoodPerDamage: 4, repairIronPerDamage: 1.5, startResources: { food: 500, wood: 500, iron: 220, coins: 500 }, upgradeBaseMs: 45000, upgradeTimeGrowth: 1.18, researchTimeMultiplier: 4, trainingBaseSeconds: 18, trainingStepSeconds: 3, defeatArmyLoss: .15, enemyThreatPowerRatio: .30, lateNodeThreatRatio: .23, finalNodeThreatRatio: .18, campaignCycleGrowth: .35, introEnemyDamageMultiplier: .40 };
   // Stage F.9 economy and recovery balance.
   // Economy producers use 17% upgrade-cost growth, storage/defense 18%, and military/core 20%.
@@ -12447,9 +12544,10 @@ body:has(.modal.open) #toast.toast.show {
       } catch (_) { slot.textContent = ''; }
     });
   }
-  function deploymentCost(i) {
+  function deploymentCost(i, level = palaceLevel()) {
     const threat = nodePower(i), power = Math.max(10, armyPower());
-    return { food: Math.max(20, Math.round((power + threat) * P1.deploymentFoodPerPower)), coins: Math.max(8, Math.round((power + threat) * P1.deploymentCoinsPerPower)) }
+    const supplyMultiplier = palaceMilestoneActive(level, 'supply') ? 0.9 : 1;
+    return { food: Math.max(20, Math.round((power + threat) * P1.deploymentFoodPerPower * supplyMultiplier)), coins: Math.max(8, Math.round((power + threat) * P1.deploymentCoinsPerPower * supplyMultiplier)) }
   }
   const DB = { Palace: { icon: '🏯', cost: {}, prod: null }, Farm: { icon: '🌾', cost: { wood: 60, coins: 25 }, prod: 'food' }, 'Lumber Yard': { icon: '🪵', cost: { food: 45, coins: 25 }, prod: 'wood' }, 'Iron Mine': { icon: '⛏️', cost: { wood: 90, food: 70 }, prod: 'iron' }, Market: { icon: '🏮', cost: { wood: 120, food: 80, iron: 25 }, prod: 'coins' }, Warehouse: { icon: '📦', cost: { wood: 100, iron: 35 } }, Barracks: { icon: '🛡️', cost: { wood: 120, iron: 45 } }, 'Archer Camp': { icon: '🏹', cost: { wood: 150, iron: 65 } }, Stable: { icon: '🐎', cost: { wood: 180, iron: 80, coins: 70 } }, Academy: { icon: '📚', cost: { wood: 200, iron: 90, coins: 100 } }, Watchtower: { icon: '🗼', cost: { wood: 110, iron: 60 } }, Walls: { icon: '🧱', cost: { wood: 70, iron: 45 } }, Gate: { icon: '⛩️', cost: { wood: 90, iron: 50 } } };
   // New construction is based on the structure's complexity, never the current Palace level.
@@ -12549,6 +12647,53 @@ body:has(.modal.open) #toast.toast.show {
   });
   const GENERALS = [{ name: 'Cao Cao', icon: '🧔🏻', skill: 'Commanding Surge', type: 'Infantry' }, { name: 'Liu Bei', icon: '👨🏻‍🦱', skill: 'Benevolent Rally', type: 'Spearmen' }, { name: 'Sun Quan', icon: '👨🏻', skill: 'Tigerfire Volley', type: 'Archers' }];
   const MAP = [{ name: 'Home Citadel', x: 14, y: 80, p: 0 }, { name: 'Bandit Camp', x: 34, y: 65, p: 40 }, { name: 'Yellow Ford', x: 58, y: 78, p: 145 }, { name: 'Red Cliff', x: 76, y: 52, p: 250 }, { name: 'Hanzhong Gate', x: 48, y: 35, p: 380 }, { name: 'Imperial Capital', x: 76, y: 17, p: 540 }];
+  // Phase 7C: Palace milestones are automatic, persistent perks derived from the existing Palace level.
+  const PALACE_MILESTONES = Object.freeze([
+    { level: 5, title: 'Quartermaster Charter', effect: 'Campaign deployment supplies cost 10% less.', icon: '📦', key: 'supply' },
+    { level: 8, title: 'War Council', effect: 'Battle orders stay active 20% longer.', icon: '🎖️', key: 'tactics' },
+    { level: 11, title: 'Imperial Arsenal', effect: 'Siege Engineers deal an extra 10% damage at fortified locations.', icon: '🛠️', key: 'siege' },
+    { level: 15, title: 'Imperial Mandate', effect: 'Campaign victory resource rewards increase by 10%.', icon: '🏆', key: 'rewards' }
+  ]);
+  const CAMPAIGN_ENCOUNTERS = Object.freeze([
+    { title: 'Home Citadel', rule: 'Safe Haven', description: 'Your city is a staging point; no enemy army is deployed here.' },
+    { title: 'Bandit Ambush', rule: 'Introductory Patrol', description: 'In the first campaign, raiders deal reduced damage while you learn the battle system.' },
+    { title: 'Yellow Ford', rule: 'Narrow Crossing', description: 'The tight crossing slows Cavalry movement by 20% on both sides.' },
+    { title: 'Red Cliff', rule: 'High Ground', description: 'Defending Archers deal 8% more damage from elevated positions. This encounter rewards a balanced force and timely tactical orders.' },
+    { title: 'Hanzhong Gate', rule: 'Fortified Gate', description: 'Non-Siege attacks deal 15% less damage against the defenders; Siege Engineers retain their fortified-target bonus.' },
+    { title: 'Imperial Capital', rule: 'Imperial Guard', description: 'Elite defenders have 12% more health and deal 8% more damage.' }
+  ]);
+  function palaceMilestoneActive(level, key) {
+    const milestone = PALACE_MILESTONES.find(item => item.key === key);
+    return !!milestone && Math.max(1, Number(level) || 1) >= milestone.level;
+  }
+  function campaignEncounter(index, cycle = S?.campaignCycle || 0) {
+    const i = Math.max(0, Math.min(CAMPAIGN_ENCOUNTERS.length - 1, Math.floor(Number(index) || 0)));
+    const encounter = CAMPAIGN_ENCOUNTERS[i];
+    if (i === 1 && Math.max(0, Number(cycle) || 0) > 0) {
+      return { ...encounter, rule: 'Reinforced Raiders', description: 'The introductory damage protection has ended; enemy strength scales with each completed campaign.' };
+    }
+    return { ...encounter };
+  }
+  const RED_CLIFF_THREAT_RATIO = 0.20;
+  const RED_CLIFF_ARCHER_DAMAGE_MULTIPLIER = 1.08;
+  function campaignEncounterDamageMultiplier(side, type, index, level = palaceLevel()) {
+    let multiplier = 1;
+    if (side === 'enemy' && index === 3 && type === 'Archers') multiplier *= RED_CLIFF_ARCHER_DAMAGE_MULTIPLIER;
+    if (side === 'player' && index === 4 && type !== 'Siege Engineers') multiplier *= 0.85;
+    if (side === 'enemy' && index === 5) multiplier *= 1.08;
+    return multiplier;
+  }
+  function campaignEncounterHPMultiplier(side, index) {
+    return side === 'enemy' && index === 5 ? 1.12 : 1;
+  }
+  function palaceTacticDurationMs(level = palaceLevel()) {
+    return Math.round(5200 * (palaceMilestoneActive(level, 'tactics') ? 1.2 : 1));
+  }
+  function campaignVictoryRewards(index, level = palaceLevel()) {
+    const multiplier = palaceMilestoneActive(level, 'rewards') ? 1.1 : 1;
+    return Object.fromEntries(Object.entries({ food: 80 + index * 30, wood: 70 + index * 25, iron: 35 + index * 15, coins: 90 + index * 35 })
+      .map(([key, amount]) => [key, Math.round(amount * multiplier)]));
+  }
   const Store = (() => {
     let memory = null, available = false;
     try {
@@ -12589,7 +12734,7 @@ body:has(.modal.open) #toast.toast.show {
       }
     }
   })();
-  const fresh = () => ({ faction: null, r: { ...P1.startResources }, level: 1, buildings: [{ type: 'Palace', level: 1, slot: 12, pending: 0 }, { type: 'Farm', level: 1, slot: 7, pending: 0 }], units: { Infantry: 0, Spearmen: 0, Archers: 0, Cavalry: 0, 'Siege Engineers': 0 }, generals: [], assigned: null, territory: 0, quests: { treasury: false, collect: false, lumber: false, palace: false, train: false, general: false, bandit: false, reward: false }, tutorial: 0, reports: [], sound: true, reducedMotion: false, trainingQueue: [], lastProduction: Date.now(), lastSeen: Date.now(), nextRaidAt: Date.now() + 1200000, campaignCycle: 0, palaceCondition: 100, productionDiscardedReserve: { food: 0, wood: 0, iron: 0, coins: 0 }, productionDiscardedOffline: { food: 0, wood: 0, iron: 0, coins: 0 }, endSeen: false });
+  const fresh = () => ({ faction: null, r: { ...P1.startResources }, level: 1, buildings: [{ type: 'Palace', level: 1, slot: 12, pending: 0 }, { type: 'Farm', level: 1, slot: 7, pending: 0 }], units: { Infantry: 0, Spearmen: 0, Archers: 0, Cavalry: 0, 'Siege Engineers': 0 }, generals: [], assigned: null, territory: 0, quests: { treasury: false, collect: false, lumber: false, palace: false, train: false, general: false, bandit: false, reward: false }, tutorial: 0, reports: [], sound: true, reducedMotion: false, trainingQueue: [], lastProduction: Date.now(), lastSeen: Date.now(), nextRaidAt: Date.now() + 1200000, raidPrep: null, campaignCycle: 0, palaceCondition: 100, productionDiscardedReserve: { food: 0, wood: 0, iron: 0, coins: 0 }, productionDiscardedOffline: { food: 0, wood: 0, iron: 0, coins: 0 }, endSeen: false });
   const RESEARCH = {
     food: { name: 'Agricultural Methods', branch: 'Economy', icon: '🌾', desc: '+8% Food production per level', cost: { coins: 160, wood: 80 }, time: 18000, max: 3 },
     wood: { name: 'Timber Administration', branch: 'Economy', icon: '🪵', desc: '+8% Wood production per level', cost: { coins: 160, food: 100 }, time: 18000, max: 3 },
@@ -12768,6 +12913,10 @@ body:has(.modal.open) #toast.toast.show {
   S.saveSchema = SAVE_SCHEMA;
   S.buildVersion = BUILD_VERSION;
   S.lastProduction = S.lastProduction || Date.now();
+  S.nextRaidAt = Number(S.nextRaidAt) || (Date.now() + 1200000);
+  S.raidPrep = S.raidPrep && typeof S.raidPrep === 'object' ? S.raidPrep : null;
+  if (S.nextRaidAt <= Date.now()) { S.nextRaidAt = Date.now() + 120000; S.raidPrep = null; }
+  if (S.raidPrep && (Number(S.raidPrep.raidAt) !== S.nextRaidAt || ![null, 'muster', 'secure', 'brace'].includes(S.raidPrep.choice ?? null))) S.raidPrep = null;
   // Stage F.5 Palace condition migration: existing saves start undamaged; new values are clamped safely.
   S.palaceCondition = S.palaceCondition == null || !Number.isFinite(Number(S.palaceCondition))
     ? 100
@@ -12799,7 +12948,7 @@ body:has(.modal.open) #toast.toast.show {
         status.textContent = `${labels[active]} · ${(activeLeft / 1000).toFixed(1)}s`;
       }
       else if (cooldown > 0) status.textContent = `Command regrouping · ${Math.ceil(cooldown / 1000)}s`;
-      else status.textContent = 'Choose an order · 5 second effect';
+      else status.textContent = `Choose an order · ${(palaceTacticDurationMs() / 1000).toFixed(1)}s effect`;
     }
     bar.querySelectorAll('[data-tactic]').forEach(btn => {
       const type = btn.dataset.tactic;
@@ -12827,7 +12976,7 @@ body:has(.modal.open) #toast.toast.show {
       }
       if (!['charge', 'wall', 'focus'].includes(stance)) return false;
       battle.tactic = stance;
-      battle.tacticUntil = now + 5200;
+      battle.tacticUntil = now + palaceTacticDurationMs();
       battle.tacticReadyAt = now + 13500;
       const data = { charge: ['CHARGE!', 'Advance quickly and strike harder.'], wall: ['SHIELD WALL!', 'Your troops take less damage.'], focus: ['FOCUS FIRE!', 'Your troops target the weakest enemy.'] }[stance];
       const status = $('#battleTacticStatus');
@@ -13489,7 +13638,7 @@ body:has(.modal.open) #toast.toast.show {
     return `<details class="defenseSummaryCard" ${expanded ? 'open' : ''}>
       <summary class="defenseSummaryTrigger">
         <span class="defenseSummaryEmblem" aria-hidden="true">🛡️</span>
-        <span class="defenseSummaryHeading"><b>City Defense & Raids</b><small>${current} defense · Raid in ${untilRaid ? fmtTime(untilRaid) : 'imminent'}</small></span>
+        <span class="defenseSummaryHeading"><b>City Defense & Raids</b><small>${current} defense · <span data-raid-countdown>Raid in ${untilRaid ? fmtTime(untilRaid) : 'imminent'}</span></small></span>
         <span class="defenseThreatBadge ${statusClass}">${status}</span>
       </summary>
       <div class="defenseSummaryBody">
@@ -13508,6 +13657,7 @@ body:has(.modal.open) #toast.toast.show {
         <div class="defenseDamageSummary ${damage ? 'damaged' : ''}"><span>${damage ? '🔧 City defense damage recorded' : '✅ City defenses intact'}</span><small>${damage ? `${damage} defense points lost. Repair from the Palace to restore city and Palace condition together.` : 'City-defense rating has no damage penalty. Palace condition is tracked separately above.'}</small></div>
         <div class="defenseRepairArea"></div>
         <div class="defenseRaidRisk"><b>When a raid breaches</b><small>The Palace loses 5–15 condition points depending on the threat gap. If present, Watchtowers, Walls and the Gate also take city-defense damage. Resource loss scales with the post-volley threat gap (2–12% before protection research); Protected Storehouses reduce that loss by ${Math.round(researchEffect('raidProtection') * 100)}%.</small></div>
+        ${renderRaidPrepMarkup()}
         ${latest}
       </div>
     </details>`;
@@ -13971,6 +14121,19 @@ body:has(.modal.open) #toast.toast.show {
     const shortage = affordable ? '' : `<small class="palaceRepairNote shortage">Missing ${escapeDefenseText(missingCost(c))}. Gather or produce more resources before repairing.</small>`;
     return `<section class="palaceConditionPanel"><div class="palaceConditionHeader"><span>🛡️ Palace condition</span><strong>${condition}/100</strong></div><div class="palaceConditionTrack ${condition < 80 ? 'damaged' : ''}" role="progressbar" aria-label="Palace condition" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${condition}"><i style="width:${condition}%"></i></div><div class="palaceConditionMeta"><div><small>Counterattack now</small><b>${currentVolley.conditionScaledDamage} damage before 35% cap</b></div><div><small>City-defense damage</small><b>${defenseDamage} points</b></div><div><small>Palace condition to restore</small><b>${conditionMissing} points</b></div><div><small>Repair discount</small><b>${Math.round(Math.min(.35, researchEffect('repairDiscount')) * 100)}%</b></div></div><div class="palaceRepairCost"><span>Unified repair cost</span><b>${costText(c)}</b></div><button type="button" class="primary palaceRepairButton" id="repairPalaceAndDefenses" ${affordable ? '' : 'disabled'} aria-label="Repair Palace and Defenses">🔧 Repair</button>${shortage}<small class="palaceRepairNote">Restores Palace condition to 100 and clears the current city-defense damage penalty. Costs 1.5 Wood + 0.75 Iron per missing Palace condition point, plus 4 Wood + 1.5 Iron per city-defense damage point. Rapid Repairs research discounts the combined bill, up to the overall 35% limit.</small></section>`
   }
+  function palaceMilestonesMarkup(level = palaceLevel()) {
+    const activeLevel = Math.max(1, Number(level) || 1);
+    const next = PALACE_MILESTONES.find(item => item.level > activeLevel);
+    const rows = PALACE_MILESTONES.map(item => {
+      const active = activeLevel >= item.level;
+      return `<div class="palaceMilestoneRow ${active ? 'isActive' : 'isLocked'}"><span class="palaceMilestoneIcon">${item.icon}</span><div class="palaceMilestoneCopy"><b>${item.title}</b><small>${item.effect}</small></div><span class="palaceMilestoneStatus">${active ? 'ACTIVE' : `LV ${item.level}`}</span></div>`;
+    }).join('');
+    const progress = next ? Math.max(0, Math.min(100, activeLevel / next.level * 100)) : 100;
+    const footer = next
+      ? `<div class="palaceMilestoneNext"><div><b>Next: Palace Lv${next.level}</b><small>${next.title} · ${Math.max(0, next.level - activeLevel)} upgrade${next.level - activeLevel === 1 ? '' : 's'} to go</small></div><div class="palaceMilestoneTrack"><i style="width:${progress}%"></i></div></div>`
+      : '<div class="palaceMilestoneNext complete"><b>All Palace milestones unlocked</b></div>';
+    return `<section class="palaceMilestonePanel"><header><div><b>🏅 Palace milestones</b><small>Permanent perks · unlock automatically</small></div></header><div class="palaceMilestoneRows">${rows}</div>${footer}</section>`;
+  }
   function palaceEconomyMarkup() {
     const cap = storageCap();
     const resources = [
@@ -14049,13 +14212,14 @@ body:has(.modal.open) #toast.toast.show {
     const academyResearchAction = b.type === 'Academy' ? '<button type="button" class="secondary academyResearchAction" id="openAcademyResearch" style="width:100%;margin:0 0 8px" aria-label="Open Research Centre">📚 Research</button>' : '';
     const palaceRepairPanel = b.type === 'Palace' ? palaceRepairMarkup() : '';
     const palaceTreasuryPanel = b.type === 'Palace' ? palaceEconomyMarkup() : '';
+    const palaceMilestonePanel = b.type === 'Palace' ? palaceMilestonesMarkup(b.level) : '';
     const upgradeTimePanel = atMax
       ? `<div class="upgradeTime"><strong>Maximum level reached</strong><small>This ${b.type} cannot be upgraded further.</small></div>`
       : `<div class="upgradeTime"><strong>Upgrade time required: ${fmtTime(upgradeDuration(next))}</strong><small>The building remains operational at its current level during the upgrade; new-level benefits apply when it completes.</small></div>`;
     const upgradeButtonHTML = atMax
       ? '<button class="primary" id="upgradeBuilding" disabled>MAX LEVEL</button>'
       : `<button class="primary" id="upgradeBuilding" ${canPay(c) ? '' : 'disabled'}>Upgrade to Level ${next}<br><small>${costText(c)}</small><span class="upgradeButtonTime">⏱ ${fmtTime(upgradeDuration(next))}</span></button>${affordabilitySlot(c)}`;
-    $('#detailDialog').innerHTML = `<div class="row spread"><h2>${DB[b.type].icon} ${b.type}</h2><button class="secondary closeDetailAction">Close</button></div><p>${BUILD_DESCRIPTIONS[b.type] || (b.type === 'Palace' ? 'The heart of your city: unlocks development, stores resources, and leads the defense against raids.' : 'Develops the city and supports progression.')}</p><div class="upgradeCompare"><div class="upgradeStat"><small>LEVEL ${b.level}</small><br>${current}</div><div class="upgradeArrow">➜</div><div class="upgradeStat"><small>${atMax ? 'MAX LEVEL' : `LEVEL ${next}`}</small><br>${atMax ? 'Maximum level reached' : future}</div></div>${unlockHTML}${palaceTreasuryPanel}${palaceRepairPanel}${upgradeTimePanel}${academyResearchAction}${upgradeButtonHTML}`;
+    $('#detailDialog').innerHTML = `<div class="row spread"><h2>${DB[b.type].icon} ${b.type}</h2><button class="secondary closeDetailAction">Close</button></div><p>${BUILD_DESCRIPTIONS[b.type] || (b.type === 'Palace' ? 'The heart of your city: unlocks development, stores resources, and leads the defense against raids.' : 'Develops the city and supports progression.')}</p><div class="upgradeCompare"><div class="upgradeStat"><small>LEVEL ${b.level}</small><br>${current}</div><div class="upgradeArrow">➜</div><div class="upgradeStat"><small>${atMax ? 'MAX LEVEL' : `LEVEL ${next}`}</small><br>${atMax ? 'Maximum level reached' : future}</div></div>${unlockHTML}${palaceMilestonePanel}${palaceTreasuryPanel}${palaceRepairPanel}${upgradeTimePanel}${academyResearchAction}${upgradeButtonHTML}`;
     $('#detailModal').classList.add('open');
     renderMotionState();
     $('#detailDialog .closeDetailAction').onclick = closeDetail;
@@ -14201,7 +14365,8 @@ body:has(.modal.open) #toast.toast.show {
     const cycle = Math.max(0, S.campaignCycle || 0);
     if (i === 1 && cycle === 0) return [['Cavalry', 1], ['Infantry', 1]];
     const threat = nodePower(i);
-    let ratio = P1.enemyThreatPowerRatio;
+    // Red Cliff is the first attrition check: ease enemy quantity slightly instead of removing its identity.
+    let ratio = i === 3 ? RED_CLIFF_THREAT_RATIO : P1.enemyThreatPowerRatio;
     let groups;
     switch (i) {
       case 2: groups = [['Cavalry', 2], ['Infantry', 2]]; break;
@@ -14230,6 +14395,19 @@ body:has(.modal.open) #toast.toast.show {
     if (types.includes('Cavalry')) rec.push('Spearmen');
     if (index >= 3) rec.push('Siege Engineers');
     return [...new Set(rec)]
+  }
+  function counterPlanMarkup(enemy, index = 0) {
+    const candidates = recommend(enemy, index);
+    if (!candidates.length) return '<div class="counterPlan"><b>Counter plan</b><p>A balanced army is suitable for this encounter.</p></div>';
+    const completedBuildings = new Set(S.buildings.filter(b => !b.constructing && !b.upgrading).map(b => b.type));
+    const ready = candidates.filter(type => completedBuildings.has(UNITS[type]?.need));
+    const buildFirst = candidates.filter(type => !ready.includes(type) && isBuildingUnlocked(UNITS[type]?.need));
+    const later = candidates.filter(type => !ready.includes(type) && !buildFirst.includes(type));
+    const lines = [];
+    if (ready.length) lines.push(`<div class="counterPlanRow ready"><b>Ready in your city:</b> ${ready.join(', ')}</div>`);
+    if (buildFirst.length) lines.push(`<div class="counterPlanRow build"><b>Build first:</b> ${buildFirst.map(type => `${type} (${UNITS[type].need})`).join(', ')}</div>`);
+    if (later.length) lines.push(`<div class="counterPlanRow locked"><b>Palace unlocks later:</b> ${later.map(type => `${type} (Palace Lv${BUILD_LEVEL[UNITS[type]?.need] || 1})`).join(', ')}</div>`);
+    return `<div class="counterPlan"><b>Recommended counters</b>${lines.join('')}</div>`;
   }
   // Apply casualties against the army total, then distribute them proportionally across stacks.
   // This avoids rounding every small troop type up to a whole casualty independently.
@@ -14281,19 +14459,20 @@ body:has(.modal.open) #toast.toast.show {
     rows.forEach(row => { unitCounts[row.type] = Math.max(0, row.count - row.lost); });
     return { total, casualties: targetLosses, percent: Math.round(targetLosses / total * 100) };
   }
-  function simulateForecast(i, runs = 30) {
+  function simulateForecast(i, runs = 30, armyOverride = null) {
     // Run a deterministic forecast using the same baseline movement, targeting,
     // counters, unit stats, general bonuses, attack cadence, and defeat rules as
     // the real-time battle. Player tactical orders and active general abilities
     // are deliberately excluded and called out in the UI.
-    const mine = Object.entries(S.units).filter(([, q]) => q > 0).slice(0, 5);
+    const sourceArmy = armyOverride && typeof armyOverride === 'object' ? armyOverride : S.units;
+    const mine = Object.entries(sourceArmy).filter(([type, q]) => UNITS[type] && Number(q) > 0).slice(0, 5);
     const enemy = enemyComposition(i);
     const initialArmyCount = mine.reduce((sum, [, q]) => sum + q, 0);
     const totalRuns = Math.max(10, Math.min(60, Math.round(runs) || 30));
     if (!initialArmyCount) return { wins: 0, runs: totalRuns, chance: 0, losses: null, defeatLossCount: 0, defeatLosses: 0, capped: 0, noArmy: true };
 
     const fingerprint = [i, S.campaignCycle || 0, S.faction || '', S.assigned ?? '',
-      ...mine.map(([type, q]) => `${type}:${q}:${JSON.stringify(battleUnitStats('player', type, q))}`),
+      ...mine.map(([type, q]) => `${type}:${q}:${JSON.stringify(battleUnitStats('player', type, q, i))}`),
       ...enemy.map(([type, q]) => `${type}:${q}`)].join('|');
     let baseSeed = 2166136261;
     for (let k = 0; k < fingerprint.length; k++) {
@@ -14316,8 +14495,8 @@ body:has(.modal.open) #toast.toast.show {
       const random = makeRandom((baseSeed + Math.imul(run + 1, 0x9E3779B9)) >>> 0);
       const units = [];
       const addSide = (side, list) => list.slice(0, 5).forEach(([type, q], lane) => {
-        const stats = battleUnitStats(side, type, q);
-        const damage = stats.damage * combatDamageMultiplier(side, i) * unitRoleDamageMultiplier(type, i);
+        const stats = battleUnitStats(side, type, q, i);
+        const damage = stats.damage * combatDamageMultiplier(side, i) * unitRoleDamageMultiplier(type, i, side) * campaignEncounterDamageMultiplier(side, type, i);
         units.push({ side, type, q, hp: stats.hp, max: stats.hp, hpPerTroop: stats.hpPerTroop || stats.hp / Math.max(1, q),
           x: side === 'player' ? 11 : 89, y: 24 + lane * 14, damage, cool: 0 });
       });
@@ -14340,7 +14519,7 @@ body:has(.modal.open) #toast.toast.show {
           if (!targets.length) return;
           const target = selectBattleTarget(u, targets, 'balanced');
           if (Math.abs(target.x - u.x) > unitAttackRange(u.type)) {
-            u.x += (u.side === 'player' ? 1 : -1) * .05 * unitMovementSpeed(u.type);
+            u.x += (u.side === 'player' ? 1 : -1) * .05 * unitMovementSpeed(u.type, i);
           } else if ((u.cool -= .05) <= 0) {
             let damage = u.damage * counter(u.type, target.type) * (.8 + random() * .4);
             // This deliberately mirrors the live battle loop's assigned-general bonus.
@@ -14388,22 +14567,27 @@ body:has(.modal.open) #toast.toast.show {
     $('#tapName')?.classList.remove('show');
     const n = MAP[i], enemy = enemyComposition(i), mine = Object.entries(S.units).filter(([, q]) => q > 0);
     const forecast = simulateForecast(i, 30);
-    const difficulty = forecast.chance >= 75 ? 'easy' : forecast.chance >= 45 ? 'moderate' : 'hard';
-    const reward = { food: 80 + i * 30, wood: 70 + i * 25, iron: 35 + i * 15, coins: 90 + i * 35 };
+    const difficulty = forecast.chance >= 75 && forecast.losses !== null && forecast.losses <= 20 ? 'easy' : forecast.chance >= 45 && forecast.losses !== null && forecast.losses <= 45 ? 'moderate' : 'hard';
+    const reward = campaignVictoryRewards(i);
+    const encounter = campaignEncounter(i);
     const supply = deploymentCost(i);
     const rewardOverCap = rewardWouldExceedStorage(reward);
     const rewardText = `${costText(reward)}${rewardOverCap ? ' · full reward; stock may exceed cap' : ''}`;
-    const loss = forecast.noArmy || forecast.losses === null ? 'Unavailable' : forecast.losses <= 12 ? 'Low' : forecast.losses <= 28 ? 'Moderate' : 'High';
+    const loss = forecast.noArmy || forecast.losses === null ? 'Unavailable' : forecast.losses <= 12 ? 'Low' : forecast.losses <= 28 ? 'Moderate' : forecast.losses <= 45 ? 'High' : 'Severe';
+    const riskLabel = forecast.noArmy ? 'Unavailable' : forecast.losses === null ? 'No simulated victories' : `${loss} casualty risk`;
     const cappedNote = forecast.capped ? `<small class="forecastNote">${forecast.capped} simulation${forecast.capped === 1 ? '' : 's'} reached the safety limit; estimate is less certain.</small>` : '';
+    const highRiskText = forecast.chance < 45 || forecast.losses === null ? 'The current force is unlikely to win consistently. Reinforce, follow recommended counters, and consider delaying the attack before risking deployment supplies.' : 'Your army may win but lose a large share of its troops. Consider reinforcing, using a counter-composition, or researching Battlefield Medicine before deploying.';
+    const preparationCallout = i === 3 ? `<div class="campaignPrepCallout"><strong>Preparation recommended</strong><p>Red Cliff is the first major attrition check. Use Archers to pressure enemy Infantry, and activate Shield Wall before your frontline takes concentrated damage. Cavalry can hunt defending Archers once the Stable unlocks at Palace Lv3; Siege Engineers are a later option after the Academy unlocks at Palace Lv4. Focus Fire helps remove weakened enemies. The forecast does not activate tactical orders.</p></div>` : !forecast.noArmy && (forecast.chance < 45 || forecast.losses === null || forecast.losses > 45) ? `<div class="campaignPrepCallout"><strong>High-risk deployment warning</strong><p>${highRiskText}</p></div>` : '';
     $('#detailDialog').innerHTML = `<div class="row spread"><h2>Attack ${n.name}</h2><button class="secondary closeDetailAction">Close</button></div>
       <div class="deployGrid">
         <div class="deploySide"><b>Your Army · ${armyPower()} Power</b><div class="unitChips">${compositionHTML(mine) || 'No troops'}</div><p>General: ${S.assigned === null ? 'None' : GENERALS[S.assigned].name}</p></div>
-        <div class="deploySide"><b>Enemy · ${nodePower(i)} Threat</b><div class="unitChips">${compositionHTML(enemy)}</div><p>Defense: ${i === 1 && !(S.campaignCycle || 0) ? 'Introductory patrol · reduced enemy damage' : i > 2 ? 'Fortified' : 'Field position'}</p></div>
+        <div class="deploySide"><b>Enemy · ${nodePower(i)} Threat</b><div class="unitChips">${compositionHTML(enemy)}</div><p>Defense: ${i === 1 && !(S.campaignCycle || 0) ? 'Introductory patrol · reduced enemy damage' : i === 3 ? 'High ground · fortified terrain' : i >= 4 ? 'Fortified' : 'Field position'}</p></div>
       </div>
+      <div class="campaignEncounterRule"><div><span>⚑</span><b>${encounter.rule}</b></div><p>${encounter.description}</p></div>
       <div class="forecast">
-        <div class="forecastHeading"><b class="difficulty ${difficulty}">${forecast.noArmy ? 'No deployable troops' : `Estimated win chance · ${forecast.chance}%`}</b><span>${forecast.noArmy ? 'Train troops for an estimate' : `${forecast.wins}/${forecast.runs} simulations`}</span></div>
-        <div class="forecastStats"><div><small>Casualties if victorious</small><strong>${forecast.noArmy || forecast.losses === null ? '— · No simulated victories' : `${forecast.losses}% · ${loss}`}</strong></div><div><small>Loss if defeated</small><strong>${forecast.noArmy ? '— · Unavailable' : `${forecast.defeatLossCount} troops · ${forecast.defeatLosses}%`}</strong></div><div><small>Deployment supply</small><strong>${costText(supply)}</strong></div></div>
-        <p><b>Recommended counters:</b> ${recommend(enemy, i).join(', ') || 'Balanced force'}</p>
+        <div class="forecastHeading"><b class="difficulty ${difficulty}">${forecast.noArmy ? 'No deployable troops' : `Estimated win chance · ${forecast.chance}%`}</b><span>${forecast.noArmy ? 'Train troops for an estimate' : `${forecast.wins}/${forecast.runs} simulations · ${riskLabel}`}</span></div>
+        <div class="forecastStats"><div><small>Casualties if victorious</small><strong>${forecast.noArmy || forecast.losses === null ? '— · No simulated victories' : `${forecast.losses}% · ${loss}`}</strong></div><div><small>Loss if defeated</small><strong>${forecast.noArmy ? '— · Unavailable' : `${forecast.defeatLossCount} troops · ${forecast.defeatLosses}%`}</strong></div><div><small>Deployment supply</small><strong>${costText(supply)}</strong></div></div>${preparationCallout}
+        ${counterPlanMarkup(enemy, i)}
         <p><b>Battle tip:</b> Spearmen counter Cavalry; Archers pressure Infantry from range; Cavalry hunt ranged troops; Siege Engineers excel at fortified locations. Charge, Shield Wall, and Focus Fire remain available.</p>
         <p><b>Estimated resources received if victorious:</b> ${rewardText}</p><small class="forecastNote">Full victory rewards are granted even if your inventory temporarily exceeds normal storage capacity.</small>
         <small class="forecastNote">Victory casualties are averaged only across simulated wins. If defeated, the recovery penalty is 15% of the army, rounded down (minimum 1 troop lost when troops are deployed). Forecasts use standard tactics; active orders and general abilities can change the result.</small>
@@ -14415,13 +14599,14 @@ body:has(.modal.open) #toast.toast.show {
     $('#detailDialog .closeDetailAction').onclick = closeDetail;
     $('#deployBtn').onclick = () => startBattle(i);
   }
-  function battleUnitStats(side, type, q) {
+  function battleUnitStats(side, type, q, index = 0) {
     const qty = Math.max(1, q);
     const frontlineHP = type === 'Infantry' ? 1.2 : 1;
     const archerDamage = type === 'Archers' ? .9 : 1;
     const baseDamage = (UNITS[type]?.power || 11) * Math.pow(qty, .7) * archerDamage;
+    const encounterHPMultiplier = campaignEncounterHPMultiplier(side, index);
     if (side !== 'player') {
-      const hpPerTroop = 32 * frontlineHP;
+      const hpPerTroop = 32 * frontlineHP * encounterHPMultiplier;
       return { hp: qty * hpPerTroop, hpPerTroop, damage: baseDamage };
     }
     const u = unitUpgrade(type), spec = type === 'Infantry' ? researchLevel('infantry') * .05 : type === 'Archers' ? researchLevel('archers') * .05 : type === 'Cavalry' ? researchLevel('cavalry') * .05 : 0;
@@ -14432,11 +14617,13 @@ body:has(.modal.open) #toast.toast.show {
   function unitAttackRange(type) {
     return type === 'Archers' ? 30 : type === 'Siege Engineers' ? 24 : 9;
   }
-  function unitMovementSpeed(type) {
-    return type === 'Cavalry' ? 19 : type === 'Archers' ? 9 : type === 'Siege Engineers' ? 8 : 12;
+  function unitMovementSpeed(type, index = 0) {
+    const base = type === 'Cavalry' ? 19 : type === 'Archers' ? 9 : type === 'Siege Engineers' ? 8 : 12;
+    return index === 2 && type === 'Cavalry' ? base * 0.8 : base;
   }
-  function unitRoleDamageMultiplier(type, index) {
-    return type === 'Siege Engineers' && index >= 3 ? 1.35 : 1;
+  function unitRoleDamageMultiplier(type, index, side = 'player', level = palaceLevel()) {
+    if (type !== 'Siege Engineers' || index < 3) return 1;
+    return 1.35 * (side === 'player' && palaceMilestoneActive(level, 'siege') ? 1.1 : 1);
   }
   function incomingProtectionMultiplier(target, battleUnits) {
     if (!target || target.type === 'Infantry') return 1;
@@ -14459,8 +14646,8 @@ body:has(.modal.open) #toast.toast.show {
   function makeBattleUnits(side, p, index) {
     const list = side === 'player' ? Object.entries(S.units).filter(([, q]) => q > 0) : enemyComposition(index);
     return list.slice(0, 5).map(([type, q], i) => {
-      const stats = battleUnitStats(side, type, q);
-      const damage = stats.damage * combatDamageMultiplier(side, index) * unitRoleDamageMultiplier(type, index);
+      const stats = battleUnitStats(side, type, q, index);
+      const damage = stats.damage * combatDamageMultiplier(side, index) * unitRoleDamageMultiplier(type, index, side) * campaignEncounterDamageMultiplier(side, type, index);
       return { side, type, q, hp: stats.hp, max: stats.hp, hpPerTroop: stats.hpPerTroop || stats.hp / Math.max(1, q), x: side === 'player' ? 11 : 89, y: 24 + i * 14, damage, cool: 0, el: null, baseDamage: damage }
     })
   }
@@ -14530,7 +14717,7 @@ body:has(.modal.open) #toast.toast.show {
       const target = selectBattleTarget(u, targets, activeTactic);
       if (Math.abs(target.x - u.x) > unitAttackRange(u.type)) {
         const marchBoost = u.side === 'player' && activeTactic === 'charge' ? (S.faction === 'Wei' ? 1.65 : 1.5) : 1;
-        u.x += (u.side === 'player' ? 1 : -1) * dt * unitMovementSpeed(u.type) * marchBoost
+        u.x += (u.side === 'player' ? 1 : -1) * dt * unitMovementSpeed(u.type, battle.index) * marchBoost
       } else if ((u.cool -= dt) <= 0) {
         const mult = counter(u.type, target.type);
         let dmg = u.damage * mult * (.8 + Math.random() * .4);
@@ -14606,7 +14793,7 @@ body:has(.modal.open) #toast.toast.show {
     const startingTotal = Object.values(battle.startingArmy || S.units).reduce((sum, q) => sum + Math.max(0, q || 0), 0);
     let rewardForSummary = null;
     if (win) {
-      const r = { food: 80 + i * 30, wood: 70 + i * 25, iron: 35 + i * 15, coins: 90 + i * 35 };
+      const r = campaignVictoryRewards(i);
       const rewardOverCap = rewardWouldExceedStorage(r);
       const actualRewards = {};
       Object.entries(r).forEach(([k, v]) => { actualRewards[k] = grantResourceReward(k, v); });
@@ -14667,6 +14854,125 @@ body:has(.modal.open) #toast.toast.show {
   // types combine additively; when all three types are operational, overlapping
   // coverage applies a 1.40 divisor before research bonuses.
   const DEFENSE_BUILDING_VALUES = Object.freeze({ Watchtower: 30, Walls: 28, Gate: 22 });
+  const RAID_WARNING_MS = 120000;
+  const RAID_PREPARATIONS = Object.freeze({
+    muster: { title: 'Muster Guards', icon: '⚔️', cost: { food: 100, coins: 60 }, effect: 'Reduce incoming raid threat by 18% before the Palace counterattack.' },
+    secure: { title: 'Secure Supplies', icon: '📦', cost: { wood: 90 }, effect: 'Halve resource losses if the raid breaches your defenses.' },
+    brace: { title: 'Brace Palace', icon: '🛠️', cost: { wood: 80, iron: 35 }, effect: 'Reduce Palace condition damage by up to 5 points if breached.' }
+  });
+  function activeRaidWarning() {
+    return !!(S.raidPrep && Number(S.raidPrep.raidAt) === Number(S.nextRaidAt) && Date.now() < Number(S.nextRaidAt));
+  }
+  function revealRaidPreparation(panel) {
+    if (!panel) return;
+    const prep = panel.querySelector('.raidPrepPanel');
+    if (!prep) return;
+    const panelRect = panel.getBoundingClientRect();
+    const prepRect = prep.getBoundingClientRect();
+    const contentTop = panel.scrollTop + prepRect.top - panelRect.top;
+    const target = contentTop - Math.max(0, (panel.clientHeight - prepRect.height) / 2);
+    panel.scrollTop = Math.max(0, Math.min(Math.max(0, panel.scrollHeight - panel.clientHeight), target));
+  }
+  function renderRaidPrepMarkup() {
+    if (!activeRaidWarning()) return '';
+    const prep = S.raidPrep;
+    const remaining = Math.max(0, Number(S.nextRaidAt) - Date.now());
+    if (prep.choice && RAID_PREPARATIONS[prep.choice]) {
+      const chosen = RAID_PREPARATIONS[prep.choice];
+      return `<div class="raidPrepPanel"><div class="raidPrepHeading"><strong>⚠ Raid incoming · ${fmtTime(remaining)}</strong><small>Your preparation is committed and will affect this raid. Only one preparation can be used per warning.</small></div><div class="raidPrepChoiceLocked"><strong>${chosen.icon} ${chosen.title} locked in</strong><span>${chosen.effect}</span><span>Paid: ${costText(chosen.cost)}</span></div></div>`;
+    }
+    return `<div class="raidPrepPanel"><div class="raidPrepHeading"><strong>⚠ Raid warning · ${fmtTime(remaining)}</strong><small>Choose one preparation before the raid arrives. Costs are paid immediately; you may also leave resources untouched and rely on your existing defenses.</small></div><div class="raidPrepOptions">${Object.entries(RAID_PREPARATIONS).map(([key, item]) => `<button class="raidPrepOption" type="button" data-raid-prep="${key}" ${canPay(item.cost) ? '' : 'disabled'}><strong>${item.icon} ${item.title}</strong><small>${item.effect}</small><em>Cost · ${costText(item.cost)}</em></button>`).join('')}</div></div>`;
+  }
+  function renderRaidWarningUI() {
+    const banner = document.getElementById('raidWarningBanner');
+    const active = activeRaidWarning();
+    if (banner) {
+      const activityPanel = document.getElementById('activityPanel');
+      const prepPanelOpen = !!(active && activityPanel && !activityPanel.classList.contains('hidden') && activityPanel.querySelector('.raidPrepPanel'));
+      banner.classList.toggle('context-suppressed', prepPanelOpen);
+      banner.classList.toggle('hidden', !active);
+      if (!active) {
+        banner.innerHTML = '';
+        delete banner.dataset.raidAt;
+        delete banner.dataset.raidKey;
+      } else {
+        const raidAt = String(S.nextRaidAt);
+        const choice = S.raidPrep?.choice || '';
+        const bannerKey = `${raidAt}:${choice}`;
+        if (banner.dataset.raidKey !== bannerKey) {
+          banner.dataset.raidAt = raidAt;
+          banner.dataset.raidKey = bannerKey;
+          const status = choice && RAID_PREPARATIONS[choice] ? `${RAID_PREPARATIONS[choice].title} committed.` : 'Choose one preparation.';
+          banner.innerHTML = `<div class="raidWarningCopy"><strong>⚠ City raid incoming</strong><small><span data-raid-banner-countdown></span> · ${status}</small></div><button type="button" data-raid-open>${choice ? 'Review' : 'Prepare'}</button>`;
+        }
+        const countdown = fmtTime(Math.max(0, Number(S.nextRaidAt) - Date.now()));
+        const label = banner.querySelector('[data-raid-banner-countdown]');
+        if (label) label.textContent = `Raid in ${countdown}`;
+      }
+    }
+    const countdown = `Raid in ${fmtTime(Math.max(0, Number(S.nextRaidAt) - Date.now()))}`;
+    document.querySelectorAll('[data-raid-countdown]').forEach(node => { node.textContent = countdown; });
+  }
+  function startRaidWarning(now, message = 'Raid warning · Prepare your city within 2 minutes.') {
+    S.raidPrep = { raidAt: Number(S.nextRaidAt), warnedAt: now, choice: null };
+    save();
+    if (document.getElementById('city')?.classList.contains('active')) {
+      const panel = document.getElementById('activityPanel');
+      if (panel) {
+        panel.classList.remove('hidden');
+        renderActivityPanel();
+        const details = panel.querySelector('.defenseSummaryCard');
+        if (details) details.open = true;
+        revealRaidPreparation(panel);
+      }
+    }
+    renderRaidWarningUI();
+    // On the City screen the expanded Orders panel already shows the warning; avoid
+    // stacking a toast over the preparation choices. Other screens keep the brief toast.
+    if (!document.getElementById('city')?.classList.contains('active')) toast(message);
+  }
+  function chooseRaidPreparation(choice) {
+    const prep = S.raidPrep, config = RAID_PREPARATIONS[choice];
+    if (!config || !activeRaidWarning() || !prep) return toast('No raid preparation window is active'), false;
+    if (prep.choice) return toast('A preparation has already been committed for this raid'), false;
+    if (!canPay(config.cost)) return toast(`Preparation needs ${costText(config.cost)} · Missing ${missingCost(config.cost)}`), false;
+    if (!pay(config.cost)) return false;
+    prep.choice = choice;
+    prep.selectedAt = Date.now();
+    GameEvents.emit('raid:prepared', { choice, title: config.title }, `raid-prepared-${prep.raidAt}`);
+    save();
+    renderTop();
+    renderActivityPanel();
+    renderRaidWarningUI();
+    toast(`${config.title} committed · ${costText(config.cost)} paid`);
+    return true;
+  }
+  function openRaidPreparation() {
+    if (!activeRaidWarning()) return toast('No raid warning is active right now');
+    document.querySelectorAll('.navBtn').forEach(btn => btn.classList.toggle('active', btn.dataset.screen === 'city'));
+    document.querySelectorAll('.screen').forEach(screen => screen.classList.toggle('active', screen.id === 'city'));
+    const panel = document.getElementById('activityPanel');
+    if (panel) {
+      panel.classList.remove('hidden');
+      renderActivityPanel();
+      const details = panel.querySelector('.defenseSummaryCard');
+      if (details) details.open = true;
+      revealRaidPreparation(panel);
+    }
+    renderRaidWarningUI();
+  }
+  document.addEventListener('click', event => {
+    const prepButton = event.target.closest('[data-raid-prep]');
+    if (prepButton) {
+      event.preventDefault();
+      chooseRaidPreparation(prepButton.dataset.raidPrep);
+      return;
+    }
+    if (event.target.closest('[data-raid-open]')) {
+      event.preventDefault();
+      openRaidPreparation();
+    }
+  });
   function defenseOverlapFactor(defenders = operationalDefenseBuildings()) {
     const types = new Set(defenders.map(building => building.type)).size;
     return types >= 3 ? 1.40 : 1;
@@ -14773,22 +15079,55 @@ body:has(.modal.open) #toast.toast.show {
   }
   function processRaid() {
     const now = Date.now();
-    S.nextRaidAt = S.nextRaidAt || now + 1200000;
-    if (now < S.nextRaidAt) return;
-    const raidKey = S.nextRaidAt;
+    S.nextRaidAt = Number(S.nextRaidAt) || now + 1200000;
+    const scheduledAt = Number(S.nextRaidAt);
+    if (now < scheduledAt) {
+      if (scheduledAt - now <= RAID_WARNING_MS && (!S.raidPrep || Number(S.raidPrep.raidAt) !== scheduledAt)) {
+        startRaidWarning(now);
+      } else {
+        renderRaidWarningUI();
+      }
+      return;
+    }
+    // Browser/background throttling should not silently resolve a raid while the player
+    // had no practical chance to react. A delayed tick grants a fresh two-minute window.
+    if (now - scheduledAt > 10000) {
+      const committedChoice = S.raidPrep && Number(S.raidPrep.raidAt) === scheduledAt ? S.raidPrep.choice : null;
+      S.nextRaidAt = now + RAID_WARNING_MS;
+      S.raidPrep = { raidAt: Number(S.nextRaidAt), warnedAt: now, choice: committedChoice || null };
+      save();
+      if (document.getElementById('city')?.classList.contains('active')) {
+        const panel = document.getElementById('activityPanel');
+        if (panel) {
+          panel.classList.remove('hidden');
+          renderActivityPanel();
+          const details = panel.querySelector('.defenseSummaryCard');
+          if (details) details.open = true;
+        }
+      }
+      renderRaidWarningUI();
+      toast('Raid timing resumed · You have 2 minutes to prepare.');
+      return;
+    }
+    const prep = S.raidPrep && Number(S.raidPrep.raidAt) === scheduledAt ? S.raidPrep : null;
+    const prepChoice = prep && RAID_PREPARATIONS[prep.choice] ? prep.choice : null;
+    const prepConfig = prepChoice ? RAID_PREPARATIONS[prepChoice] : null;
     const defenders = operationalDefenseBuildings();
     const defense = defenseRating();
     const raidRange = raidThreatRange(S.campaignCycle);
-    const rawThreat = raidRange.min + Math.floor(Math.random() * 56);
+    const rolledThreat = raidRange.min + Math.floor(Math.random() * 56);
+    const rawThreat = prepChoice === 'muster' ? Math.max(10, Math.floor(rolledThreat * .82)) : rolledThreat;
     const palaceVolley = calculatePalaceVolley(rawThreat);
     const threat = palaceVolley.effectiveThreat;
     const repelled = defense >= threat;
+    const preparationNote = prepConfig ? `${prepConfig.title} used · ` : '';
     if (repelled) {
-      S.reports.unshift(`Raid repelled · Palace volley ${palaceVolley.appliedDamage} (${rawThreat}→${threat} threat) · Defense ${defense} vs threat ${threat}`);
-      toast(`Raid repelled · Palace volley −${palaceVolley.appliedDamage} threat`)
+      S.reports.unshift(`${preparationNote}Raid repelled · Palace volley ${palaceVolley.appliedDamage} (${rolledThreat}${rolledThreat !== rawThreat ? '→' + rawThreat : ''}→${threat} threat) · Defense ${defense} vs threat ${threat}`);
+      toast(`${prepConfig ? prepConfig.title + ' · ' : ''}Raid repelled · Palace volley −${palaceVolley.appliedDamage} threat`)
     } else {
       const threatGap = Math.max(0, threat - defense);
-      const pct = Math.max(.02, Math.min(.12, threatGap / 400) * (1 - researchEffect('raidProtection')));
+      const baseLossPct = Math.max(.02, Math.min(.12, threatGap / 400) * (1 - researchEffect('raidProtection')));
+      const pct = baseLossPct * (prepChoice === 'secure' ? .5 : 1);
       let lost = 0;
       Object.keys(S.r).forEach(k => {
         const n = Math.floor(S.r[k] * pct);
@@ -14797,25 +15136,28 @@ body:has(.modal.open) #toast.toast.show {
       });
       const conditionBefore = palaceCondition();
       const requestedPalaceDamage = Math.max(5, Math.min(15, Math.round(threatGap / 8)));
-      const palaceDamageTaken = Math.min(conditionBefore, requestedPalaceDamage);
+      const protectedPalaceDamage = Math.max(0, requestedPalaceDamage - (prepChoice === 'brace' ? 5 : 0));
+      const palaceDamageTaken = Math.min(conditionBefore, protectedPalaceDamage);
       S.palaceCondition = Math.max(0, conditionBefore - palaceDamageTaken);
       if (defenders.length) {
         const damageAdded = Math.max(5, Math.round(threatGap / 3));
         S.defenseDamage = Math.min(80, (S.defenseDamage || 0) + damageAdded);
-        S.reports.unshift(`Raid breached · Palace volley ${palaceVolley.appliedDamage} (${rawThreat}→${threat} threat) · ${lost} resources lost · Palace condition ${conditionBefore}→${S.palaceCondition}/100 (-${palaceDamageTaken}) · ${S.defenseDamage} city defense damage`);
-        toast(`Raid breach · Palace condition −${palaceDamageTaken} · ${lost} resources lost`)
+        S.reports.unshift(`${preparationNote}Raid breached · Palace volley ${palaceVolley.appliedDamage} (${rolledThreat}${rolledThreat !== rawThreat ? '→' + rawThreat : ''}→${threat} threat) · ${lost} resources lost${prepChoice === 'secure' ? ' (stores secured)' : ''} · Palace condition ${conditionBefore}→${S.palaceCondition}/100 (-${palaceDamageTaken}) · ${S.defenseDamage} city defense damage`);
+        toast(`${prepConfig ? prepConfig.title + ' · ' : ''}Raid breach · Palace condition −${palaceDamageTaken} · ${lost} resources lost`)
       } else {
         // The Palace itself is damageable even before the player builds Watchtowers, Walls, or a Gate.
         S.defenseDamage = Math.max(0, Number(S.defenseDamage) || 0);
-        S.reports.unshift(`Raid breached · Palace volley ${palaceVolley.appliedDamage} (${rawThreat}→${threat} threat) · ${lost} resources lost · Palace condition ${conditionBefore}→${S.palaceCondition}/100 (-${palaceDamageTaken}) · no Watchtower/Walls/Gate damage`);
-        toast(`Raid breached · Palace condition −${palaceDamageTaken} · ${lost} resources lost`)
+        S.reports.unshift(`${preparationNote}Raid breached · Palace volley ${palaceVolley.appliedDamage} (${rolledThreat}${rolledThreat !== rawThreat ? '→' + rawThreat : ''}→${threat} threat) · ${lost} resources lost${prepChoice === 'secure' ? ' (stores secured)' : ''} · Palace condition ${conditionBefore}→${S.palaceCondition}/100 (-${palaceDamageTaken}) · no Watchtower/Walls/Gate damage`);
+        toast(`${prepConfig ? prepConfig.title + ' · ' : ''}Raid breach · Palace condition −${palaceDamageTaken} · ${lost} resources lost`)
       }
     }
     S.nextRaidAt = now + (900 + Math.floor(Math.random() * 901) + researchLevel('intelligence') * 120) * 1000;
+    S.raidPrep = null;
     S.reports = S.reports.slice(0, 10);
-    GameEvents.emit('raid:resolved', { repelled, defense, rawThreat, threat, palaceVolley: palaceVolley.appliedDamage, palaceCondition: palaceCondition() }, `raid-${raidKey}`);
+    GameEvents.emit('raid:resolved', { repelled, defense, rolledThreat, rawThreat, threat, palaceVolley: palaceVolley.appliedDamage, palaceCondition: palaceCondition(), preparation: prepChoice }, `raid-${scheduledAt}`);
     save();
-    renderAll()
+    renderAll();
+    renderRaidWarningUI()
   }
   function showWelcomeBack(lossAtLoad = null, measuredAwayMs = null) {
     const away = measuredAwayMs == null ? Math.max(0, Date.now() - (S.lastSeen || Date.now())) : Math.max(0, Number(measuredAwayMs) || 0);
@@ -14896,18 +15238,16 @@ body:has(.modal.open) #toast.toast.show {
   const P3_DAILY_POOL = [
     { id: 'collect', title: 'Secure Supplies', desc: 'Claim 300 reserve resources', target: 300, event: 'collect', reward: { coins: 90 } },
     { id: 'develop', title: 'Build the Realm', desc: 'Start 1 building or upgrade', target: 1, event: 'building', reward: { coins: 90 } },
-    { id: 'train', title: 'Raise Reinforcements', desc: 'Train 10 troops', target: 10, event: 'train', reward: { food: 120 } },
+    { id: 'train', title: 'Raise Reinforcements', desc: 'Train 5 troops', target: 5, event: 'train', reward: { food: 120 } },
     { id: 'battle', title: 'Prove Your Command', desc: 'Complete 1 campaign battle', target: 1, event: 'battle', reward: { coins: 110 } },
-    { id: 'research', title: 'Advance the Academy', desc: 'Start 1 research project', target: 1, event: 'research', reward: { wood: 120 } },
-    { id: 'raid', title: 'Guard the Dominion', desc: 'Resolve 1 city raid', target: 1, event: 'raid', reward: { iron: 80 } }
+    { id: 'research', title: 'Advance the Academy', desc: 'Start 1 research project', target: 1, event: 'research', reward: { wood: 120 } }
   ];
   const P3_WEEKLY_POOL = [
-    { id: 'w_collect', title: 'Realm Provisioning', desc: 'Claim 2,500 reserve resources', target: 2500, event: 'collect', reward: { coins: 220 } },
+    { id: 'w_collect', title: 'Realm Provisioning', desc: 'Claim 1,000 reserve resources', target: 1000, event: 'collect', reward: { coins: 180 } },
     { id: 'w_develop', title: 'Realm Expansion', desc: 'Start 5 building or upgrade projects', target: 5, event: 'building', reward: { coins: 220 } },
-    { id: 'w_train', title: 'Standing Army', desc: 'Train 50 troops', target: 50, event: 'train', reward: { food: 300 } },
-    { id: 'w_battle', title: 'Campaign Orders', desc: 'Complete 5 campaign battles', target: 5, event: 'battle', reward: { coins: 300 } },
-    { id: 'w_research', title: 'Scholars at Work', desc: 'Start 3 research projects', target: 3, event: 'research', reward: { wood: 260 } },
-    { id: 'w_raid', title: 'Hold the Walls', desc: 'Resolve 2 city raids', target: 2, event: 'raid', reward: { iron: 180 } }
+    { id: 'w_train', title: 'Standing Army', desc: 'Train 30 troops', target: 30, event: 'train', reward: { food: 300 } },
+    { id: 'w_battle', title: 'Campaign Orders', desc: 'Complete 3 campaign battles', target: 3, event: 'battle', reward: { coins: 260 } },
+    { id: 'w_research', title: 'Scholars at Work', desc: 'Start 2 research projects', target: 2, event: 'research', reward: { wood: 220 } }
   ];
   const P3_LOGIN_REWARDS = [{ food: 180 }, { wood: 180 }, { iron: 120 }, { coins: 180 }, { food: 300, wood: 150 }, { iron: 220, coins: 120 }, { coins: 400, wood: 250 }];
   function p3DayKey(d = new Date()) {
@@ -14948,19 +15288,32 @@ body:has(.modal.open) #toast.toast.show {
     }
     // Migrate already-generated reserve-only objectives so returning/new players are not
     // stuck with a task that requires storage to fill before any meaningful first-session action.
-    const migrateReserveObjective = (objective, weekly) => {
+    const migrateReserveObjective = (objective, weekly, list) => {
       if (!objective || objective.event !== 'collect' || S.quests.collect) return;
+      const pool = weekly ? P3_WEEKLY_POOL : P3_DAILY_POOL;
+      const used = new Set(list.filter(item => item && item !== objective).map(item => item.id));
+      const candidate = pool.find(item => item.event !== 'collect' && !used.has(item.id));
+      if (!candidate) return;
       const wasClaimed = !!objective.claimed;
-      const wasComplete = (Number(objective.progress) || 0) >= (Number(objective.target) || (weekly ? 2500 : 300));
-      objective.id = weekly ? 'w_develop' : 'develop';
-      objective.title = weekly ? 'Realm Expansion' : 'Build the Realm';
-      objective.desc = weekly ? 'Start 5 building projects' : 'Start 1 building or upgrade';
-      objective.target = weekly ? 5 : 1;
-      objective.event = 'building';
-      objective.progress = wasClaimed || wasComplete ? objective.target : 0;
+      const wasComplete = (Number(objective.progress) || 0) >= (Number(objective.target) || (weekly ? 1000 : 300));
+      Object.assign(objective, candidate, { progress: wasClaimed || wasComplete ? candidate.target : 0, claimed: wasClaimed });
     };
-    p.daily.forEach(objective => migrateReserveObjective(objective, false));
-    p.weekly.forEach(objective => migrateReserveObjective(objective, true));
+    p.daily.forEach(objective => migrateReserveObjective(objective, false, p.daily));
+    p.weekly.forEach(objective => migrateReserveObjective(objective, true, p.weekly));
+    // Phase 7D: raid timing is not a daily chore. Migrate already-issued raid objectives
+    // to an unused ordinary play objective so existing saves are never stuck waiting.
+    const migrateRaidObjective = (objective, weekly, list) => {
+      if (!objective || objective.event !== 'raid') return;
+      const pool = weekly ? P3_WEEKLY_POOL : P3_DAILY_POOL;
+      const used = new Set(list.filter(item => item && item !== objective).map(item => item.id));
+      const allowed = pool.filter(item => (S.quests.collect || item.event !== 'collect') && !used.has(item.id));
+      const candidate = allowed[0] || pool.find(item => !used.has(item.id)) || pool[0];
+      const wasClaimed = !!objective.claimed;
+      const wasComplete = (Number(objective.progress) || 0) >= (Number(objective.target) || (weekly ? 2 : 1));
+      Object.assign(objective, candidate, { progress: wasClaimed || wasComplete ? candidate.target : 0, claimed: wasClaimed });
+    };
+    p.daily.forEach(objective => migrateRaidObjective(objective, false, p.daily));
+    p.weekly.forEach(objective => migrateRaidObjective(objective, true, p.weekly));
     p.loginStep = Math.max(0, Math.min(6, Number(p.loginStep) || 0));
   }
   function p3RewardText(r) {
@@ -15024,7 +15377,7 @@ body:has(.modal.open) #toast.toast.show {
     const idx = p.daily.findIndex(o => !o.claimed && o.progress === 0);
     if (idx < 0) return toast('No untouched bounty can be replaced');
     const used = new Set(p.daily.map(o => o.id));
-    const candidate = P3_DAILY_POOL.find(o => !used.has(o.id));
+    const candidate = P3_DAILY_POOL.find(o => !used.has(o.id) && (S.quests.collect || o.event !== 'collect'));
     if (!candidate) return toast('No alternate bounty is available');
     p.daily[idx] = p3Objective(candidate);
     p.dailyRerollUsed = true;
@@ -15071,6 +15424,7 @@ body:has(.modal.open) #toast.toast.show {
     renderPhase3()
   };
   window.WDPhase3Test = { state: () => JSON.parse(JSON.stringify(S.phase3)), progress: (event, amount) => p3Progress(event, amount), render: renderPhase3, claimDaily: i => p3ClaimObjective('daily', i), claimWeeklyObjective: i => p3ClaimObjective('weekly', i), claimLogin: p3ClaimLogin, claimWeekly: p3ClaimWeekly, reroll: p3Reroll, dayKey: p3DayKey, weekKey: p3WeekKey };
+  window.WDRaidStatus = Object.freeze({ snapshot: () => ({ nextRaidAt: Number(S.nextRaidAt), warningActive: activeRaidWarning(), preparation: S.raidPrep ? { ...S.raidPrep } : null, palaceCondition: palaceCondition(), defenseDamage: Number(S.defenseDamage) || 0, resources: { ...S.r }, reports: [...(S.reports || [])] }) });
   setTimeout(() => {
     const a = $('#claimLoginReward'), b = $('#claimWeeklyReward'), c = $('#rerollDaily');
     if (a) a.onclick = p3ClaimLogin;
@@ -15114,8 +15468,10 @@ body:has(.modal.open) #toast.toast.show {
   });
   $('#activityToggle').onclick = () => {
     $('#activityPanel').classList.toggle('hidden');
-    renderActivityPanel()
+    renderActivityPanel();
+    renderRaidWarningUI();
   };
+  renderRaidWarningUI();
   $('#collectAllBtn').onclick = collectAll;
   $('#balancedBtn').onclick = balanced;
   $('#recruitBtn').onclick = recruit;
@@ -15249,6 +15605,7 @@ body:has(.modal.open) #toast.toast.show {
       updateProduction();
       processTimers();
       processRaid();
+      renderRaidWarningUI();
       renderTop();
       updateProductionUI();
       refreshAffordabilityHints(document);
