@@ -15432,12 +15432,16 @@ html:not(#_):not(#_):not(#_) body #researchModal .modalClose {
     return `Passive storage cap: ${cap} each<br>${reserve} in reserve overflow`;
   }
   const slots = Array.from({ length: 25 }, (_, i) => ({ x: (i % 5) * 105 + (Math.floor(i / 5) % 2) * 52, y: Math.floor(i / 5) * 68 }));
+  // DOM write helpers: skip the write (and the resulting mutation/re-layout) when nothing changed
+  const setText = (el, t) => { if (el && el.textContent !== t) el.textContent = t };
+  const setHtml = (el, h) => { if (el && el.__lastHtml !== h) { el.innerHTML = h; el.__lastHtml = h } };
+  const setAttr = (el, n, v) => { if (el && el.getAttribute(n) !== v) el.setAttribute(n, v) };
   function renderTop() {
     updateProduction();
     const cap = storageCap();
     Object.keys(S.r).forEach(k => {
-      $('#' + k).textContent = Math.floor(S.r[k]).toLocaleString();
-      $('#' + k + 'Cap').textContent = '/ ' + cap.toLocaleString()
+      setText($('#' + k), Math.floor(S.r[k]).toLocaleString());
+      setText($('#' + k + 'Cap'), '/ ' + cap.toLocaleString())
     });
     const rates = { food: 0, wood: 0, iron: 0, coins: 0 };
     S.buildings.forEach(b => {
@@ -15454,12 +15458,14 @@ html:not(#_):not(#_):not(#_) body #researchModal .modalClose {
       const reserveTypes = plan.resourceOrder.filter(r => Number(plan.collectibleByResource[r] || 0) > 0).length;
       status.classList.add('economyLaunchOnly');
       status.classList.remove('collapsed', 'interactionCompact');
-      status.innerHTML = `<button class="economyLauncher" type="button" data-open-production-dashboard aria-haspopup="dialog" aria-controls="productionDashboardModal" aria-label="Open economy details. Storage ${used} of ${totalCap}. ${readyDetail}" title="Open economy details"><span class="economyLauncherIcon" aria-hidden="true">📦</span><span class="economyLauncherLabel">Economy</span>${reserveTypes ? `<b class="economyLauncherBadge" aria-label="${reserveTypes} resource types with reserve">${reserveTypes}</b>` : ''}</button>`;
-      status.setAttribute('aria-label', `Economy details. Total stock ${used} of ${totalCap}; per-resource cap ${cap}. ${readyText} Food ${rates.food.toFixed(1)} per minute, wood ${rates.wood.toFixed(1)}, iron ${rates.iron.toFixed(1)}, coins ${rates.coins.toFixed(1)}.`);
+      setHtml(status, `<button class="economyLauncher" type="button" data-open-production-dashboard aria-haspopup="dialog" aria-controls="productionDashboardModal" aria-label="Open economy details. Storage ${used} of ${totalCap}. ${readyDetail}" title="Open economy details"><span class="economyLauncherIcon" aria-hidden="true">📦</span><span class="economyLauncherLabel">Economy</span>${reserveTypes ? `<b class="economyLauncherBadge" aria-label="${reserveTypes} resource types with reserve">${reserveTypes}</b>` : ''}</button>`);
+      setAttr(status, 'aria-label', `Economy details. Total stock ${used} of ${totalCap}; per-resource cap ${cap}. ${readyText} Food ${rates.food.toFixed(1)} per minute, wood ${rates.wood.toFixed(1)}, iron ${rates.iron.toFixed(1)}, coins ${rates.coins.toFixed(1)}.`);
     }
-    $('#cityLevel').textContent = S.level;
-    $('#factionCrest').textContent = S.faction === 'Wei' ? '🐉' : S.faction === 'Shu' ? '🦚' : S.faction === 'Wu' ? '🐅' : '⚔️';
-    $('#cityViewport').dataset.faction = S.faction || 'Neutral'
+    setText($('#cityLevel'), String(S.level));
+    { const crest = $('#factionCrest'), glyph = S.faction === 'Wei' ? '🐉' : S.faction === 'Shu' ? '🦚' : S.faction === 'Wu' ? '🐅' : '⚔️';
+      // cached: the icons patch swaps the emoji for an SVG, so comparing textContent would rewrite it every tick
+      if (crest && crest.__glyph !== glyph) { crest.textContent = glyph; crest.__glyph = glyph } }
+    const vp = $('#cityViewport'), fac = S.faction || 'Neutral'; if (vp.dataset.faction !== fac) vp.dataset.faction = fac
   }
   function buildingArt(type, level = 1) {
     const tier = `tier${Math.min(4, level)}`;
@@ -17882,6 +17888,11 @@ if (typeof addCityAmbience === 'function') {
   </section>
 </div>
 <script id="wd-patches">
+/* perf helpers: write only when changed; coalesce bursts of DOM mutations into one trailing run */
+window.__wd = {
+  setAttr(el, n, v) { if (el.getAttribute(n) !== v) el.setAttribute(n, v); },
+  later(fn, ms = 300) { let t = 0; return () => { if (t) return; t = setTimeout(() => { t = 0; fn(); }, ms); }; }
+};
 /* ===== patch: camera ===== */
 try {
 /* Camera: one-finger drag, two-finger pinch (focal), wheel zoom; zoom range widened to .8-2.2 */
@@ -18451,19 +18462,17 @@ try {
         const t = (b.textContent || '').trim().replace(/\s+/g, ' ');
         if (t) b.setAttribute('aria-label', t.slice(0, 80)); else b.setAttribute('aria-label', 'Game action ' + (i + 1))
       }
-      b.setAttribute('type', 'button')
+      __wd.setAttr(b, 'type', 'button')
     });
     document.querySelectorAll('.navBtn').forEach(b => {
       const n = labelMap[b.dataset.screen] || b.dataset.screen;
-      b.setAttribute('aria-label', 'Open ' + n);
-      b.setAttribute('aria-current', b.classList.contains('active') ? 'page' : 'false')
+      __wd.setAttr(b, 'aria-label', 'Open ' + n);
+      __wd.setAttr(b, 'aria-current', b.classList.contains('active') ? 'page' : 'false')
     });
-    document.querySelectorAll('.buildItem,.node,.plot,.building').forEach(el => {
-      if (!el.getAttribute('role') && !['BUTTON', 'A'].includes(el.tagName)) el.setAttribute('role', 'button');
-      if (!el.hasAttribute('tabindex')) el.tabIndex = 0
-    });
+    // role/tabindex on .plot/.building/.node/.buildItem used to be added here and then stripped again by
+    // p0-runtime-cleanup on every redraw; those elements contain/are real <button>s, so it is no longer added.
   }
-  const mo = new MutationObserver(() => requestAnimationFrame(mobileAudit));
+  const mo = new MutationObserver(__wd.later(mobileAudit));
   mo.observe(document.body, { subtree: true, childList: true });
   mobileAudit();
   document.addEventListener('click', e => {
@@ -18484,38 +18493,28 @@ try {
 try {
 (() => {
   const $all = (q, r = document) => [...r.querySelectorAll(q)];
+  const TITLE_OK = '.res,.economyToggle,.economyLauncher,.buildItem,.collectBubble,.economyReadySummary,#collectAllBtn';
   function polish() {
     $all('button').forEach((b, i) => {
-      b.type = 'button';
+      if (b.type !== 'button') b.type = 'button';
       const label = (b.getAttribute('aria-label') || b.textContent || '').trim().replace(/\s+/g, ' ');
       if (!b.getAttribute('aria-label') && label) b.setAttribute('aria-label', label.slice(0, 100));
-      if (label && !b.title) b.title = label.slice(0, 100);
-      if (b.disabled) b.setAttribute('aria-disabled', 'true'); else b.removeAttribute('aria-disabled')
+      // titles are stripped again by p0-runtime-cleanup everywhere except this allow-list, so only set them there
+      if (label && !b.title && b.matches(TITLE_OK)) b.title = label.slice(0, 100);
+      if (b.disabled) __wd.setAttr(b, 'aria-disabled', 'true'); else if (b.hasAttribute('aria-disabled')) b.removeAttribute('aria-disabled')
     });
-    $all('.navBtn').forEach(b => b.setAttribute('aria-current', b.classList.contains('active') ? 'page' : 'false'));
+    $all('.navBtn').forEach(b => __wd.setAttr(b, 'aria-current', b.classList.contains('active') ? 'page' : 'false'));
     $all('.buildItem,.plot,.building,.node').forEach(el => {
-      if (el.tagName !== 'BUTTON') {
-        el.setAttribute('role', 'button');
-        if (!el.hasAttribute('tabindex')) el.tabIndex = 0
-      }
+      // role="button"/tabindex no longer added (see mobile-first-runtime note)
       const text = (el.getAttribute('aria-label') || el.textContent || '').trim().replace(/\s+/g, ' ');
       if (text && !el.getAttribute('aria-label')) el.setAttribute('aria-label', text.slice(0, 120))
     });
     const dock = document.querySelector('.buildDock');
-    if (dock) dock.setAttribute('aria-label', 'Building menu');
+    if (dock) __wd.setAttr(dock, 'aria-label', 'Building menu');
     const nav = document.querySelector('.bottomNav');
-    if (nav) nav.setAttribute('aria-label', 'Primary game navigation');
+    if (nav) __wd.setAttr(nav, 'aria-label', 'Primary game navigation');
   }
-  let queued = false;
-  new MutationObserver(() => {
-    if (!queued) {
-      queued = true;
-      requestAnimationFrame(() => {
-        queued = false;
-        polish()
-      })
-    }
-  }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'disabled'] });
+  new MutationObserver(__wd.later(polish)).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'disabled'] });
   document.addEventListener('keydown', e => {
     if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role="button"]:not(button)')) {
       e.preventDefault();
@@ -18573,7 +18572,7 @@ try {
     })
   };
   clean();
-  new MutationObserver(() => requestAnimationFrame(clean)).observe(document.body, { childList: true, subtree: true });
+  new MutationObserver(__wd.later(clean)).observe(document.body, { childList: true, subtree: true });
 })();
 } catch (e) { console.error('[wd-patch:p0-runtime-cleanup]', e); }
 
