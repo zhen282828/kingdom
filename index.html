@@ -3,6 +3,13 @@
 <meta name="application-name" content="Three Kingdoms: Warlord Dominion">
 <meta name="wd-build" content="P1.4-F6.3-RC1">
 <meta name="wd-save-schema" content="4">
+<script>
+/* Cloud-save restore: applies a pending cloud import before the game reads localStorage. */
+try {
+  var p = sessionStorage.getItem('wd_pending_import');
+  if (p) { localStorage.setItem('wd_revamp', p); sessionStorage.removeItem('wd_pending_import'); }
+} catch (e) {}
+</script>
 <meta name="theme-color" content="#142641"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="format-detection" content="telephone=no">
 
 
@@ -18721,4 +18728,98 @@ html:not(#_):not(#_):not(#_) body #researchModal .modalClose {
     border: 2px solid #1c2d27; pointer-events: none;
   }
 </style>
+<script type="module" id="wd-cloud-save">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAzs0iqVUKk31w_MX_XV_7ytfX-UUhdCyg",
+  authDomain: "k-test-e39da.firebaseapp.com",
+  projectId: "k-test-e39da",
+  storageBucket: "k-test-e39da.firebasestorage.app",
+  messagingSenderId: "611874777313",
+  appId: "1:611874777313:web:343e1e32173123424a6fa0"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const KEY = 'wd_revamp';
+let user = null, synced = false, busy = false, lastUploaded = '', timer = null;
+
+const parse = s => { try { return JSON.parse(s); } catch { return null; } };
+const valid = o => o && typeof o === 'object' && o.r && Array.isArray(o.buildings) && o.units;
+const describe = s => {
+  const o = parse(s); if (!valid(o)) return 'no valid save';
+  const p = o.buildings.find(b => b.type === 'Palace');
+  return `Palace Lv${p ? p.level : 1}, ${o.buildings.length} buildings, territory ${o.territory || 0}, saved ${new Date(o.lastSeen || 0).toLocaleString()}`;
+};
+
+// ---- UI: two buttons injected into the Settings dialog ----
+const grid = document.querySelector('#settingsModal .grid');
+const mk = id => { const b = document.createElement('button'); b.id = id; b.type = 'button'; b.className = 'secondary'; grid.prepend(b); return b; };
+const syncBtn = mk('cloudSyncBtn');
+const authBtn = mk('cloudAuthBtn');
+function renderUI() {
+  authBtn.textContent = user ? `☁️ Signed in: ${user.displayName || user.email} (tap to sign out)` : '☁️ Sign in with Google (cloud save)';
+  syncBtn.textContent = '🔄 Sync cloud save now';
+  syncBtn.style.display = user ? '' : 'none';
+}
+renderUI();
+
+// ---- Cloud operations ----
+async function upload(force = false) {
+  if (!user || !synced || busy) return;
+  const local = localStorage.getItem(KEY);
+  if (!local || (!force && local === lastUploaded) || !valid(parse(local))) return;
+  busy = true;
+  try {
+    await setDoc(doc(db, 'saves', user.uid), { data: local, updatedAt: serverTimestamp() });
+    lastUploaded = local;
+  } catch (e) { console.warn('Cloud upload failed', e); }
+  finally { busy = false; }
+}
+
+function applyCloud(cloud) {
+  sessionStorage.setItem('wd_pending_import', cloud);
+  location.reload();
+}
+
+async function pull() {
+  const snap = await getDoc(doc(db, 'saves', user.uid));
+  const local = localStorage.getItem(KEY);
+  const cloud = snap.exists() ? snap.data().data : null;
+  if (!valid(parse(cloud))) { synced = true; await upload(true); return; }       // no cloud save yet
+  if (!valid(parse(local))) { applyCloud(cloud); return; }                      // empty browser
+  if (local === cloud) { synced = true; return; }
+  const useCloud = confirm(
+    'A cloud save exists and differs from this browser.\n\n' +
+    'CLOUD: ' + describe(cloud) + '\nTHIS BROWSER: ' + describe(local) +
+    '\n\nOK = load the CLOUD save (replaces this browser)\nCancel = keep THIS BROWSER (overwrites the cloud)');
+  if (useCloud) applyCloud(cloud);
+  else { synced = true; await upload(true); }
+}
+
+authBtn.onclick = async () => {
+  try {
+    if (user) { await signOut(auth); }
+    else { await signInWithPopup(auth, new GoogleAuthProvider()); }
+  } catch (e) { alert('Sign-in failed: ' + (e.code || e.message)); }
+};
+syncBtn.onclick = async () => {
+  synced = false;
+  try { await pull(); alert('Cloud sync complete.'); } catch (e) { alert('Sync failed: ' + (e.code || e.message)); }
+};
+
+onAuthStateChanged(auth, async u => {
+  user = u; synced = false; clearInterval(timer); renderUI();
+  if (!u) return;
+  try { await pull(); } catch (e) { console.warn('Initial sync failed', e); return; }
+  timer = setInterval(() => upload(), 120000);   // every 2 minutes
+});
+document.addEventListener('visibilitychange', () => { if (document.hidden) upload(); });
+</script>
 </body></html>
