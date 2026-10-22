@@ -12,18 +12,6 @@ try {
 </script>
 <meta name="theme-color" content="#142641"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="format-detection" content="telephone=no">
 
-
-
-
-
-
-
-
-
-
-
-
-
 <style id="wd-consolidated-styles">
 /*
  * MAINTENANCE INDEX — STYLESHEET CASCADE
@@ -12727,6 +12715,18 @@ body:has(.modal.open) #toast.toast.show {
       }, write(v) {
         memory = v;
         if (available) {
+          // Rolling backup: at most every 10 min, keep the previous VALID save under a second key.
+          try {
+            const at = Number(window.localStorage.getItem('wd_revamp_bak_at')) || 0;
+            if (Date.now() - at > 600000) {
+              const prev = window.localStorage.getItem('wd_revamp');
+              const o = prev && JSON.parse(prev);
+              if (o && typeof o === 'object' && Array.isArray(o.buildings)) {
+                window.localStorage.setItem('wd_revamp_bak', prev);
+                window.localStorage.setItem('wd_revamp_bak_at', String(Date.now()));
+              }
+            }
+          } catch (e) { }
           try {
             window.localStorage.setItem('wd_revamp', v)
           } catch (e) {
@@ -12899,10 +12899,20 @@ body:has(.modal.open) #toast.toast.show {
     refreshAffordabilityHints(grid)
   }
   let S;
+  const __okSave = o => o && typeof o === 'object' && Array.isArray(o.buildings);
   try {
-    S = JSON.parse(Store.read()) || fresh()
+    S = JSON.parse(Store.read());
+    if (S === null) S = fresh();            // no save yet
+    else if (!__okSave(S)) throw new Error('invalid save');
   } catch (e) {
-    S = fresh()
+    S = null;
+    try {
+      const raw = window.localStorage.getItem('wd_revamp');
+      if (raw) window.localStorage.setItem('wd_revamp_corrupt', raw);   // keep the bad data for inspection
+      const bak = JSON.parse(window.localStorage.getItem('wd_revamp_bak'));
+      if (__okSave(bak)) S = bak;           // restore the last good backup
+    } catch (e2) { }
+    if (!S) S = fresh();
   }
   if (!S || typeof S !== 'object') S = fresh();
   S.saveSchema = Number(S.saveSchema) || 0;
@@ -15584,7 +15594,7 @@ body:has(.modal.open) #toast.toast.show {
       renderTop();
       updateProductionUI();
       refreshAffordabilityHints(document);
-      if (Date.now() % 5000 < 1000) save()
+      if (Date.now() - (Number(S.lastSeen) || 0) >= 5000) save()
     }
   }, 1000);
   window.addEventListener('beforeunload', save);
@@ -15713,8 +15723,6 @@ function bindCameraControls() {
   };
 }
 applyCityZoom(); bindCameraControls();
-
-
 
 function dioramaDistrict(type) {
   if (['Palace', 'Academy', 'Market'].includes(type)) return 'civic';
@@ -17522,8 +17530,6 @@ html:not(#_):not(#_):not(#_) body #collectAllBtn{display:inline-flex!important;v
   }
 </style>
 
-
-
 <style id="wd-building-info-message-theme">
   /* Building detail / upgrade modal: align its visual language with the shared navy-and-gold message panels.
      The existing content, game handlers, and bottom-sheet flow are retained. */
@@ -18777,13 +18783,16 @@ async function upload(force = false) {
   if (!local || (!force && local === lastUploaded) || !valid(parse(local))) return;
   busy = true;
   try {
-    await setDoc(doc(db, 'saves', user.uid), { data: local, updatedAt: serverTimestamp() });
+    const rev = Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+    await setDoc(doc(db, 'saves', user.uid), { data: local, updatedAt: serverTimestamp(), rev });
     lastUploaded = local;
+    try { localStorage.setItem('wd_cloud_rev', rev); } catch (e) {}
   } catch (e) { console.warn('Cloud upload failed', e); }
   finally { busy = false; }
 }
 
-function applyCloud(cloud) {
+function applyCloud(cloud, rev) {
+  try { if (rev) localStorage.setItem('wd_cloud_rev', rev); } catch (e) {}
   sessionStorage.setItem('wd_pending_import', cloud);
   location.reload();
 }
@@ -18792,14 +18801,18 @@ async function pull() {
   const snap = await getDoc(doc(db, 'saves', user.uid));
   const local = localStorage.getItem(KEY);
   const cloud = snap.exists() ? snap.data().data : null;
+  const cloudRev = snap.exists() ? snap.data().rev : null;
+  let myRev = null; try { myRev = localStorage.getItem('wd_cloud_rev'); } catch (e) {}
   if (!valid(parse(cloud))) { synced = true; await upload(true); return; }       // no cloud save yet
-  if (!valid(parse(local))) { applyCloud(cloud); return; }                      // empty browser
-  if (local === cloud) { synced = true; return; }
+  if (!valid(parse(local))) { applyCloud(cloud, cloudRev); return; }            // empty browser
+  if (local === cloud) { synced = true; try { if (cloudRev) localStorage.setItem('wd_cloud_rev', cloudRev); } catch (e) {} return; }
+  // Cloud unchanged since THIS browser last synced => only this browser has moved on; no prompt needed.
+  if (cloudRev && cloudRev === myRev) { synced = true; await upload(true); return; }
   const useCloud = confirm(
     'A cloud save exists and differs from this browser.\n\n' +
     'CLOUD: ' + describe(cloud) + '\nTHIS BROWSER: ' + describe(local) +
     '\n\nOK = load the CLOUD save (replaces this browser)\nCancel = keep THIS BROWSER (overwrites the cloud)');
-  if (useCloud) applyCloud(cloud);
+  if (useCloud) applyCloud(cloud, cloudRev);
   else { synced = true; await upload(true); }
 }
 
