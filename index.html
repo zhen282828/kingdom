@@ -1,7 +1,7 @@
 <!doctype html>
-<html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion</title>
+<html lang="en"><head><noscript></noscript><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Three Kingdoms: Warlord Dominion</title>
 <meta name="application-name" content="Three Kingdoms: Warlord Dominion">
-<meta name="wd-build" content="P1.4-F6.3-RC1">
+<meta name="wd-build" content="P1.8-F7E-RC2">
 <meta name="wd-save-schema" content="4">
 <script>
 /* Cloud-save restore: applies a pending cloud import before the game reads localStorage. */
@@ -14520,9 +14520,232 @@ html:not(#_):not(#_):not(#_) body #researchModal .modalClose {
 
 
 <!-- Phase 7E quiet raid reminder polish: non-blocking and dismissible -->
+
+<style id="mobile-readability-phase1">
+/* Phase 1: accessibility and mobile readability. Preserve layout and gameplay. */
+@media (max-width: 600px) {
+  /* Core navigation and resource labels */
+  .navBtn, html:not(#_) .navBtn,
+  .topbar .res small, html:not(#_) .topbar .res small,
+  .res small, .res b, .topbar .level,
+  .economyHeadline span, .economyHeadline small,
+  .economyMeta, .economyRates span,
+  #productionStatus, .productionStatus,
+  .productionDashboardHeading p, .productionDashboardNote,
+  .productionDashStat span, .productionDashStat small,
+  .productionMetricRow, .productionMetricRow strong,
+  .productionResourceTitle small, .productionProducerName,
+  .productionProducerName small, .productionProducerAmount,
+  .productionProducerAmount small, .productionNoProducer,
+  .productionDashboardFooterNote, .economyCapText {
+    font-size: 11px !important;
+    line-height: 1.25;
+  }
+  /* Building names and their immediate status/cost information */
+  .buildItem, .buildItem span, .buildItem small,
+  .buildItem .buildItemName, .structureName,
+  .lockBadge, .lockRibbon, .unlockTag,
+  .costMini, .missingCost, .affordabilityHint,
+  .affordabilityHint > strong, .affordabilityHint > small,
+  .buildInfoMeta, .buildInfo p, .buildInfoMetric span,
+  .buildInfoBody p, .lockedReason, .unlockPreview,
+  .lockedStep, .upgradeButtonTime, .supplyCost,
+  .expansionZone, .districtLabel, .plotStatusTime,
+  .plotStatusPct, .plotStatusTop, .productionStatus {
+    font-size: 11px !important;
+    line-height: 1.25;
+  }
+  /* Combat, queues, research, and tutorial helper text */
+  .activityMeta, .activityTime, .activityQueue, .unitChip,
+  .abilityHint, .queueActions button, .queueOrderInfo .activityMeta,
+  .queueOrderTop .activityTime, .queueProgressMeta,
+  .queueOrderActions button, .tacticBtn small,
+  .battleTacticsHead, .battleTacticsHead strong,
+  .fighter small, .battleStatus, .campaignMap .node small,
+  .researchSummary, .researchCard p, .researchTabs button,
+  .phase3Eyebrow, .phase3Hint, .p3Meta,
+  .tutorial #skipTutorial, .tip, .cityStats {
+    font-size: 11px !important;
+    line-height: 1.3;
+  }
+  /* Ensure frequently used controls remain legible without enlarging every decorative badge. */
+  #collectAllBtn, .buildFilters button, .researchTabs button,
+  .battleDialog .battleControls button, .queueOrderActions button,
+  .cameraControls #zoomReset {
+    font-size: 12px !important;
+  }
+}
+</style>
+
+<style id="mobile-city-space-phase2">
+/* Phase 2: city-screen space, tutorial placement and building-name clarity.
+   Presentation-only overrides; game state and economy logic are untouched. */
+@media (max-width: 600px) and (orientation: portrait) {
+  /* Keep the helper tip and production summary in separate, predictable corners. */
+  html body .cityViewport #cityTip.tip {
+    top: 8px !important;
+    left: 8px !important;
+    right: auto !important;
+    width: calc(100% - 158px) !important;
+    max-width: 230px !important;
+    min-width: 0 !important;
+    padding: 7px 8px !important;
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+    overflow-wrap: anywhere !important;
+    z-index: 12 !important;
+  }
+  html body .cityViewport #productionStatus.productionStatus {
+    top: 8px !important;
+    right: 8px !important;
+    left: auto !important;
+    width: auto !important;
+    max-width: 142px !important;
+    padding: 6px 7px !important;
+    font-size: 11px !important;
+    line-height: 1.25 !important;
+    z-index: 12 !important;
+  }
+
+  /* Make the tutorial compact and keep it above the measured build dock. */
+  html body #tutorial.tutorial {
+    left: 8px !important;
+    right: 8px !important;
+    bottom: calc(var(--dock-top, 178px) + 8px) !important;
+    width: auto !important;
+    max-width: 560px !important;
+    max-height: 112px !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    padding: 8px 10px !important;
+    border-width: 2px !important;
+    border-radius: 13px !important;
+    font-size: 12px !important;
+    line-height: 1.28 !important;
+    z-index: 55 !important;
+  }
+  html body #tutorial.tutorial strong {
+    display: block !important;
+    margin-bottom: 3px !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+  }
+  html body #tutorial.tutorial #skipTutorial {
+    min-height: 32px !important;
+    padding: 4px 10px !important;
+    margin-top: 5px !important;
+    font-size: 12px !important;
+  }
+
+  /* Widen building cards and permit readable two-line names instead of clipping. */
+  html body .cityViewport .buildList {
+    gap: 6px !important;
+    padding: 4px 6px !important;
+    scroll-padding-inline: 8px;
+  }
+  html body .cityViewport .buildList .buildItem {
+    width: 76px !important;
+    min-width: 76px !important;
+    max-width: 76px !important;
+    flex: 0 0 76px !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    padding: 3px 4px !important;
+    gap: 1px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+  html body .cityViewport .buildList .buildItem .buildItemName {
+    display: -webkit-box !important;
+    max-width: 100% !important;
+    white-space: normal !important;
+    overflow: hidden !important;
+    text-overflow: initial !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    font-size: 10px !important;
+    line-height: 1.08 !important;
+    min-height: 20px !important;
+  }
+  html body .cityViewport .buildList .buildItem b {
+    font-size: 18px !important;
+    line-height: 1 !important;
+  }
+  html body .cityViewport .buildList .buildItem .costMini {
+    font-size: 8px !important;
+    line-height: 1.05 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+}
+
+@media (max-width: 360px) and (orientation: portrait) {
+  html body .cityViewport #cityTip.tip {
+    width: calc(100% - 145px) !important;
+    font-size: 10px !important;
+  }
+  html body .cityViewport #productionStatus.productionStatus {
+    max-width: 128px !important;
+    font-size: 10px !important;
+  }
+  html body .cityViewport .buildList .buildItem {
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+    flex-basis: 72px !important;
+  }
+}
+</style>
+
+<style id="phase3-tap-targets-contrast">
+/* PHASE 3: mobile tap targets, disabled-state clarity, and keyboard focus */
+button, [role="button"] { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, [role="button"]:focus-visible {
+  outline: 3px solid #ffe18a !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 2px #17283f !important;
+}
+button:not(:disabled):active, [role="button"]:not([aria-disabled="true"]):active {
+  filter: brightness(1.08);
+}
+@media (max-width: 680px) {
+  /* Primary navigation and city actions should be comfortable to tap. */
+  .navBtn { min-height: 48px !important; }
+  .cameraControls button { min-height: 44px !important; min-width: 44px !important; }
+  #collectAllBtn { min-height: 44px !important; }
+  .filter { min-height: 36px !important; padding: 6px 10px !important; }
+  /* Keep the build tray compact, but avoid tiny interactive cards. */
+  .buildItem { min-height: 48px !important; }
+}
+/* Disabled controls remain visibly unavailable without fading their labels away. */
+button:disabled, button[aria-disabled="true"] {
+  opacity: 1 !important;
+  filter: none !important;
+  cursor: not-allowed !important;
+  color: #d4dce5 !important;
+  background-color: #34465b !important;
+  border-color: #718197 !important;
+  box-shadow: none !important;
+}
+.buildItem:disabled {
+  opacity: 1 !important;
+  color: #d7e0e9 !important;
+  background: linear-gradient(#48586a, #303e50) !important;
+  border-color: #8190a1 !important;
+  box-shadow: inset 0 0 0 1px #17283a !important;
+}
+.buildItem:disabled b { opacity: .9; }
+.buildItem:disabled .costMini { color: #e0c987 !important; }
+.buildItem:disabled .lockRibbon { color: #e2e8ef !important; }
+@media (prefers-reduced-motion: reduce) {
+  button, [role="button"] { scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}
+</style>
 </head><body><div id="portraitLockOverlay" role="status" aria-live="polite"><div class="portraitLockCard"><div class="portraitLockIcon" aria-hidden="true">📱 ↻</div><h2>Please rotate your device</h2><p>Warlord Dominion is designed for portrait play. Rotate your iPhone vertically to continue your campaign.</p></div></div><div class="game"><header class="topbar"><div class="ab-crest"><div class="crestIcon" id="factionCrest">⚔️</div><div class="logo">THREE KINGDOMS<br>WARLORD DOMINION</div></div><div class="level">🏯 <span id="cityLevel">1</span></div><div class="resources"><span class="res">🌾 <b id="food">0</b><small id="foodCap"></small></span><span class="res">🪵 <b id="wood">0</b><small id="woodCap"></small></span><span class="res">⛓️ <b id="iron">0</b><small id="ironCap"></small></span><span class="res">🪙 <b id="coins">0</b><small id="coinsCap"></small></span></div><button class="iconBtn" id="settingsBtn" aria-label="Settings">⚙️</button></header>
 <main class="main"><section class="screen cityScreen active" id="city"><div class="cityViewport" id="cityViewport"><div class="skyGlow"></div><div class="mountains"></div><div class="river"><span class="riverSpark r1"></span><span class="riverSpark r2"></span><span class="riverSpark r3"></span></div><div class="riverBankDecor"></div><div class="bridge"></div><div class="ambient" id="ambient"><span class="bird b1">⌁</span><span class="bird b2">⌁</span></div><div class="tip" id="cityTip">Choose a building below, then tap an empty plot.</div><div class="buildModeActions hidden" id="buildModeActions"><div class="buildModeChoice"><small>PLACING</small><b id="buildModeName">Building</b><span id="buildModeCost"></span></div><button class="secondary" id="buildModeCollect">Collect</button><button class="danger" id="cancelBuildMode">Cancel</button></div><div class="productionStatus" id="productionStatus"></div><div class="cityFocusLabel">Citadel</div><div class="cameraControls" aria-label="City camera controls"><button id="zoomOut" aria-label="Zoom out">−</button><button id="zoomReset">Reset</button><button id="zoomIn" aria-label="Zoom in">+</button></div><button class="activityToggle" id="activityToggle" aria-label="Active orders">Orders <b id="activityCount">0</b></button><div class="activityPanel hidden" id="activityPanel"></div><div class="cityBoard" id="cityBoard"></div><div class="buildDock"><div class="buildInfo hidden" id="buildInfo"></div><div class="buildArea"><div class="buildFilters" id="buildFilters"><button class="filter active" data-filter="All">All</button><button class="filter" data-filter="Economy">Economy</button><button class="filter" data-filter="Military">Military</button><button class="filter" data-filter="Defense">Defense</button><span class="filterSpacer"></span><button class="primary empty" id="collectAllBtn" disabled><span>Collect</span><b id="collectionReadyCount">0</b></button></div><div class="buildList" id="buildList"></div></div></div></div></section><section class="screen" id="army"><div class="heading">⚔️ Army Command</div><div class="panel row spread"><div><b id="armyPower">0 Power</b><div>Train troops for your field army.</div></div><button class="primary" id="balancedBtn" aria-label="Queue balanced reinforcement">Reinforce</button></div><div class="queuePanel hidden" id="trainingQueue"></div><div class="grid" id="unitGrid"></div></section><section class="screen" id="generals"><div class="heading">🎖️ General Roster</div><div class="panel row spread"><div><b>Recruit historical commanders</b><div>Each commander specializes in one troop type.</div></div><button class="primary" id="recruitBtn">Recruit · 300 🪙</button></div><div class="grid" id="generalGrid"></div></section><section class="screen" id="campaign"><div class="heading">🗺️ Campaign Map</div><div class="map" id="campaignMap"></div></section><section class="screen" id="quests"><div class="heading">📜 Quests & Reports</div><div id="questList"></div><div id="phase3Hub" class="phase3Hub">
-  <div class="phase3Header"><div><div class="phase3Eyebrow">P1 PHASE 3</div><h2>Daily Command</h2></div><div id="phase3Reset" class="phase3Reset"></div></div>
+  <div class="phase3Header"><div><div class="phase3Eyebrow">DAILY CHALLENGES</div><h2>Daily Command</h2></div><div id="phase3Reset" class="phase3Reset"></div></div>
   <div class="phase3Grid">
     <section class="phase3Card"><div class="phase3Title"><span>Daily Bounties</span><button id="rerollDaily" class="smallBtn" type="button">Replace 1</button></div><div id="dailyBounties"></div></section>
     <section class="phase3Card"><div class="phase3Title"><span>Seven-Step Tribute</span><button id="claimLoginReward" class="goldBtn" type="button">Claim</button></div><div id="loginTrack" class="loginTrack"></div><div id="loginHint" class="phase3Hint"></div></section>
@@ -14532,7 +14755,7 @@ html:not(#_):not(#_):not(#_) body #researchModal .modalClose {
 <div class="heading">Battle Reports</div><div id="reportList"></div></section></main>
 <nav class="bottomNav"><button class="navBtn active" data-screen="city"><span>🏯</span>City</button><button class="navBtn" data-screen="army"><span>⚔️</span>Army</button><button class="navBtn" data-screen="generals"><span>🎖️</span>Generals</button><button class="navBtn" data-screen="campaign"><span>🗺️</span>Campaign</button><button class="navBtn" data-screen="quests"><span>📜</span>Quests</button></nav></div><div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div><div id="raidWarningBanner" class="raidWarningBanner hidden" role="group" aria-label="Raid warning"></div><div class="completionBanner" id="completionBanner"></div><div class="tapName" id="tapName"></div><div class="tutorial" id="tutorial"></div>
 <div class="modal" id="factionModal"><div class="dialog"><h2>Raise Your Banner</h2><p>Choose a faction. This changes your crest and resource bonus.</p><div class="factionGrid"><button class="faction wei" data-faction="Wei"><div class="cardIcon">🐉</div>WEI<br><small>+15% Iron</small></button><button class="faction shu" data-faction="Shu"><div class="cardIcon">🦚</div>SHU<br><small>+15% Food</small></button><button class="faction wu" data-faction="Wu"><div class="cardIcon">🐅</div>WU<br><small>+15% Coins</small></button></div></div></div>
-<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.7-F7D-RC1 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
+<div class="modal" id="settingsModal"><div class="dialog"><div class="row spread"><h2>Pause & Settings</h2><button class="secondary" id="closeSettings">Close</button></div><p id="saveStatus"></p><p class="small" id="buildVersion">Build P1.8-F7E-RC2 · Save Schema 4</p><div class="grid"><button class="secondary" id="soundBtn">🔊 Sound: On</button><button class="secondary" id="motionBtn">✨ Motion: Full</button><button class="secondary" id="saveBtn">💾 Save Now</button><button class="secondary" id="testSaveBtn">🧪 Load Battle Test Save</button><button class="danger" id="restartBtn">↻ Restart Game</button></div><p class="small" style="color:#5d492d">In restricted previews, progress is kept for the current session. Download and open the file normally for permanent browser storage.</p></div></div>
 <div class="modal" id="detailModal"><div class="dialog" id="detailDialog"></div></div>
 <div class="modal" id="battleModal"><div class="dialog battleDialog"><div class="row spread"><div><h2 id="battleTitle">Battle</h2><div id="battleStatus">Engaging enemy...</div></div><button class="secondary hidden" id="battleExit">Exit</button></div><div class="battlefield" id="battlefield"></div><div class="battleOutcomeSummary hidden" id="battleOutcomeSummary" aria-live="polite"></div><div class="battleTactics" id="battleTactics" aria-label="Tactical orders">
 <div class="battleTacticsHead"><span>TACTICAL ORDERS</span><strong id="battleTacticStatus">Choose an order · 5 second effect</strong></div>
@@ -18883,4 +19106,61 @@ onAuthStateChanged(auth, async u => {
 });
 document.addEventListener('visibilitychange', () => { if (document.hidden) upload(); });
 </script>
+<script>
+/* Phase 5: lightweight session QoL. Preserve each screen's scroll position when navigating. */
+(() => {
+  'use strict';
+  const positions = new Map();
+  const getPath = (root, node) => {
+    const path = [];
+    let cur = node;
+    while (cur && cur !== root) {
+      const parent = cur.parentElement;
+      if (!parent) return null;
+      path.push(Array.prototype.indexOf.call(parent.children, cur));
+      cur = parent;
+    }
+    return cur === root ? path.reverse() : null;
+  };
+  const getNode = (root, path) => path.reduce((node, index) => node && node.children[index], root);
+  const capture = screen => {
+    if (!screen) return;
+    const entries = [];
+    const nodes = [screen, ...screen.querySelectorAll('*')];
+    for (const node of nodes) {
+      if (node.scrollTop > 0 || node.scrollLeft > 0) {
+        const path = getPath(screen, node);
+        if (path) entries.push({ path, top: node.scrollTop, left: node.scrollLeft });
+      }
+    }
+    positions.set(screen.id, entries);
+  };
+  const restore = screen => {
+    if (!screen) return;
+    const entries = positions.get(screen.id) || [];
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      for (const item of entries) {
+        const node = getNode(screen, item.path);
+        if (!node || !node.isConnected) continue;
+        node.scrollTop = item.top;
+        node.scrollLeft = item.left;
+      }
+    }));
+  };
+  document.addEventListener('click', event => {
+    const button = event.target.closest('.navBtn[data-screen]');
+    if (!button) return;
+    const current = document.querySelector('.screen.active');
+    capture(current);
+    const target = document.getElementById(button.dataset.screen);
+    if (target) restore(target);
+  }, true);
+})();
+
+</script>
 </body></html>
+
+<style id="phase4-production-cleanup">
+/* Phase 4: keep developer-only battle test tooling available in code, but not in player settings. */
+#settingsModal #testSaveBtn { display: none !important; }
+</style>
